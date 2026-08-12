@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+/* ── Sofratak design tokens (docs/branding.md) ─────────────────────── */
+@theme {
+  /* Brand palette */
+  --color-olive: #2f4a3c;
+  --color-olive-deep: #253b30;
+  --color-sand: #d8c19a;
+  --color-sand-soft: #ede1c8;
+  --color-brass: #a9792b;
+  --color-brass-deep: #8a6120;
+  --color-ivory: #f7f2e8;
+  --color-charcoal: #1f1f1f;
+  --color-stone: #6b6b6b;
+  --color-clay: #a56b52;
+
+  /* Functional colors — usability beats brand color */
+  --color-positive: #1b7a4a;
+  --color-error: #d92d20;
+
+  /* Radii */
+  --radius-btn: 0.875rem; /* 14px — buttons */
+  --radius-field: 0.875rem; /* 14px — inputs/selects */
+  --radius-card: 1.5rem; /* 24px — cards */
+  --radius-modal: 1.5rem; /* 24px — modals */
+}
+
+/* Font stacks: Manrope/Cormorant carry Latin; Arabic glyphs fall through
+   to IBM Plex Sans Arabic automatically, so one stack serves both locales. */
+@theme inline {
+  --font-sans: var(--font-manrope), var(--font-plex-arabic), ui-sans-serif,
+    system-ui, sans-serif;
+  --font-display: var(--font-cormorant), var(--font-plex-arabic), serif;
+}
+
+body {
+  background-color: var(--color-ivory);
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
+}
+
+/* ── Motion: subtle rise/fade, disabled for reduced motion ─────────── */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@utility animate-rise-in {
+  animation: rise-in 0.3s ease-out both;
+}
+
+@utility animate-fade-in {
+  animation: fade-in 0.2s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise-in,
+  .animate-fade-in {
+    animation: none;
+  }
+}

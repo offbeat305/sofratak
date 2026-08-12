@@ -1,0 +1,33 @@
+{
+  "brand": {
+    "name": "Sofratak",
+    "slogan": "Take Control. Own Your Growth.",
+    "supporting": "Sofratak helps restaurant owners save time, reduce unnecessary costs, and manage orders, customers, marketing, reporting, and operations from one place."
+  },
+  "nav": {
+    "home": "Home",
+    "styleguide": "Styleguide",
+    "calculator": "Savings Calculator",
+    "bookDemo": "Book a Demo",
+    "calculateSavings": "Calculate Your Savings",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "switchLocale": "العربية"
+  },
+  "footer": {
+    "tagline": "Your restaurant, under your control.",
+    "product": "Product",
+    "language": "Language",
+    "rights": "© {year} Sofratak · Offbeat Creative LLC. All rights reserved."
+  },
+  "home": {
+    "title": "Phase 0 — design system first",
+    "body": "The brand foundation is being built before any pages. Review every component in the styleguide.",
+    "cta": "View the styleguide"
+  },
+  "placeholder": {
+    "storefront": "Storefront — diner ordering arrives in Phase 1.",
+    "dashboard": "Restaurant dashboard — arrives in Phase 1.",
+    "admin": "Super-admin panel — arrives in Phase 1."
+  }
+}

@@ -1,5 +1,14 @@
 # Sofratak — Progress Log
 
+## 2026-08-13 — Supabase is live
+
+Migration applied by Zizo (SQL editor), seed script run: Beit Zizo restaurant
++ 25 items + 6 categories + 5 modifier groups upserted. Backend picker now
+selects SupabaseStore (no fallback warning). Verified reads are live by
+patching a menu item name via REST and watching the storefront change and
+revert. Note: order history starts fresh in Supabase — the two dev orders
+(Q473, P525) live only in the old .data/store.json.
+
 ## 2026-08-12 (night) — Supabase wiring + Phase 4 dashboard (part 1)
 
 ### Supabase

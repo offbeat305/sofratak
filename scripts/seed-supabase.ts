@@ -38,6 +38,7 @@ async function upsert(table: string, rows: Record<string, unknown>[]) {
   console.log(`✓ ${table}: ${rows.length} rows`);
 }
 
+async function main() {
 await upsert("restaurants", [
   {
     id: r.id,
@@ -97,3 +98,9 @@ await upsert(
 );
 
 console.log("Seed complete — Beit Zizo Shawarma is live in Supabase.");
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

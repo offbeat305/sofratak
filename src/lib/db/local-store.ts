@@ -27,16 +27,19 @@ function seedData(): StoreData {
  * Dev-only JSON-file store. Orders/SMS persist to .data/store.json;
  * restaurant + menu always come fresh from the seed so seed edits show up
  * without deleting the file.
+ *
+ * No in-memory caching: Next.js dev compiles route handlers and server
+ * actions into separate module graphs, so several LocalStore instances
+ * coexist — the file is the single source of truth.
  */
 export class LocalStore implements DataStore {
   private data: StoreData | null = null;
   private writing: Promise<void> = Promise.resolve();
 
   private async load(): Promise<StoreData> {
-    if (this.data) return this.data;
     try {
       const raw = await fs.readFile(DATA_FILE, "utf8");
-      const saved = JSON.parse(raw) as StoreData;
+      const saved = JSON.parse(raw) as Partial<StoreData>;
       this.data = { ...seedData(), orders: saved.orders ?? [], sms: saved.sms ?? [] };
     } catch {
       this.data = seedData();
@@ -59,6 +62,20 @@ export class LocalStore implements DataStore {
   async getRestaurantBySlug(slug: string): Promise<Restaurant | null> {
     const data = await this.load();
     return data.restaurants.find((r) => r.slug === slug) ?? null;
+  }
+
+  async getRestaurantById(id: string): Promise<Restaurant | null> {
+    const data = await this.load();
+    return data.restaurants.find((r) => r.id === id) ?? null;
+  }
+
+  async markUnacceptedAlert(id: string): Promise<void> {
+    const data = await this.load();
+    const order = data.orders.find((o) => o.id === id);
+    if (order) {
+      order.unacceptedAlertSentAt = new Date().toISOString();
+      this.persist();
+    }
   }
 
   async getMenu(restaurantId: string): Promise<Menu | null> {

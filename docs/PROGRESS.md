@@ -1,5 +1,46 @@
 # Sofratak — Progress Log
 
+## 2026-08-12 (later) — Phase 3: order routing to the kitchen
+
+### Built
+- **`OrderChannel` adapter** (`src/lib/orders/channels.ts`) with the three
+  implementations from the brief: kitchen web view (v1 default — the board
+  pulls), SMS + printable ticket (`/kitchen/{slug}/ticket/{orderId}`), and
+  the **Otter stub** properly isolated in `src/lib/integrations/otter/`
+  behind `OtterClient` (mock only until partner API access lands). New paid
+  orders fan out to all channels via `Promise.allSettled` — a channel
+  failure can never lose or block a paid order.
+- **Kitchen board** (`/{locale}/kitchen/{slug}`): tablet-friendly three-
+  column view (New / Preparing / Ready-or-on-the-way), 5s polling, WebAudio
+  triple-beep on new orders behind a sound toggle (autoplay policy needs a
+  tap), accept → preparing → ready|out_for_delivery → complete, cancel,
+  per-order print ticket, "N completed today" counter. EN/AR.
+- **Lifecycle → diner SMS** (`src/lib/orders/lifecycle.ts`): guarded status
+  transitions; preparing/ready/out-for-delivery/canceled each text the diner
+  in their checkout language. Diner status page picks changes up via its
+  10s poll.
+- **Never lose an order silently**: orders unaccepted for 5+ minutes SMS
+  the restaurant's phone once (flagged via `unacceptedAlertSentAt`); the
+  check piggybacks the kitchen feed poll (a real cron replaces this at
+  deploy time).
+- **Fixed**: LocalStore no longer caches in memory — Next dev compiles
+  routes/actions into separate module graphs, so instances must treat the
+  JSON file as the single source of truth.
+
+### Verified end-to-end
+Storefront order → appeared on kitchen board (New, highlighted) → overdue
+alert SMS fired to owner after 5 min → Accept/Ready/Complete each sent the
+right diner SMS ("being prepared" / "ready for pickup!") → board shows
+"1 completed today". Ticket page renders print-ready.
+
+### Known gaps (deliberate, phase-ordered)
+- Kitchen routes are **unauthenticated until Phase 4** — don't share URLs.
+- Overdue check runs on feed polls, not a cron (fine while a kitchen tab
+  is open; needs a scheduled job in production).
+- Canceled orders say "you will be refunded" but refunds are mocked until
+  Stripe lands (Phase 4 does itemized refunds).
+
+
 ## 2026-08-12 — Phase 2: diner storefront (demo-complete on local adapters)
 
 ### Built

@@ -94,5 +94,30 @@
     "deliveryMinimumNote": "Delivery minimum: {amount}",
     "poweredBy": "Powered by Sofratak",
     "orderNotFound": "We couldn't find that order."
+  },
+  "kitchen": {
+    "title": "Kitchen · {name}",
+    "columns": {
+      "received": "New",
+      "preparing": "Preparing",
+      "ready": "Ready / On the way"
+    },
+    "accept": "Accept",
+    "markReady": "Ready",
+    "markOut": "Out for delivery",
+    "complete": "Complete",
+    "cancel": "Cancel order",
+    "pickup": "Pickup",
+    "delivery": "Delivery",
+    "asap": "ASAP",
+    "scheduledFor": "Scheduled {time}",
+    "waiting": "{minutes} min ago",
+    "empty": "No active orders. New orders appear here automatically.",
+    "doneToday": "{count} completed today",
+    "soundOn": "Sound on",
+    "soundOff": "Sound off",
+    "printTicket": "Print ticket",
+    "customerNotes": "Notes",
+    "items": "{count, plural, one {# item} other {# items}}"
   }
 }

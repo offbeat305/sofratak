@@ -94,5 +94,30 @@
     "deliveryMinimumNote": "الحد الأدنى للتوصيل: {amount}",
     "poweredBy": "مشغّل بواسطة سفرتك",
     "orderNotFound": "لم نعثر على هذا الطلب."
+  },
+  "kitchen": {
+    "title": "المطبخ · {name}",
+    "columns": {
+      "received": "جديد",
+      "preparing": "قيد التحضير",
+      "ready": "جاهز / في الطريق"
+    },
+    "accept": "قبول",
+    "markReady": "جاهز",
+    "markOut": "خرج للتوصيل",
+    "complete": "اكتمل",
+    "cancel": "إلغاء الطلب",
+    "pickup": "استلام",
+    "delivery": "توصيل",
+    "asap": "بأسرع وقت",
+    "scheduledFor": "مجدول {time}",
+    "waiting": "منذ {minutes} دقيقة",
+    "empty": "لا توجد طلبات نشطة. الطلبات الجديدة تظهر هنا تلقائيًا.",
+    "doneToday": "{count} مكتمل اليوم",
+    "soundOn": "الصوت مفعّل",
+    "soundOff": "الصوت مطفأ",
+    "printTicket": "طباعة التذكرة",
+    "customerNotes": "ملاحظات",
+    "items": "{count, plural, zero {لا عناصر} one {عنصر واحد} two {عنصران} few {# عناصر} many {# عنصرًا} other {# عنصر}}"
   }
 }

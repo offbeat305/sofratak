@@ -122,6 +122,8 @@ export type Order = {
   paymentRef: string;
   /** locale the diner ordered in — drives SMS language */
   locale: "en" | "ar";
+  /** set once when the owner is alerted about an unaccepted order */
+  unacceptedAlertSentAt: string | null;
   createdAt: string;
   updatedAt: string;
 };

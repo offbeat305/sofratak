@@ -2,6 +2,7 @@ import "server-only";
 import { getStore } from "@/lib/db/store";
 import { getPaymentProvider } from "@/lib/payments";
 import { getSmsChannel } from "@/lib/sms";
+import { dispatchNewOrder } from "@/lib/orders/channels";
 import { SERVICE_FEE_CENTS } from "@/lib/fees";
 import { formatCents } from "@/lib/money";
 import type {
@@ -190,6 +191,7 @@ export async function placeOrder(
     paymentStatus: "paid",
     paymentRef: payment.ref,
     locale: input.locale,
+    unacceptedAlertSentAt: null,
     createdAt: now,
     updatedAt: now,
   };
@@ -200,6 +202,9 @@ export async function placeOrder(
     body: confirmationSms(order, restaurant, origin),
     orderId: id,
   });
+
+  // Route to the kitchen (OrderChannel adapters — never blocks a paid order).
+  await dispatchNewOrder(order, restaurant, origin);
 
   return { ok: true, orderId: id };
 }

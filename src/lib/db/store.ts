@@ -4,10 +4,12 @@ import { LocalStore } from "./local-store";
 
 export interface DataStore {
   getRestaurantBySlug(slug: string): Promise<Restaurant | null>;
+  getRestaurantById(id: string): Promise<Restaurant | null>;
   getMenu(restaurantId: string): Promise<Menu | null>;
   createOrder(order: Order): Promise<void>;
   getOrder(id: string): Promise<Order | null>;
   updateOrderStatus(id: string, status: OrderStatus): Promise<Order | null>;
+  markUnacceptedAlert(id: string): Promise<void>;
   listOrders(restaurantId: string): Promise<Order[]>;
   recordSms(sms: SmsRecord): Promise<void>;
 }

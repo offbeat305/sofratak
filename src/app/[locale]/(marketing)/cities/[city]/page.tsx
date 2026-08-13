@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { buttonClasses } from "@/components/ui/Button";
 import { ArchDivider } from "@/components/marketing/arch-divider";
 import { CITIES, cityBySlug } from "@/content/cities";
+import { FOUNDER_STORY } from "@/content/founder-story";
 import { routing } from "@/i18n/routing";
 
 type Params = Promise<{ locale: string; city: string }>;
@@ -106,6 +107,13 @@ export default async function CityPage({ params }: { params: Params }) {
           <BadgeCheck className="size-4 shrink-0 text-positive" aria-hidden />
           {t("citiesPage.communityLine")}
         </p>
+        {loc === "en" && (
+          // founder-story trust line — generic version only (the per-city
+          // client claim from the reuse map isn't verifiable per market)
+          <p className="mt-3 border-t border-olive/10 pt-3 text-sm text-stone">
+            {FOUNDER_STORY.reuse.cityTrust}
+          </p>
+        )}
       </div>
 
       {/* FAQ */}

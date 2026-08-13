@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { WhatsAppLink } from "@/components/marketing/whatsapp-link";
 import { CITIES } from "@/content/cities";
+import { FOUNDER_STORY } from "@/content/founder-story";
 
 const ARCH_LINE = `url("data:image/svg+xml,${encodeURIComponent(
   `<svg xmlns='http://www.w3.org/2000/svg' width='72' height='16'><path d='M12 16 V10 a24 24 0 0 1 48 0 V16' fill='none' stroke='%23A9792B' stroke-opacity='0.25' stroke-width='2'/></svg>`,
@@ -40,7 +41,10 @@ export async function Footer() {
             height={60}
             className="h-12 w-auto self-start"
           />
-          <p className="text-sm text-ivory/75">{t("site.footerTagline")}</p>
+          {/* founder-story mission line (EN until AR review) */}
+          <p className="text-sm text-ivory/75">
+            {locale === "en" ? FOUNDER_STORY.reuse.footerMission : t("site.footerTagline")}
+          </p>
           <p className="text-sm font-semibold text-sand">
             {t("brand.slogan")}
             <span className="mx-2 text-ivory/40">·</span>

@@ -1,5 +1,29 @@
 # Sofratak — Progress Log
 
+## 2026-08-13 (cont.) — Founder story shipped (docs/founder-story.md)
+
+- Final copy implemented verbatim in `src/content/founder-story.ts`;
+  /en/about rebuilt as the full story: olive hero w/ large portrait
+  (public/brand/founder-zizo.png), band rhythm, staggered fade-in for the
+  "One company handled X" fragmentation list, brass pull-quote, and the
+  "Note From Ahmad" letter block (Cormorant italic, repeated photo,
+  signed "Zizo (Ahmad Zeidan) — Founder, Sofratak"). Meta description
+  per spec.
+- Reuse map applied: homepage founder card (photo + blurb + pull-quote +
+  "Read our story") folded into the who-it's-for sand band to preserve
+  the band rhythm; footer mission line; "Built by Offbeat Creative"
+  badge in hero chips + pricing; demo-page "talking to Zizo directly"
+  reassurance; generic Offbeat trust line on city pages (the per-city
+  and "50+ brands" claims skipped — not verifiable; flagged).
+- **English only, per the rules**: every founder placement is gated to
+  the `en` locale; /ar/about keeps the previously approved short Arabic
+  (verified: no English leakage). Arabic story ships after Zizo review.
+- WhatsApp number set in .env.local — floating button + contact CTAs
+  live on every marketing page (verified).
+- "Why the name" homepage callout (optional per spec): skipped — the
+  homepage is dense post-design-pass; it lives in About. Revisit if
+  Zizo wants it.
+
 ## 2026-08-13 (cont.) — Design pass (docs/design-pass.md)
 
 Homepage rebuilt to the design spec, verified at 390px/desktop, EN+AR:

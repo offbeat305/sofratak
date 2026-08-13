@@ -1,6 +1,8 @@
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BadgeCheck } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { FOUNDER_STORY } from "@/content/founder-story";
 import { CITIES } from "@/content/cities";
 import { ArchDivider } from "@/components/marketing/arch-divider";
 import { ArchWatermark } from "@/components/marketing/arch-watermark";
@@ -91,6 +93,15 @@ export default async function HomePage({
                   {chip}
                 </span>
               ))}
+              {loc === "en" && (
+                // credibility badge (founder-story reuse map) — EN until AR review
+                <Link
+                  href="/about"
+                  className="rounded-full border border-sand/50 px-3.5 py-1.5 text-xs font-semibold text-sand transition-colors hover:border-sand hover:text-ivory"
+                >
+                  {FOUNDER_STORY.reuse.badge}
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -172,7 +183,8 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* 7 · Who it's for (sand band) */}
+      {/* 7 · Who it's for + founder block (one sand band — keeps the
+             no-adjacent-same-color rhythm; founder-story reuse map) */}
       <section className="bg-sand/25">
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <Reveal>
@@ -187,6 +199,38 @@ export default async function HomePage({
               {t("who.halal")}
             </p>
           </Reveal>
+
+          {loc === "en" && (
+            <Reveal delay={120}>
+              <div className="mt-12 grid items-center gap-8 rounded-card border border-olive/10 bg-white p-6 sm:p-8 md:grid-cols-[auto_1fr]">
+                <div className="relative size-28 shrink-0 overflow-hidden rounded-2xl md:size-36">
+                  <Image
+                    src="/brand/founder-zizo.png"
+                    alt={FOUNDER_STORY.hero.name}
+                    fill
+                    className="object-cover object-top"
+                  />
+                </div>
+                <div>
+                  <p className="font-bold text-olive">
+                    {FOUNDER_STORY.reuse.homeBlurbTitle}
+                  </p>
+                  <p className="mt-2 text-[15px] text-charcoal">
+                    {FOUNDER_STORY.reuse.homeBlurb}
+                  </p>
+                  <blockquote className="font-display mt-4 border-s-4 border-brass ps-4 text-xl leading-snug font-semibold text-olive italic sm:text-2xl">
+                    {FOUNDER_STORY.why.pullQuote}
+                  </blockquote>
+                  <Link
+                    href="/about"
+                    className="mt-4 inline-block text-sm font-bold text-brass-deep underline-offset-4 hover:underline"
+                  >
+                    {FOUNDER_STORY.reuse.homeLink}
+                  </Link>
+                </div>
+              </div>
+            </Reveal>
+          )}
         </div>
       </section>
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { DemoForm } from "@/components/marketing/demo-form";
 import { WhatsAppLink } from "@/components/marketing/whatsapp-link";
+import { FOUNDER_STORY } from "@/content/founder-story";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("site.demo");
@@ -23,6 +24,12 @@ export default async function DemoPage({
         {t("title")}
       </h1>
       <p className="mt-2 text-stone">{t("sub")}</p>
+      {locale === "en" && (
+        // founder-story reuse: family-business reassurance near the form
+        <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-sand-soft/70 px-4 py-2 text-sm font-semibold text-olive">
+          {FOUNDER_STORY.reuse.demoReassurance}
+        </p>
+      )}
       <div className="mt-8 rounded-card border border-olive/10 bg-white p-5 sm:p-6">
         <DemoForm />
       </div>

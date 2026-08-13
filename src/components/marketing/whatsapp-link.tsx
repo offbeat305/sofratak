@@ -27,7 +27,8 @@ export async function WhatsAppLink({
         rel="noreferrer"
         aria-label={t("whatsapp")}
         className={cn(
-          "fixed bottom-5 z-40 flex size-13 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_8px_24px_rgba(31,31,31,0.25)] transition-transform hover:scale-105 motion-reduce:transition-none",
+          // hidden on mobile — the sticky CTA bar carries WhatsApp there
+          "fixed bottom-5 z-40 hidden size-13 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_8px_24px_rgba(31,31,31,0.25)] transition-transform hover:scale-105 motion-reduce:transition-none md:flex",
           "end-5 h-13 w-13",
           className,
         )}

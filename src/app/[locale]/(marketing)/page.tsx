@@ -6,8 +6,12 @@ import { FOUNDER_STORY } from "@/content/founder-story";
 import { CITIES } from "@/content/cities";
 import { ArchDivider } from "@/components/marketing/arch-divider";
 import { ArchWatermark } from "@/components/marketing/arch-watermark";
+import { ComparisonTable } from "@/components/marketing/comparison-table";
 import { DollarComparison } from "@/components/marketing/dollar-comparison";
+import { FaqSection } from "@/components/marketing/faq-section";
+import { FeatureGrid } from "@/components/marketing/feature-grid";
 import { HeroCalculator } from "@/components/marketing/hero-calculator";
+import { LiveDemo } from "@/components/marketing/live-demo";
 import { ProductTour } from "@/components/marketing/product-tour";
 import { Reveal } from "@/components/marketing/reveal";
 import { TierCards } from "@/components/marketing/tier-cards";
@@ -150,6 +154,17 @@ export default async function HomePage({
               </Reveal>
             ))}
           </div>
+
+          {/* full capability grid — live vs rolling-out, labeled honestly */}
+          <Reveal className="mt-16">
+            <h3 className="font-display text-2xl font-semibold text-olive sm:text-3xl">
+              {t("grid.title")}
+            </h3>
+            <p className="mt-1 text-stone">{t("grid.sub")}</p>
+          </Reveal>
+          <div className="mt-6">
+            <FeatureGrid />
+          </div>
         </div>
       </section>
 
@@ -163,23 +178,12 @@ export default async function HomePage({
         </Reveal>
       </section>
 
-      {/* 6 · How it works (ivory) */}
+      {/* 6 · LIVE demo — the real product, embedded (ivory) */}
       <section className="bg-ivory">
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
-          <SectionHeader title={t("how.title")} sub={t("how.note")} />
-          <ol className="mt-10 grid gap-6 sm:grid-cols-3">
-            {steps.map((step, i) => (
-              <Reveal key={step.title} delay={i * 80}>
-                <li className="hover-lift h-full list-none rounded-card border border-olive/10 bg-white p-6">
-                  <span className="flex size-10 items-center justify-center rounded-full bg-olive font-bold text-ivory">
-                    {i + 1}
-                  </span>
-                  <h3 className="mt-4 font-bold text-charcoal">{step.title}</h3>
-                  <p className="mt-1.5 text-sm text-stone">{step.body}</p>
-                </li>
-              </Reveal>
-            ))}
-          </ol>
+          <Reveal>
+            <LiveDemo />
+          </Reveal>
         </div>
       </section>
 
@@ -234,7 +238,37 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* 8 · Pricing teaser (ivory) */}
+      {/* 8 · How it works (ivory) */}
+      <section className="bg-ivory">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+          <SectionHeader title={t("how.title")} sub={t("how.note")} />
+          <ol className="mt-10 grid gap-6 sm:grid-cols-3">
+            {steps.map((step, i) => (
+              <Reveal key={step.title} delay={i * 80}>
+                <li className="hover-lift h-full list-none rounded-card border border-olive/10 bg-white p-6">
+                  <span className="flex size-10 items-center justify-center rounded-full bg-olive font-bold text-ivory">
+                    {i + 1}
+                  </span>
+                  <h3 className="mt-4 font-bold text-charcoal">{step.title}</h3>
+                  <p className="mt-1.5 text-sm text-stone">{step.body}</p>
+                </li>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* 9 · The apps vs your own site (sand) */}
+      <section className="bg-sand/25">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+          <SectionHeader title={t("compare.title")} sub={t("compare.sub")} />
+          <div className="mt-10">
+            <ComparisonTable />
+          </div>
+        </div>
+      </section>
+
+      {/* 10 · Pricing teaser (ivory) */}
       <section className="bg-ivory">
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <SectionHeader
@@ -262,7 +296,17 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* 10 · Final CTA (olive → deep gradient + watermark) */}
+      {/* 12 · FAQ (ivory, FAQPage schema) */}
+      <section className="bg-ivory">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+          <SectionHeader title={t("faq.title")} />
+          <div className="mt-10">
+            <FaqSection />
+          </div>
+        </div>
+      </section>
+
+      {/* 13 · Final CTA (olive → deep gradient + watermark) */}
       <section className="relative bg-gradient-to-b from-olive to-olive-deep text-ivory">
         <ArchWatermark parallax={false} />
         <div className="relative mx-auto max-w-[1200px] px-4 py-16 text-center sm:px-6 md:py-24">

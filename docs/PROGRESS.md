@@ -1,5 +1,40 @@
 # Sofratak — Progress Log
 
+## 2026-08-13 (cont.) — Competitive upgrade pass (Owner.com / Zay-OS / Toast research)
+
+Researched all three. Owner: 1,000+ reviews, dollar-figure case studies,
+AI-report hook. Zay-OS (direct competitor): "$48k/yr to DoorDash" hook,
+free grader, 6 FAQs, ~80 city pages, /compare pages, $399–599/mo + $0.99
+diner fee (we undercut both numbers). Toast: breadth. We can't match
+their social proof honestly (no fake reviews per brand rules) — so we
+shipped what none of them have: PROOF.
+
+Added to the homepage (band rhythm preserved, EN+AR):
+- **Live demo section** — the REAL Beit Zizo storefront embedded in a
+  phone frame via iframe, scrollable/tappable, with a one-tap EN↔AR flip
+  and "Open the full demo". Verified the frame renders the actual menu.
+  No competitor embeds their working product.
+- **"The apps vs. your own site" comparison table** — generic delivery-
+  apps column (estimates marked as estimates, no named competitors) vs
+  Sofratak: commission, who pays the per-order fee, customer data
+  ownership, brand, Arabic support, cancel terms.
+- **Capability grid** — 12 features labeled "Live now" (8) vs "Rolling
+  out" (4+) — depth like Toast, honesty as the differentiator (roadmap
+  rule from founder-story.md respected).
+- **Homepage FAQ** (8 questions incl. "can I keep DoorDash/Uber Eats",
+  speed-to-launch, Arabic) with FAQPage JSON-LD.
+- **Sticky mobile CTA bar** (estimator + WhatsApp) after 700px scroll,
+  hidden on /calculator + /demo; floating WhatsApp bubble now desktop-
+  only to avoid overlap.
+- **Branded OG images** (next/og, olive/brass, EN + AR variants) — link
+  previews in WhatsApp groups now look intentional.
+
+New sequence: hero olive → serving strip → $30 sand → features+grid
+ivory → tour olive → LIVE DEMO ivory → who+founder sand → how ivory →
+COMPARISON sand → pricing ivory → promise olive → FAQ ivory → CTA
+gradient. No same-color adjacency. New AR strings pending Zizo review
+like the rest of the site.
+
 ## 2026-08-13 (cont.) — Founder story shipped (docs/founder-story.md)
 
 - Final copy implemented verbatim in `src/content/founder-story.ts`;

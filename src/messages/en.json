@@ -126,6 +126,57 @@
       "keeps": "{amount} keeps",
       "replay": "Replay"
     },
+    "live": {
+      "eyebrow": "This one is real",
+      "title": "Tap the demo. It's live.",
+      "sub": "This isn't a screenshot — it's a real Sofratak storefront running right now. Browse the menu, add to cart, flip it to Arabic.",
+      "flip": "See it in Arabic",
+      "flipBack": "Back to English",
+      "open": "Open the full demo",
+      "note": "Demo restaurant — tap around freely."
+    },
+    "compare": {
+      "title": "The apps vs. your own site",
+      "sub": "Same food, same customers. Very different math.",
+      "colApps": "Delivery apps",
+      "colUs": "Your Sofratak site",
+      "rows": [
+        { "label": "Commission on food", "apps": "~15–30% (estimated)", "us": "$0" },
+        { "label": "Fee per order", "apps": "Paid by you, per order", "us": "79¢ flat — paid by the diner" },
+        { "label": "Your customers' names & numbers", "apps": "Kept by the platform", "us": "Yours, exportable anytime" },
+        { "label": "Your own website & brand", "apps": "You're one listing of many", "us": "Your name, your domain" },
+        { "label": "Arabic + English ordering", "apps": "No", "us": "Built in, true RTL" },
+        { "label": "Cancel terms", "apps": "—", "us": "Month-to-month, data leaves with you" }
+      ]
+    },
+    "grid": {
+      "title": "Everything in one subscription",
+      "sub": "No modules to buy. And we're honest about what's live versus still rolling out.",
+      "live": "Live now",
+      "soon": "Rolling out",
+      "items": [
+        { "name": "Direct online ordering", "status": "live" },
+        { "name": "Kitchen screen + printable tickets", "status": "live" },
+        { "name": "Order status texts to diners", "status": "live" },
+        { "name": "Customer book with CSV export", "status": "live" },
+        { "name": "Itemized & partial refunds", "status": "live" },
+        { "name": "English + Arabic, true RTL", "status": "live" },
+        { "name": "Halal badge & branding", "status": "live" },
+        { "name": "Local SEO city pages", "status": "live" },
+        { "name": "SMS & email campaigns", "status": "soon" },
+        { "name": "Weekly owner report", "status": "soon" },
+        { "name": "Loyalty program", "status": "soon" },
+        { "name": "Catering & delivery zones", "status": "soon" }
+      ]
+    },
+    "faq": {
+      "title": "Common questions",
+      "items": [
+        { "q": "Can I keep DoorDash and Uber Eats?", "a": "Yes. Sofratak runs alongside the apps — most restaurants keep them for discovery and move regulars to direct ordering, where every order costs less." },
+        { "q": "How fast can we go live?", "a": "About two weeks from menu to first order. A photo of your paper menu is enough to start." },
+        { "q": "Does it really work in Arabic?", "a": "Fully. Diners can order in Arabic or English with true right-to-left layout — menus, checkout, and order texts included." }
+      ]
+    },
     "tour": {
       "title": "See it working",
       "sub": "Real screens from the product — not mockups.",

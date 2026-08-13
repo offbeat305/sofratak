@@ -42,3 +42,6 @@ next-env.d.ts
 
 # local dev data store
 .data/
+
+# keep the credentials template tracked
+!.env.example

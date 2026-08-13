@@ -1,5 +1,29 @@
 # Sofratak — Progress Log
 
+## 2026-08-13 (cont.) — City pages rebuilt + Sofratak assistant
+
+**City pages** were thin; each of the 12 is now a full landing page with
+the band rhythm: olive hero (H1, the honest local paragraph, new
+per-city "We know this scene" chips — Warren Ave, Busch Blvd, Joseph
+Campau…), the LIVE embedded demo storefront, community + founder trust,
+the 12-capability grid, full pricing cards, FAQ (new per-city question
+interpolated + the core five, all in the FAQPage schema), and a gradient
+CTA with cross-links to the other cities. Still zero boilerplate — every
+page's local content is real.
+
+**Sofratak assistant** (marketing pages, EN/AR): deliberately NOT an
+LLM — a curated knowledge base (src/content/assistant-kb.ts, 13 entries
+built ONLY from published copy: pricing, fees, speed, Arabic, DoorDash
+coexistence, hardware, data ownership, cities, refunds, halal, demo,
+founder) with word-boundary keyword matching (substring matching was
+letting "deliver" hit "live" — fixed), quick-reply chips, and a WhatsApp
++ book-a-demo handoff for anything unmatched. It can never invent a
+price or a guarantee. Verified: EN + AR questions answered correctly,
+nonsense → fallback. LLM upgrade path: an adapter behind an Anthropic
+API key later if Zizo wants free-form answers.
+
+New AR strings pending Zizo review, as usual.
+
 ## 2026-08-13 (cont.) — Competitive upgrade pass (Owner.com / Zay-OS / Toast research)
 
 Researched all three. Owner: 1,000+ reviews, dollar-figure case studies,

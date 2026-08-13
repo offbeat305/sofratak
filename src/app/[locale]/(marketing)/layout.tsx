@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { Assistant } from "@/components/marketing/assistant";
 import { WhatsAppLink } from "@/components/marketing/whatsapp-link";
 import { StickyCta } from "@/components/marketing/sticky-cta";
 
@@ -17,6 +18,7 @@ export default function MarketingLayout({
       <Footer />
       <WhatsAppLink variant="floating" />
       <StickyCta whatsappNumber={whatsappNumber} />
+      <Assistant whatsappNumber={whatsappNumber} />
     </>
   );
 }

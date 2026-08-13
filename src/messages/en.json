@@ -332,7 +332,25 @@
         { "q": "What if I want to cancel?", "a": "Month-to-month, cancel anytime. We email you your complete data export automatically when you do." }
       ],
       "estimatorCta": "See what your restaurant could save",
-      "otherCities": "Other cities"
+      "otherCities": "Other cities",
+      "eyebrow": "Commission-free online ordering",
+      "knownFor": "We know this scene",
+      "cityFaqQ": "Do you work with restaurants in {city}?",
+      "cityFaqA": "Yes. Onboarding is fully remote — send a photo of your menu, we build your site, and orders ring on any tablet or phone you already have in {city}. About two weeks from menu to first order.",
+      "tryDemo": "Try the live demo",
+      "pricingTitle": "Simple pricing for {city} restaurants"
+    },
+    "assistant": {
+      "title": "Sofratak assistant",
+      "subtitle": "Instant answers about pricing, fees, and how it works.",
+      "placeholder": "Ask about pricing, fees, Arabic…",
+      "send": "Send",
+      "open": "Questions? Ask us",
+      "close": "Close chat",
+      "greeting": "Ahlan! Ask me anything about Sofratak — or tap a question below.",
+      "fallback": "Good question — I don't want to guess on that one. Message us on WhatsApp and a human (usually Zizo) will answer quickly, or book a 15-minute demo.",
+      "whatsapp": "Ask on WhatsApp",
+      "bookDemo": "Book a demo"
     },
     "legal": {
       "privacyTitle": "Privacy Policy",

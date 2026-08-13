@@ -6,7 +6,7 @@ create extension if not exists "pgcrypto";
 
 -- ── Tenants ─────────────────────────────────────────────────────────────
 create table restaurants (
-  id uuid primary key default gen_random_uuid(),
+  id text primary key default gen_random_uuid()::text,
   slug text not null unique check (slug ~ '^[a-z0-9-]+$'),
   name jsonb not null,             -- {en, ar}
   tagline jsonb not null default '{"en":"","ar":""}',
@@ -26,13 +26,13 @@ create table restaurants (
 
 -- Staff membership: which auth user belongs to which tenant, with what role.
 create table restaurant_members (
-  restaurant_id uuid not null references restaurants(id) on delete cascade,
+  restaurant_id text not null references restaurants(id) on delete cascade,
   user_id uuid not null references auth.users(id) on delete cascade,
   role text not null check (role in ('owner', 'staff')),
   primary key (restaurant_id, user_id)
 );
 
-create or replace function is_member_of(rid uuid)
+create or replace function is_member_of(rid text)
 returns boolean language sql stable security definer set search_path = public as $$
   select exists (
     select 1 from restaurant_members
@@ -47,15 +47,15 @@ $$;
 
 -- ── Menu ────────────────────────────────────────────────────────────────
 create table menu_categories (
-  id uuid primary key default gen_random_uuid(),
-  restaurant_id uuid not null references restaurants(id) on delete cascade,
+  id text primary key default gen_random_uuid()::text,
+  restaurant_id text not null references restaurants(id) on delete cascade,
   name jsonb not null,
   sort int not null default 0
 );
 
 create table modifier_groups (
-  id uuid primary key default gen_random_uuid(),
-  restaurant_id uuid not null references restaurants(id) on delete cascade,
+  id text primary key default gen_random_uuid()::text,
+  restaurant_id text not null references restaurants(id) on delete cascade,
   name jsonb not null,
   min int not null default 0,
   max int not null default 1,
@@ -63,22 +63,22 @@ create table modifier_groups (
 );
 
 create table menu_items (
-  id uuid primary key default gen_random_uuid(),
-  restaurant_id uuid not null references restaurants(id) on delete cascade,
-  category_id uuid not null references menu_categories(id) on delete cascade,
+  id text primary key default gen_random_uuid()::text,
+  restaurant_id text not null references restaurants(id) on delete cascade,
+  category_id text not null references menu_categories(id) on delete cascade,
   name jsonb not null,
   description jsonb not null default '{"en":"","ar":""}',
   price_cents int not null check (price_cents >= 0),
   image_url text,
   sold_out boolean not null default false,
-  modifier_group_ids uuid[] not null default '{}',
+  modifier_group_ids text[] not null default '{}',
   sort int not null default 0
 );
 
 -- ── Orders ──────────────────────────────────────────────────────────────
 create table orders (
-  id uuid primary key default gen_random_uuid(),
-  restaurant_id uuid not null references restaurants(id) on delete cascade,
+  id text primary key default gen_random_uuid()::text,
+  restaurant_id text not null references restaurants(id) on delete cascade,
   number text not null,
   status text not null default 'received'
     check (status in ('received','preparing','ready','out_for_delivery','completed','canceled')),
@@ -95,6 +95,8 @@ create table orders (
   payment_status text not null default 'pending'
     check (payment_status in ('pending','paid','refunded','partially_refunded')),
   payment_ref text not null default '',
+  refunds jsonb not null default '[]',
+  unaccepted_alert_sent_at timestamptz,
   locale text not null default 'en' check (locale in ('en','ar')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -102,9 +104,9 @@ create table orders (
 create index orders_restaurant_created on orders (restaurant_id, created_at desc);
 
 create table sms_log (
-  id uuid primary key default gen_random_uuid(),
-  restaurant_id uuid references restaurants(id) on delete set null,
-  order_id uuid references orders(id) on delete set null,
+  id text primary key default gen_random_uuid()::text,
+  restaurant_id text references restaurants(id) on delete set null,
+  order_id text references orders(id) on delete set null,
   to_phone text not null,
   body text not null,
   sent_at timestamptz not null default now()

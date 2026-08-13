@@ -181,6 +181,7 @@ export async function placeOrder(
     totalCents,
     paymentStatus: "pending",
     paymentRef: "",
+    refunds: [],
     locale: input.locale,
     unacceptedAlertSentAt: null,
     createdAt: now,

@@ -79,12 +79,14 @@ export function StatCard({
 
   const formatted =
     format === "currency"
-      ? // money always displays "$1,234" style (business decision, Aug 2026)
+      ? // money always displays "$1,234" style (business decision, Aug 2026);
+        // cents show only when the target value has them
         new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: "USD",
-          maximumFractionDigits: 0,
-        }).format(Math.round(animated))
+          minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+          maximumFractionDigits: Number.isInteger(value) ? 0 : 2,
+        }).format(Math.round(animated * 100) / 100)
       : format === "percent"
         ? new Intl.NumberFormat(numberLocale, { maximumFractionDigits: 0 }).format(
             Math.round(animated),

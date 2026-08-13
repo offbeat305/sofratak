@@ -23,6 +23,11 @@ export interface PaymentProvider {
   }): Promise<PaymentStart>;
   /** True if the referenced payment is settled (idempotent check). */
   verifyPayment(ref: string): Promise<boolean>;
+  /** Refund part or all of a settled payment. */
+  refund(input: {
+    paymentRef: string;
+    amountCents: number;
+  }): Promise<{ ok: true; ref: string } | { ok: false; error: string }>;
 }
 
 /** Auto-approves everything. Active only when no STRIPE_SECRET_KEY is set. */
@@ -32,6 +37,9 @@ class MockPaymentProvider implements PaymentProvider {
   }
   async verifyPayment(): Promise<boolean> {
     return true;
+  }
+  async refund({ paymentRef }: { paymentRef: string }) {
+    return { ok: true as const, ref: `mock_re_${paymentRef.slice(-8)}` };
   }
 }
 

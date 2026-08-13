@@ -106,4 +106,30 @@ export class StripePaymentProvider implements PaymentProvider {
       return false;
     }
   }
+
+  async refund({
+    paymentRef,
+    amountCents,
+  }: {
+    paymentRef: string;
+    amountCents: number;
+  }): Promise<{ ok: true; ref: string } | { ok: false; error: string }> {
+    try {
+      const session = await this.stripe.checkout.sessions.retrieve(paymentRef);
+      const paymentIntent =
+        typeof session.payment_intent === "string"
+          ? session.payment_intent
+          : session.payment_intent?.id;
+      if (!paymentIntent)
+        return { ok: false, error: "No payment found for this order" };
+      const refund = await this.stripe.refunds.create({
+        payment_intent: paymentIntent,
+        amount: amountCents,
+      });
+      return { ok: true, ref: refund.id };
+    } catch (err) {
+      console.error("[stripe] refund failed", err);
+      return { ok: false, error: "Refund could not be processed" };
+    }
+  }
 }

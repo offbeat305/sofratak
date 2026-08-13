@@ -1,5 +1,43 @@
 # Sofratak — Progress Log
 
+## 2026-08-12 (night) — Supabase wiring + Phase 4 dashboard (part 1)
+
+### Supabase
+- `SupabaseStore` implements the full `DataStore` interface (service-role
+  client, snake↔camel mapping, atomic pending→paid flip). Backend picked at
+  runtime: Supabase when the schema is applied, else local JSON store with a
+  console warning. **Blocked on one manual step**: Zizo pastes
+  `supabase/migrations/0001_init.sql` into the Supabase SQL editor (DDL needs
+  dashboard access we don't have), then `npx tsx scripts/seed-supabase.ts`
+  seeds Beit Zizo. Keys are in `.env.local` (moved out of the tracked
+  template again).
+- Migration updated: text ids matching app ids, `refunds` jsonb,
+  `unaccepted_alert_sent_at`, payment_status includes `pending`.
+
+### Phase 4 dashboard (`/{locale}/dashboard/{slug}`)
+- Shell: mobile bottom tabs / desktop sidebar, EN/AR, links to kitchen +
+  storefront, **big Pause/Resume button** with red banner (verified live —
+  paused blocks checkout server-side).
+- **Today view**: today's revenue (net of refunds), orders, average ticket,
+  this-week-vs-last with delta; live orders list.
+- **Orders history**: search (number/name/phone) + status filter + CSV
+  export; detail page with full receipt.
+- **Itemized refunds** (the Owner.com gap): per-line quantity selectors or
+  full remaining balance; Stripe refunds via payment_intent (mock-paid dev
+  orders refund mock-style); diner gets an automatic SMS; revenue math
+  subtracts refunds. Verified: partial $13.74 line refund → order
+  partially_refunded + SMS.
+- **CRM**: customer book auto-built from paid orders (name, phone, count,
+  total, last order, SMS opt-in), auto-tags VIP (≥5 orders or ≥$150) /
+  lapsed (30+ days) / new; one-click CSV (verified). Orders CSV too.
+
+### Still open in Phase 4 (next session)
+- Menu manager (add/edit items, photos, prices, modifiers, sold-out toggle).
+- Hours & holiday overrides, delivery zone/fee settings.
+- Supabase Auth (owner/staff logins) — after the migration is applied.
+- Stripe Connect onboarding + $0.79 application-fee routing.
+
+
 ## 2026-08-12 (evening) — Real Stripe test payments + Zizo's checkout decisions
 
 ### Business decisions implemented (confirmed by Zizo)

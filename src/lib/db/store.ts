@@ -1,6 +1,14 @@
 import "server-only";
-import type { Menu, Order, OrderStatus, Restaurant, SmsRecord } from "./types";
+import type {
+  Menu,
+  Order,
+  OrderRefund,
+  OrderStatus,
+  Restaurant,
+  SmsRecord,
+} from "./types";
 import { LocalStore } from "./local-store";
+import { SupabaseStore } from "./supabase-store";
 
 export interface DataStore {
   getRestaurantBySlug(slug: string): Promise<Restaurant | null>;
@@ -12,23 +20,56 @@ export interface DataStore {
   /** Idempotent pending → paid flip; returns null unless it transitioned. */
   markOrderPaid(id: string, paymentRef: string): Promise<Order | null>;
   markUnacceptedAlert(id: string): Promise<void>;
+  /** Append a refund and set the resulting payment status. */
+  addOrderRefund(
+    id: string,
+    refund: OrderRefund,
+    paymentStatus: Order["paymentStatus"],
+  ): Promise<Order | null>;
+  setOrderingPaused(restaurantId: string, paused: boolean): Promise<void>;
   listOrders(restaurantId: string): Promise<Order[]>;
   recordSms(sms: SmsRecord): Promise<void>;
 }
 
-let store: DataStore | null = null;
+let backend: DataStore | null = null;
+let warned = false;
+
+async function resolveBackend(): Promise<DataStore> {
+  if (backend) return backend;
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (url && key) {
+    const supabase = new SupabaseStore(url, key);
+    if (await supabase.schemaReady()) {
+      backend = supabase;
+      return backend;
+    }
+    if (!warned) {
+      warned = true;
+      console.warn(
+        "[db] Supabase reachable but schema missing — using the local JSON store. " +
+          "Apply supabase/migrations/0001_init.sql (SQL editor), run `npx tsx scripts/seed-supabase.ts`, then restart.",
+      );
+    }
+  }
+  backend = new LocalStore();
+  return backend;
+}
 
 /**
- * Local JSON store until Supabase credentials exist (see CLAUDE.md
- * "Local dev fallbacks"). The Supabase implementation will slot in here,
- * selected by SUPABASE_URL — no call sites change.
+ * Backend is picked once per process: Supabase when SUPABASE_URL is set and
+ * the schema is applied, else the local JSON store (CLAUDE.md fallbacks).
+ * Proxy keeps getStore() synchronous for call sites; every DataStore method
+ * is async anyway.
  */
 export function getStore(): DataStore {
-  if (process.env.SUPABASE_URL) {
-    throw new Error(
-      "Supabase store not implemented yet — remove SUPABASE_URL or implement src/lib/db/supabase-store.ts (migrations are ready in /supabase/migrations).",
-    );
-  }
-  store ??= new LocalStore();
-  return store;
+  return new Proxy({} as DataStore, {
+    get(_target, prop: keyof DataStore) {
+      return async (...args: unknown[]) => {
+        const store = await resolveBackend();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return (store[prop] as any)(...args);
+      };
+    },
+  });
 }

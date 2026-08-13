@@ -2,7 +2,14 @@ import "server-only";
 import { promises as fs } from "fs";
 import path from "path";
 import type { DataStore } from "./store";
-import type { Menu, Order, OrderStatus, Restaurant, SmsRecord } from "./types";
+import type {
+  Menu,
+  Order,
+  OrderRefund,
+  OrderStatus,
+  Restaurant,
+  SmsRecord,
+} from "./types";
 import { beitZizo, beitZizoMenu } from "./seed/beit-zizo";
 
 type StoreData = {
@@ -40,9 +47,25 @@ export class LocalStore implements DataStore {
     try {
       const raw = await fs.readFile(DATA_FILE, "utf8");
       const saved = JSON.parse(raw) as Partial<StoreData>;
-      this.data = { ...seedData(), orders: saved.orders ?? [], sms: saved.sms ?? [] };
+      const orders = (saved.orders ?? []).map((o) => ({
+        ...o,
+        refunds: o.refunds ?? [],
+      }));
+      this.data = { ...seedData(), orders, sms: saved.sms ?? [] };
     } catch {
       this.data = seedData();
+    }
+    try {
+      const flags: Record<string, boolean> = JSON.parse(
+        await fs.readFile(path.join(process.cwd(), ".data", "paused.json"), "utf8"),
+      );
+      for (const restaurant of this.data.restaurants) {
+        if (flags[restaurant.id] !== undefined) {
+          restaurant.ordering.paused = flags[restaurant.id];
+        }
+      }
+    } catch {
+      // no pause overrides
     }
     return this.data;
   }
@@ -78,6 +101,36 @@ export class LocalStore implements DataStore {
     order.updatedAt = new Date().toISOString();
     this.persist();
     return order;
+  }
+
+  async addOrderRefund(
+    id: string,
+    refund: OrderRefund,
+    paymentStatus: Order["paymentStatus"],
+  ): Promise<Order | null> {
+    const data = await this.load();
+    const order = data.orders.find((o) => o.id === id);
+    if (!order) return null;
+    order.refunds.push(refund);
+    order.paymentStatus = paymentStatus;
+    order.updatedAt = new Date().toISOString();
+    this.persist();
+    return order;
+  }
+
+  async setOrderingPaused(restaurantId: string, paused: boolean): Promise<void> {
+    // The local store re-seeds restaurants each load, so pause state lives
+    // in a side file that seedData() reads — good enough for dev.
+    const flagFile = path.join(process.cwd(), ".data", "paused.json");
+    let flags: Record<string, boolean> = {};
+    try {
+      flags = JSON.parse(await fs.readFile(flagFile, "utf8"));
+    } catch {
+      // first write
+    }
+    flags[restaurantId] = paused;
+    await fs.mkdir(path.dirname(flagFile), { recursive: true });
+    await fs.writeFile(flagFile, JSON.stringify(flags), "utf8");
   }
 
   async markUnacceptedAlert(id: string): Promise<void> {

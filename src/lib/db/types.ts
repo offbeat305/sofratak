@@ -101,6 +101,16 @@ export type OrderLine = {
   lineTotalCents: number;
 };
 
+export type OrderRefund = {
+  id: string;
+  amountCents: number;
+  /** which lines (by index) and how many units; empty = order-level amount */
+  lines: Array<{ lineIndex: number; qty: number }>;
+  /** payment processor refund id (or mock ref) */
+  ref: string;
+  createdAt: string;
+};
+
 export type Order = {
   id: string;
   restaurantId: string;
@@ -120,6 +130,7 @@ export type Order = {
   totalCents: number;
   paymentStatus: "pending" | "paid" | "refunded" | "partially_refunded";
   paymentRef: string;
+  refunds: OrderRefund[];
   /** locale the diner ordered in — drives SMS language */
   locale: "en" | "ar";
   /** set once when the owner is alerted about an unaccepted order */

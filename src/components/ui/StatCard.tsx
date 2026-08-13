@@ -6,18 +6,20 @@ import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { Card } from "./Card";
 
-function useCountUp(target: number, durationMs = 900) {
-  const [value, setValue] = useState(0);
+function useCountUp(target: number, animate: boolean, durationMs = 900) {
+  // Non-animated cards render the real value immediately (and in server HTML).
+  const [value, setValue] = useState(animate ? 0 : target);
   const ref = useRef<HTMLDivElement>(null);
   const started = useRef(false);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || !animate) return;
 
     const reduced = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
 
     const start = () => {
       if (started.current) return;
@@ -34,6 +36,9 @@ function useCountUp(target: number, durationMs = 900) {
         if (p < 1) requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);
+      // rAF pauses in hidden/backgrounded tabs — this guarantees the final
+      // value lands no matter what (the bug behind frozen dashboard tiles).
+      timeout = setTimeout(() => setValue(target), durationMs + 200);
     };
 
     const observer = new IntersectionObserver(
@@ -46,10 +51,13 @@ function useCountUp(target: number, durationMs = 900) {
       { threshold: 0.4 },
     );
     observer.observe(el);
-    return () => observer.disconnect();
-  }, [target, durationMs]);
+    return () => {
+      observer.disconnect();
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [target, durationMs, animate]);
 
-  return { ref, value };
+  return { ref, value: animate ? value : target };
 }
 
 type StatCardProps = {
@@ -60,6 +68,8 @@ type StatCardProps = {
   /** signed percentage, e.g. 12 or -4 */
   delta?: number;
   deltaLabel?: string;
+  /** count-up is marketing polish; dashboards want instant numbers */
+  animate?: boolean;
   className?: string;
 };
 
@@ -69,10 +79,11 @@ export function StatCard({
   format = "number",
   delta,
   deltaLabel,
+  animate = true,
   className,
 }: StatCardProps) {
   const locale = useLocale();
-  const { ref, value: animated } = useCountUp(value);
+  const { ref, value: animated } = useCountUp(value, animate);
   // Latin digits everywhere: matches the brand's money style in Arabic UI and
   // keeps server (Node ICU) and client (browser ICU) output identical.
   const numberLocale = locale === "ar" ? "ar-u-nu-latn" : locale;

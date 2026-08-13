@@ -7,16 +7,30 @@ import { StatCard } from "@/components/ui/StatCard";
 import { Badge } from "@/components/ui/Badge";
 import type { Order } from "@/lib/db/types";
 
-function startOfDay(daysAgo: number): number {
-  const d = new Date();
-  d.setHours(0, 0, 0, 0);
-  return d.getTime() - daysAgo * 86_400_000;
+/** Calendar day number in the restaurant's timezone (not the server's). */
+function dayNumber(date: string | Date, timeZone: string): number {
+  const [y, m, d] = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  })
+    .format(new Date(date))
+    .split("-")
+    .map(Number);
+  return Date.UTC(y, m - 1, d) / 86_400_000;
 }
 
-/** revenue counts paid money that stayed (refunds subtracted) */
+/**
+ * The restaurant's take: subtotal + tip + delivery fee. The $0.79 service
+ * fee is Sofratak's, so it never counts as restaurant revenue. Refunds are
+ * subtracted (clamped at 0 — a full refund includes the fee).
+ */
 function netCents(order: Order): number {
   if (order.paymentStatus === "pending") return 0;
-  return order.totalCents - order.refunds.reduce((n, r) => n + r.amountCents, 0);
+  const take = order.totalCents - order.serviceFeeCents;
+  const refunded = order.refunds.reduce((n, r) => n + r.amountCents, 0);
+  return Math.max(0, take - refunded);
 }
 
 export default async function TodayPage({
@@ -37,11 +51,14 @@ export default async function TodayPage({
     (o) => o.paymentStatus !== "pending",
   );
 
-  const today = orders.filter((o) => new Date(o.createdAt).getTime() >= startOfDay(0));
-  const thisWeek = orders.filter((o) => new Date(o.createdAt).getTime() >= startOfDay(6));
+  const tz = restaurant.timezone;
+  const nowDay = dayNumber(new Date(), tz);
+  const ageDays = (o: Order) => nowDay - dayNumber(o.createdAt, tz);
+  const today = orders.filter((o) => ageDays(o) === 0);
+  const thisWeek = orders.filter((o) => ageDays(o) <= 6);
   const lastWeek = orders.filter((o) => {
-    const ts = new Date(o.createdAt).getTime();
-    return ts >= startOfDay(13) && ts < startOfDay(6);
+    const age = ageDays(o);
+    return age >= 7 && age <= 13;
   });
 
   const todayRevenue = today.reduce((n, o) => n + netCents(o), 0);
@@ -60,14 +77,15 @@ export default async function TodayPage({
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard label={t("todayRevenue")} value={todayRevenue / 100} format="currency" />
-        <StatCard label={t("todayOrders")} value={today.length} />
-        <StatCard label={t("avgTicket")} value={avgTicket / 100} format="currency" />
+        <StatCard label={t("todayRevenue")} value={todayRevenue / 100} format="currency" animate={false} />
+        <StatCard label={t("todayOrders")} value={today.length} animate={false} />
+        <StatCard label={t("avgTicket")} value={avgTicket / 100} format="currency" animate={false} />
         <StatCard
           label={t("weekVsLast")}
           value={thisWeekRevenue / 100}
           format="currency"
           delta={weekDelta}
+          animate={false}
         />
       </div>
 
@@ -99,7 +117,7 @@ export default async function TodayPage({
                   <span className="text-sm text-stone">{order.customer.name}</span>
                   <Badge variant="olive">{tKitchen(`columns.${order.status === "received" ? "received" : order.status === "preparing" ? "preparing" : "ready"}`)}</Badge>
                   <span className="font-bold text-charcoal tabular-nums" dir="ltr">
-                    {formatCents(netCents(order), loc)}
+                    {formatCents(order.totalCents, loc)}
                   </span>
                 </Link>
               </li>

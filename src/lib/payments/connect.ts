@@ -28,6 +28,13 @@ export async function startConnectOnboarding(
         email: undefined,
         business_profile: { name: restaurant.name.en },
         metadata: { restaurantId: restaurant.id },
+        // Direct charges REQUIRE card_payments to be requested here —
+        // otherwise onboarding only sets up payouts and every card charge
+        // fails with "card_payments capability not enabled".
+        capabilities: {
+          card_payments: { requested: true },
+          transfers: { requested: true },
+        },
       });
       accountId = account.id;
       await getStore().setStripeAccount(restaurant.id, accountId, false);
@@ -47,16 +54,22 @@ export async function startConnectOnboarding(
 }
 
 /**
- * Poll the account and persist charges_enabled. Called when the settings
- * page loads so returning from Stripe onboarding flips the flag without
- * needing Connect webhooks in dev.
+ * Poll the account and persist readiness. Called when the settings page
+ * loads so returning from Stripe onboarding flips the flag without needing
+ * Connect webhooks in dev.
+ *
+ * "Ready" means charges_enabled AND the card_payments capability is
+ * active — charges_enabled alone can be true on a payouts-only account,
+ * which then rejects every card charge at confirm time.
  */
 export async function syncConnectStatus(restaurant: Restaurant): Promise<boolean> {
   const stripe = stripeClient();
   if (!stripe || !restaurant.stripe.accountId) return false;
   try {
     const account = await stripe.accounts.retrieve(restaurant.stripe.accountId);
-    const enabled = Boolean(account.charges_enabled);
+    const enabled =
+      Boolean(account.charges_enabled) &&
+      account.capabilities?.card_payments === "active";
     if (enabled !== restaurant.stripe.chargesEnabled) {
       await getStore().setStripeAccount(
         restaurant.id,

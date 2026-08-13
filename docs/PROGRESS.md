@@ -1,5 +1,22 @@
 # Sofratak — Progress Log
 
+## 2026-08-13 (cont.) — Connect bug: card_payments capability
+
+Zizo's first post-onboarding payment failed on Stripe's page. Root cause
+(from the PaymentIntent's last_payment_error): the Express account was
+created WITHOUT requesting the card_payments capability, so onboarding set
+up payouts only — `charges_enabled` read true while every card charge was
+rejected. Fixes:
+- accounts.create now requests card_payments + transfers.
+- syncConnectStatus counts an account ready only when charges_enabled AND
+  capabilities.card_payments === "active" (payouts-only accounts can no
+  longer show "Payouts active" or receive direct charges).
+- Requested the capability on the existing account via API; Stripe now
+  wants identity fields (address/DOB/SSN-last-4/etc.) — Zizo re-enters
+  onboarding via "Finish Stripe setup" in Settings. DB flag reset to
+  false meanwhile; verified a fresh checkout correctly routes to the
+  platform account until the capability is active.
+
 ## 2026-08-13 (cont.) — Owner logins + Stripe Connect
 
 ### Auth (Supabase Auth, @supabase/ssr)

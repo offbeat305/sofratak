@@ -1,5 +1,42 @@
 # Sofratak — Progress Log
 
+## 2026-08-13 (cont.) — Public website (Phase 8 pulled forward)
+
+Money loop confirmed by Zizo first (order Q171 on the connected account,
+$0.79 in Collected fees). Then built sofratak.com per docs/website-spec.md:
+
+- **All 8 page types, EN + AR true RTL**: home (all 8 spec sections incl.
+  phone mockup, math strip, promise block), pricing (3 tiers + fee
+  footnote), **savings estimator** (3 sliders, instant math, no signup
+  wall, soft capture after the number), how-it-works, cities index +
+  **12 Tier-1 city pages** (each with a genuinely local paragraph — Busch
+  Blvd, Warren Ave, Joseph Campau…, FAQ + Service/FAQPage JSON-LD),
+  founder story (photo placeholder pending Zizo), book-a-demo, privacy +
+  terms. 57 static pages build clean.
+- **Leads**: migration 0003 (⚠ Zizo pastes) + `captureLead` — Supabase
+  insert, ANY failure falls back to .data/leads-backup.jsonl, email
+  notification (Resend adapter; console until RESEND_API_KEY) fires
+  regardless; honeypot on both forms. Verified live: estimator submit →
+  backup file with full estimator snapshot.
+- **Estimator math verified**: 500×$30×25% → $3,750/mo, $45,000/yr,
+  difference $40,812 vs $349×12.
+- WhatsApp button (floating + inline) renders once
+  NEXT_PUBLIC_WHATSAPP_NUMBER is set — never ships a dead link.
+- sitemap.xml (both locales, hreflang), robots.txt (blocks dashboard/
+  kitchen), per-page metadata + OG tags.
+- Navbar/Footer rebuilt for the site (footer links every city).
+
+### Waiting on Zizo
+1. Paste supabase/migrations/0003_leads.sql (leads table).
+2. NEXT_PUBLIC_WHATSAPP_NUMBER in .env.local (digits, country code).
+3. RESEND_API_KEY when ready (console fallback works meanwhile).
+4. Founder photo + review of ALL Arabic copy (messages/ar.json "site"
+   namespace + src/content/cities.ts) before launch.
+5. Analytics + OG images at deploy time (Vercel).
+
+### Next
+Phase 7: Stripe Billing tiers + internal Sofratak admin.
+
 ## 2026-08-13 (cont.) — Connect bug: card_payments capability
 
 Zizo's first post-onboarding payment failed on Stripe's page. Root cause

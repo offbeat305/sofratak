@@ -9,12 +9,15 @@ import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { Wordmark } from "@/components/Wordmark";
 
 export function Navbar() {
-  const t = useTranslations("nav");
+  const t = useTranslations("site.nav");
   const [open, setOpen] = useState(false);
 
   const links = [
-    { href: "/", label: t("home") },
-    { href: "/styleguide", label: t("styleguide") },
+    { href: "/pricing", label: t("pricing") },
+    { href: "/how-it-works", label: t("howItWorks") },
+    { href: "/cities", label: t("cities") },
+    { href: "/about", label: t("about") },
+    { href: "/demo", label: t("demo") },
   ] as const;
 
   return (
@@ -28,7 +31,7 @@ export function Navbar() {
         </Link>
 
         {/* Desktop */}
-        <div className="hidden items-center gap-1 md:flex">
+        <div className="hidden items-center gap-1 lg:flex">
           {links.map((link) => (
             <Link
               key={link.href}
@@ -43,31 +46,27 @@ export function Navbar() {
             href="/calculator"
             className={buttonClasses({ size: "sm", className: "ms-2" })}
           >
-            {t("calculateSavings")}
+            {t("estimator")}
           </Link>
         </div>
 
         {/* Mobile */}
-        <div className="flex items-center gap-1 md:hidden">
+        <div className="flex items-center gap-1 lg:hidden">
           <LocaleSwitcher className="text-olive hover:bg-olive/5" />
           <button
             type="button"
             onClick={() => setOpen(!open)}
             aria-expanded={open}
-            aria-label={open ? t("closeMenu") : t("openMenu")}
+            aria-label={open ? "close" : "menu"}
             className="rounded-btn p-2 text-olive transition-colors hover:bg-olive/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-olive"
           >
-            {open ? (
-              <X className="size-6" aria-hidden />
-            ) : (
-              <Menu className="size-6" aria-hidden />
-            )}
+            {open ? <X className="size-6" aria-hidden /> : <Menu className="size-6" aria-hidden />}
           </button>
         </div>
       </nav>
 
       {open && (
-        <div className="animate-rise-in border-t border-olive/10 bg-ivory px-4 pt-2 pb-4 md:hidden">
+        <div className="animate-rise-in border-t border-olive/10 bg-ivory px-4 pt-2 pb-4 lg:hidden">
           <div className="flex flex-col gap-1">
             {links.map((link) => (
               <Link
@@ -84,7 +83,7 @@ export function Navbar() {
               onClick={() => setOpen(false)}
               className={buttonClasses({ className: "mt-2" })}
             >
-              {t("calculateSavings")}
+              {t("estimator")}
             </Link>
           </div>
         </div>

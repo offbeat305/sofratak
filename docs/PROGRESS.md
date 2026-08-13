@@ -1,5 +1,37 @@
 # Sofratak — Progress Log
 
+## 2026-08-12 (evening) — Real Stripe test payments + Zizo's checkout decisions
+
+### Business decisions implemented (confirmed by Zizo)
+- **No sales tax in test mode**; Stripe Tax before first live order
+  (FL prepared food taxable — Hillsborough 7.5%; MI 6%).
+- **Tips**: No tip / 10 / 15 / 20% / custom; preselects **15% on delivery,
+  No tip on pickup**; an explicit tap always wins; 100% to restaurant.
+- **Prices display "$9.49" in both EN and AR** (src/lib/money.ts).
+- Stripe self-handled (standard 2.9% + 30¢) — no Managed Payments add-on.
+
+### Built
+- **Stripe hosted Checkout** (`src/lib/payments/stripe.ts`) behind the same
+  `PaymentProvider` interface (mock still auto-activates if no key):
+  itemized line items incl. the $0.79 "Service fee" line, EN/AR names,
+  success → order status page, cancel → checkout with "cart untouched" note.
+- **Pending → paid flow**: orders are created `pending`; `finalizePaidOrder`
+  (idempotent) flips to paid exactly once, then sends the confirmation SMS
+  and dispatches OrderChannels. Called from the status page on redirect
+  (works locally) and from `POST /api/webhooks/stripe` with signature
+  verification (production; set STRIPE_WEBHOOK_SECRET).
+- Pending orders never appear on the kitchen board/feed; the cart survives
+  a canceled Stripe payment and clears only when the order is paid.
+- Keys live in `.env.local` (gitignored). TODO at Phase 4: Stripe Connect
+  destination charges + $0.79 application fee to Sofratak.
+
+### Verified
+Checkout produced a real Stripe test session (verified via Stripe API:
+correct $7.28 total + orderId metadata); pending order hidden from kitchen;
+pending status page renders. Full card tap-through is Zizo's next step
+(test card 4242 4242 4242 4242) — my preview browser can't leave localhost.
+
+
 ## 2026-08-12 (later) — Phase 3: order routing to the kitchen
 
 ### Built

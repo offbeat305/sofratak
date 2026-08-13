@@ -93,7 +93,10 @@
     "backToMenu": "العودة إلى القائمة",
     "deliveryMinimumNote": "الحد الأدنى للتوصيل: {amount}",
     "poweredBy": "مشغّل بواسطة سفرتك",
-    "orderNotFound": "لم نعثر على هذا الطلب."
+    "orderNotFound": "لم نعثر على هذا الطلب.",
+    "paymentCanceled": "تم إلغاء الدفع — سلتك كما هي.",
+    "paymentPending": "لم يكتمل الدفع لهذا الطلب بعد.",
+    "returnToCheckout": "العودة إلى إتمام الطلب"
   },
   "kitchen": {
     "title": "المطبخ · {name}",

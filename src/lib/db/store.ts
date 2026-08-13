@@ -9,6 +9,8 @@ export interface DataStore {
   createOrder(order: Order): Promise<void>;
   getOrder(id: string): Promise<Order | null>;
   updateOrderStatus(id: string, status: OrderStatus): Promise<Order | null>;
+  /** Idempotent pending → paid flip; returns null unless it transitioned. */
+  markOrderPaid(id: string, paymentRef: string): Promise<Order | null>;
   markUnacceptedAlert(id: string): Promise<void>;
   listOrders(restaurantId: string): Promise<Order[]>;
   recordSms(sms: SmsRecord): Promise<void>;

@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CheckCircle2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { getStore } from "@/lib/db/store";
+import { getPaymentProvider } from "@/lib/payments";
+import { finalizePaidOrder } from "@/lib/orders/place-order";
 import { formatCents } from "@/lib/money";
 import { OrderStatusView } from "@/components/storefront/order-status-view";
+import { ClearCart } from "@/components/storefront/clear-cart";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("storefront");
@@ -17,10 +21,10 @@ export default async function OrderStatusPage({
   searchParams,
 }: {
   params: Promise<{ locale: string; slug: string; orderId: string }>;
-  searchParams: Promise<{ new?: string }>;
+  searchParams: Promise<{ new?: string; session_id?: string }>;
 }) {
   const { locale, slug, orderId } = await params;
-  const { new: isNew } = await searchParams;
+  const { new: isNew, session_id: sessionId } = await searchParams;
   setRequestLocale(locale);
   const loc = locale as "en" | "ar";
   const t = await getTranslations("storefront");
@@ -28,10 +32,35 @@ export default async function OrderStatusPage({
   const store = getStore();
   const restaurant = await store.getRestaurantBySlug(slug);
   if (!restaurant) notFound();
-  const order = await store.getOrder(orderId);
+  let order = await store.getOrder(orderId);
   if (!order || order.restaurantId !== restaurant.id) {
     return (
       <div className="py-20 text-center text-stone">{t("orderNotFound")}</div>
+    );
+  }
+
+  // Back from Stripe: verify the session and finalize exactly once.
+  if (order.paymentStatus === "pending" && sessionId) {
+    const paid = await getPaymentProvider().verifyPayment(sessionId);
+    if (paid) {
+      const h = await headers();
+      const origin = `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host") ?? "localhost:3000"}`;
+      order = (await finalizePaidOrder(orderId, sessionId, origin)) ??
+        (await store.getOrder(orderId)) ?? order;
+    }
+  }
+
+  if (order.paymentStatus === "pending") {
+    return (
+      <div className="flex flex-col items-center gap-4 py-20 text-center">
+        <p className="font-semibold text-charcoal">{t("paymentPending")}</p>
+        <Link
+          href={`/s/${slug}/checkout`}
+          className="rounded-btn bg-[var(--sf-primary)] px-6 py-3 font-bold text-white"
+        >
+          {t("returnToCheckout")}
+        </Link>
+      </div>
     );
   }
 
@@ -41,6 +70,7 @@ export default async function OrderStatusPage({
 
   return (
     <div className="flex flex-col gap-4 pt-6 pb-10">
+      <ClearCart slug={slug} />
       {isNew && (
         <div className="flex items-center gap-3 rounded-card border border-positive/25 bg-positive/8 p-4">
           <CheckCircle2 className="size-6 shrink-0 text-positive" aria-hidden />

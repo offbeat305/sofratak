@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useTransition } from "react";
+import { useMemo, useRef, useState, useTransition } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -24,23 +24,45 @@ function scheduleSlots(prepMinutes: number): string[] {
   return slots;
 }
 
-export function CheckoutView({ restaurant }: { restaurant: Restaurant }) {
+export function CheckoutView({
+  restaurant,
+  paymentCanceled = false,
+}: {
+  restaurant: Restaurant;
+  paymentCanceled?: boolean;
+}) {
   const t = useTranslations("storefront");
   const locale = useLocale() as "en" | "ar";
   const router = useRouter();
   const cart = useCart();
   const [pending, startTransition] = useTransition();
 
-  const [fulfillment, setFulfillment] = useState<Fulfillment>(
-    restaurant.ordering.pickup ? "pickup" : "delivery",
-  );
+  const initialFulfillment: Fulfillment = restaurant.ordering.pickup
+    ? "pickup"
+    : "delivery";
+  const [fulfillment, setFulfillment] = useState<Fulfillment>(initialFulfillment);
   const [when, setWhen] = useState<"asap" | "scheduled">("asap");
   const [scheduledFor, setScheduledFor] = useState<string>("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [smsOptIn, setSmsOptIn] = useState(false);
   const [address, setAddress] = useState("");
-  const [tipChoice, setTipChoice] = useState<number | "custom" | 0>(0.15);
+  // Business decision: preselect 15% on delivery, No tip on pickup — but an
+  // explicit tap always wins, even across fulfillment switches.
+  const [tipChoice, setTipChoiceRaw] = useState<number | "custom">(
+    initialFulfillment === "delivery" ? 0.15 : 0,
+  );
+  const tipTouched = useRef(false);
+  const setTipChoice = (value: number | "custom") => {
+    tipTouched.current = true;
+    setTipChoiceRaw(value);
+  };
+  const selectFulfillment = (value: Fulfillment) => {
+    setFulfillment(value);
+    if (!tipTouched.current) {
+      setTipChoiceRaw(value === "delivery" ? 0.15 : 0);
+    }
+  };
   const [customTip, setCustomTip] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -95,6 +117,12 @@ export function CheckoutView({ restaurant }: { restaurant: Restaurant }) {
         })),
       });
       if (result.ok) {
+        if (result.redirectUrl) {
+          // Stripe-hosted payment page. Cart stays until payment succeeds —
+          // the order page clears it once the order is paid.
+          window.location.assign(result.redirectUrl);
+          return;
+        }
         cart.clear();
         router.push(`/s/${restaurant.slug}/order/${result.orderId}?new=1`);
       } else {
@@ -131,6 +159,11 @@ export function CheckoutView({ restaurant }: { restaurant: Restaurant }) {
 
   return (
     <div className="flex flex-col gap-4 pb-28">
+      {paymentCanceled && (
+        <p className="rounded-card border border-clay/30 bg-clay/8 p-4 text-sm font-semibold text-clay">
+          {t("paymentCanceled")}
+        </p>
+      )}
       {/* order lines */}
       <section className={sectionCls} aria-label={t("yourOrder")}>
         <h2 className="mb-3 text-lg font-bold text-charcoal">{t("yourOrder")}</h2>
@@ -183,12 +216,12 @@ export function CheckoutView({ restaurant }: { restaurant: Restaurant }) {
       <section className={sectionCls}>
         <div className="flex gap-2" role="group">
           {restaurant.ordering.pickup && (
-            <button type="button" onClick={() => setFulfillment("pickup")} className={chipCls(fulfillment === "pickup")}>
+            <button type="button" onClick={() => selectFulfillment("pickup")} className={chipCls(fulfillment === "pickup")}>
               {t("pickup")}
             </button>
           )}
           {restaurant.ordering.delivery && (
-            <button type="button" onClick={() => setFulfillment("delivery")} className={chipCls(fulfillment === "delivery")}>
+            <button type="button" onClick={() => selectFulfillment("delivery")} className={chipCls(fulfillment === "delivery")}>
               {t("delivery")}
             </button>
           )}

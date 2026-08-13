@@ -93,7 +93,10 @@
     "backToMenu": "Back to menu",
     "deliveryMinimumNote": "Delivery minimum: {amount}",
     "poweredBy": "Powered by Sofratak",
-    "orderNotFound": "We couldn't find that order."
+    "orderNotFound": "We couldn't find that order.",
+    "paymentCanceled": "Payment was canceled — your cart is untouched.",
+    "paymentPending": "Payment hasn't been completed for this order.",
+    "returnToCheckout": "Return to checkout"
   },
   "kitchen": {
     "title": "Kitchen · {name}",

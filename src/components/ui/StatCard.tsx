@@ -79,7 +79,8 @@ export function StatCard({
 
   const formatted =
     format === "currency"
-      ? new Intl.NumberFormat(numberLocale, {
+      ? // money always displays "$1,234" style (business decision, Aug 2026)
+        new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: "USD",
           maximumFractionDigits: 0,

@@ -92,8 +92,8 @@ create table orders (
   delivery_fee_cents int not null default 0,
   tip_cents int not null default 0,    -- 100% to restaurant
   total_cents int not null,
-  payment_status text not null default 'paid'
-    check (payment_status in ('paid','refunded','partially_refunded')),
+  payment_status text not null default 'pending'
+    check (payment_status in ('pending','paid','refunded','partially_refunded')),
   payment_ref text not null default '',
   locale text not null default 'en' check (locale in ('en','ar')),
   created_at timestamptz not null default now(),

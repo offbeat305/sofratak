@@ -11,10 +11,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CheckoutPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: string; slug: string }>;
+  searchParams: Promise<{ canceled?: string }>;
 }) {
   const { locale, slug } = await params;
+  const { canceled } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("storefront");
 
@@ -24,7 +27,7 @@ export default async function CheckoutPage({
   return (
     <div className="pt-6">
       <h1 className="pb-4 text-2xl font-bold text-charcoal">{t("checkout")}</h1>
-      <CheckoutView restaurant={restaurant} />
+      <CheckoutView restaurant={restaurant} paymentCanceled={canceled === "1"} />
     </div>
   );
 }

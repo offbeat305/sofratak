@@ -32,7 +32,7 @@ export type PlaceOrderInput = {
 };
 
 export type PlaceOrderResult =
-  | { ok: true; orderId: string }
+  | { ok: true; orderId: string; redirectUrl: string | null }
   | { ok: false; error: string };
 
 const PHONE_RE = /^[+()\-.\s\d]{7,20}$/;
@@ -163,15 +163,6 @@ export async function placeOrder(
     "ABCDEFGHJKMNPQRSTUVWXYZ"[Math.floor(Math.random() * 23)] +
     String(Math.floor(100 + Math.random() * 900));
 
-  const payment = await getPaymentProvider().charge({
-    orderId: id,
-    restaurantId: restaurant.id,
-    totalCents,
-    serviceFeeCents: SERVICE_FEE_CENTS,
-    description: `${restaurant.name.en} order ${number}`,
-  });
-  if (!payment.ok) return { ok: false, error: payment.error };
-
   const now = new Date().toISOString();
   const order: Order = {
     id,
@@ -188,8 +179,8 @@ export async function placeOrder(
     deliveryFeeCents,
     tipCents,
     totalCents,
-    paymentStatus: "paid",
-    paymentRef: payment.ref,
+    paymentStatus: "pending",
+    paymentRef: "",
     locale: input.locale,
     unacceptedAlertSentAt: null,
     createdAt: now,
@@ -197,14 +188,48 @@ export async function placeOrder(
   };
   await store.createOrder(order);
 
-  await getSmsChannel().send({
-    to: phone,
-    body: confirmationSms(order, restaurant, origin),
-    orderId: id,
+  const payment = await getPaymentProvider().startPayment({
+    order,
+    restaurant,
+    origin,
   });
 
+  if (payment.kind === "error") return { ok: false, error: payment.error };
+
+  if (payment.kind === "redirect") {
+    // Stripe-hosted checkout: the order stays pending; the status page (or
+    // the webhook) verifies the session and finalizes.
+    return { ok: true, orderId: id, redirectUrl: payment.url };
+  }
+
+  await finalizePaidOrder(id, payment.ref, origin);
+  return { ok: true, orderId: id, redirectUrl: null };
+}
+
+/**
+ * Idempotent: flips pending → paid exactly once, then sends the diner
+ * confirmation and routes the order to the kitchen. Called by the mock
+ * path directly, by the order status page after Stripe redirects back,
+ * and by the Stripe webhook in production.
+ */
+export async function finalizePaidOrder(
+  orderId: string,
+  paymentRef: string,
+  origin: string,
+): Promise<Order | null> {
+  const store = getStore();
+  const order = await store.markOrderPaid(orderId, paymentRef);
+  if (!order) return null; // already finalized (or unknown) — do nothing
+
+  const restaurant = await store.getRestaurantById(order.restaurantId);
+  if (!restaurant) return order;
+
+  await getSmsChannel().send({
+    to: order.customer.phone,
+    body: confirmationSms(order, restaurant, origin),
+    orderId: order.id,
+  });
   // Route to the kitchen (OrderChannel adapters — never blocks a paid order).
   await dispatchNewOrder(order, restaurant, origin);
-
-  return { ok: true, orderId: id };
+  return order;
 }

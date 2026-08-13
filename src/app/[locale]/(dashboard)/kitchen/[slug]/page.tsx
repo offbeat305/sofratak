@@ -24,7 +24,9 @@ export default async function KitchenPage({
   const restaurant = await store.getRestaurantBySlug(slug);
   if (!restaurant) notFound();
 
-  const orders = await store.listOrders(restaurant.id);
+  const orders = (await store.listOrders(restaurant.id)).filter(
+    (o) => o.paymentStatus !== "pending",
+  );
   const active = orders.filter(
     (o) => o.status !== "completed" && o.status !== "canceled",
   );

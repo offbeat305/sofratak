@@ -118,7 +118,7 @@ export type Order = {
   deliveryFeeCents: number;
   tipCents: number;
   totalCents: number;
-  paymentStatus: "paid" | "refunded" | "partially_refunded";
+  paymentStatus: "pending" | "paid" | "refunded" | "partially_refunded";
   paymentRef: string;
   /** locale the diner ordered in — drives SMS language */
   locale: "en" | "ar";

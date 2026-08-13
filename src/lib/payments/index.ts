@@ -1,34 +1,43 @@
 import "server-only";
+import type { Order, Restaurant } from "@/lib/db/types";
+import { StripePaymentProvider } from "./stripe";
 
 /**
- * Payment adapter. Real implementation: Stripe Connect — food revenue +
- * tip settle to the restaurant's connected account, the $0.79 service fee
- * routes to Sofratak, processing (2.9% + $0.30) passes through at cost.
- * Card data never touches our servers (Stripe Checkout/Elements only).
+ * Payment adapter. Stripe: hosted Checkout (card data never touches our
+ * servers), standard 2.9% + 30¢ self-handled pricing. Stripe Connect
+ * (food revenue + tips to the restaurant's connected account, $0.79 to
+ * Sofratak) arrives with Phase 4 onboarding. Stripe Tax before first live
+ * order (FL prepared food taxable; Hillsborough 7.5%, MI 6%).
  */
+export type PaymentStart =
+  | { kind: "paid"; ref: string }
+  | { kind: "redirect"; url: string; ref: string }
+  | { kind: "error"; error: string };
+
 export interface PaymentProvider {
-  /** Charge for an order. Returns a payment reference to store on the order. */
-  charge(input: {
-    orderId: string;
-    restaurantId: string;
-    totalCents: number;
-    serviceFeeCents: number;
-    description: string;
-  }): Promise<{ ok: true; ref: string } | { ok: false; error: string }>;
+  /** Begin payment for a priced, stored order. */
+  startPayment(input: {
+    order: Order;
+    restaurant: Restaurant;
+    origin: string;
+  }): Promise<PaymentStart>;
+  /** True if the referenced payment is settled (idempotent check). */
+  verifyPayment(ref: string): Promise<boolean>;
 }
 
-/** Auto-approves everything. Swapped for Stripe when keys exist (CLAUDE.md). */
+/** Auto-approves everything. Active only when no STRIPE_SECRET_KEY is set. */
 class MockPaymentProvider implements PaymentProvider {
-  async charge({ orderId }: { orderId: string }) {
-    return { ok: true as const, ref: `mock_${orderId.slice(0, 8)}` };
+  async startPayment({ order }: { order: Order }): Promise<PaymentStart> {
+    return { kind: "paid", ref: `mock_${order.id.slice(0, 8)}` };
+  }
+  async verifyPayment(): Promise<boolean> {
+    return true;
   }
 }
 
 export function getPaymentProvider(): PaymentProvider {
   if (process.env.STRIPE_SECRET_KEY) {
-    throw new Error(
-      "Stripe provider not implemented yet — remove STRIPE_SECRET_KEY or implement src/lib/payments/stripe.ts (Stripe Connect, destination charges).",
-    );
+    return new StripePaymentProvider(process.env.STRIPE_SECRET_KEY);
   }
   return new MockPaymentProvider();
 }

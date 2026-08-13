@@ -69,6 +69,17 @@ export class LocalStore implements DataStore {
     return data.restaurants.find((r) => r.id === id) ?? null;
   }
 
+  async markOrderPaid(id: string, paymentRef: string): Promise<Order | null> {
+    const data = await this.load();
+    const order = data.orders.find((o) => o.id === id);
+    if (!order || order.paymentStatus !== "pending") return null;
+    order.paymentStatus = "paid";
+    order.paymentRef = paymentRef;
+    order.updatedAt = new Date().toISOString();
+    this.persist();
+    return order;
+  }
+
   async markUnacceptedAlert(id: string): Promise<void> {
     const data = await this.load();
     const order = data.orders.find((o) => o.id === id);

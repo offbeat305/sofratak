@@ -20,7 +20,10 @@ export async function GET(
   const origin = request.nextUrl.origin;
   await alertOverdueOrders(restaurant, origin);
 
-  const orders = await store.listOrders(restaurant.id);
+  // Pending-payment orders never reach the kitchen — paid only.
+  const orders = (await store.listOrders(restaurant.id)).filter(
+    (o) => o.paymentStatus !== "pending",
+  );
   const active = orders.filter(
     (o) => o.status !== "completed" && o.status !== "canceled",
   );

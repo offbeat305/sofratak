@@ -180,4 +180,18 @@ export class LocalStore implements DataStore {
     data.sms.push(sms);
     this.persist();
   }
+
+  // The local store re-seeds menus/restaurants each load; edits belong to
+  // the Supabase backend, which is primary since 2026-08-13.
+  async upsertMenuItem(): Promise<void> {
+    throw new Error("Menu editing requires the Supabase backend");
+  }
+
+  async deleteMenuItem(): Promise<void> {
+    throw new Error("Menu editing requires the Supabase backend");
+  }
+
+  async updateRestaurantSettings(): Promise<void> {
+    throw new Error("Settings editing requires the Supabase backend");
+  }
 }

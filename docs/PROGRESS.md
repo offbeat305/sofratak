@@ -1,5 +1,35 @@
 # Sofratak — Progress Log
 
+## 2026-08-13 (cont.) — Today-tile fix + menu manager + settings
+
+### Fixed (Zizo's bug report on order J575)
+- Dashboard tiles froze mid-animation (rAF pausing stranded count-up at
+  ~5% of target — the $0.66 readings). Tiles now render final values
+  instantly server-side (`animate={false}`); the count-up hook got a
+  guaranteed-completion timer for marketing uses.
+- Revenue defined as the restaurant's take: subtotal + tip + delivery fee
+  (the $0.79 service fee is Sofratak's), refunds subtracted, clamped ≥ 0.
+  J575 shows $11.26 as expected. Live-order rows keep the diner total.
+- Day windows use the restaurant's timezone, not the server's.
+
+### Built — Phase 4 remainder (menu + settings)
+- **Menu manager** (`/dashboard/{slug}/menu`): items grouped by category,
+  one-tap sold-out toggle, editor sheet (EN/AR names + descriptions, price,
+  category, delete), add item per category. Modifier-group editing is
+  support-side for now (noted in UI). Verified end-to-end: price change via
+  UI → Supabase → diner storefront.
+- **Settings** (`/dashboard/{slug}/settings`): pickup/delivery toggles,
+  delivery fee + minimum, prep minutes, per-day hours with closed days.
+  Verified persistence to Supabase.
+- Store: upsert/deleteMenuItem + updateRestaurantSettings (Supabase impl;
+  local fallback is read-only for these).
+
+### Phase 4 "done when" status
+Owner can change a price ✓, pause orders ✓, issue a partial refund ✓ —
+all verified from phone-sized UI. Remaining Phase 4 scope: owner/staff
+logins (Supabase Auth), Stripe Connect onboarding, holiday overrides,
+delivery zones, photo upload.
+
 ## 2026-08-13 — Supabase is live
 
 Migration applied by Zizo (SQL editor), seed script run: Beit Zizo restaurant

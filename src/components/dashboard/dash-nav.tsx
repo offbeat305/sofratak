@@ -1,6 +1,12 @@
 "use client";
 
-import { CalendarCheck, ReceiptText, Users } from "lucide-react";
+import {
+  BookOpen,
+  CalendarCheck,
+  ReceiptText,
+  Settings,
+  Users,
+} from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 
@@ -8,6 +14,8 @@ const ICONS = {
   today: CalendarCheck,
   orders: ReceiptText,
   customers: Users,
+  menu: BookOpen,
+  settings: Settings,
 } as const;
 
 type Tab = {

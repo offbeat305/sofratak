@@ -2,6 +2,7 @@ import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { DataStore } from "./store";
 import type {
+  DayHours,
   Menu,
   MenuCategory,
   MenuItem,
@@ -253,5 +254,41 @@ export class SupabaseStore implements DataStore {
       body: sms.body,
       sent_at: sms.sentAt,
     });
+  }
+
+  async upsertMenuItem(restaurantId: string, item: MenuItem): Promise<void> {
+    const { error } = await this.client.from("menu_items").upsert({
+      id: item.id,
+      restaurant_id: restaurantId,
+      category_id: item.categoryId,
+      name: item.name,
+      description: item.description,
+      price_cents: item.priceCents,
+      image_url: item.imageUrl,
+      sold_out: item.soldOut,
+      modifier_group_ids: item.modifierGroupIds,
+      sort: item.sort,
+    });
+    if (error) throw new Error(`upsertMenuItem failed: ${error.message}`);
+  }
+
+  async deleteMenuItem(restaurantId: string, itemId: string): Promise<void> {
+    const { error } = await this.client
+      .from("menu_items")
+      .delete()
+      .eq("id", itemId)
+      .eq("restaurant_id", restaurantId);
+    if (error) throw new Error(`deleteMenuItem failed: ${error.message}`);
+  }
+
+  async updateRestaurantSettings(
+    restaurantId: string,
+    settings: { ordering: Restaurant["ordering"]; hours: DayHours[] },
+  ): Promise<void> {
+    const { error } = await this.client
+      .from("restaurants")
+      .update({ ordering: settings.ordering, hours: settings.hours })
+      .eq("id", restaurantId);
+    if (error) throw new Error(`updateRestaurantSettings failed: ${error.message}`);
   }
 }

@@ -3,6 +3,18 @@
 import { revalidatePath } from "next/cache";
 import { getStore } from "@/lib/db/store";
 import { refundOrder, type RefundRequest } from "@/lib/orders/refunds";
+import type { DayHours, LocalizedText, Restaurant } from "@/lib/db/types";
+
+export type MenuItemInput = {
+  /** null = create new item */
+  id: string | null;
+  categoryId: string;
+  name: LocalizedText;
+  description: LocalizedText;
+  /** dollars string from the form, e.g. "9.49" */
+  price: string;
+  soldOut: boolean;
+};
 
 export async function setPausedAction(slug: string, paused: boolean) {
   const restaurant = await getStore().getRestaurantBySlug(slug);
@@ -14,4 +26,100 @@ export async function setPausedAction(slug: string, paused: boolean) {
 
 export async function refundOrderAction(orderId: string, request: RefundRequest) {
   return refundOrder(orderId, request);
+}
+
+export async function saveMenuItemAction(slug: string, input: MenuItemInput) {
+  const store = getStore();
+  const restaurant = await store.getRestaurantBySlug(slug);
+  if (!restaurant) return { ok: false as const, error: "Not found" };
+  const menu = await store.getMenu(restaurant.id);
+  if (!menu) return { ok: false as const, error: "Menu unavailable" };
+
+  const nameEn = input.name.en.trim().slice(0, 120);
+  const nameAr = input.name.ar.trim().slice(0, 120);
+  if (!nameEn) return { ok: false as const, error: "English name is required" };
+  const priceCents = Math.round(parseFloat(input.price) * 100);
+  if (!Number.isFinite(priceCents) || priceCents < 0 || priceCents > 50_000)
+    return { ok: false as const, error: "Enter a valid price" };
+  const category = menu.categories.find((c) => c.id === input.categoryId);
+  if (!category) return { ok: false as const, error: "Pick a category" };
+
+  const existing = input.id ? menu.items.find((i) => i.id === input.id) : null;
+  if (input.id && !existing) return { ok: false as const, error: "Item not found" };
+
+  await store.upsertMenuItem(restaurant.id, {
+    id: existing?.id ?? `itm-${crypto.randomUUID().slice(0, 8)}`,
+    categoryId: category.id,
+    name: { en: nameEn, ar: nameAr || nameEn },
+    description: {
+      en: input.description.en.trim().slice(0, 300),
+      ar: input.description.ar.trim().slice(0, 300),
+    },
+    priceCents,
+    imageUrl: existing?.imageUrl ?? `/demo/${category.id}.svg`,
+    soldOut: input.soldOut,
+    modifierGroupIds: existing?.modifierGroupIds ?? [],
+    sort: existing?.sort ?? Math.max(0, ...menu.items.map((i) => i.sort)) + 1,
+  });
+  revalidatePath(`/[locale]/dashboard/${slug}`, "layout");
+  return { ok: true as const };
+}
+
+export async function toggleSoldOutAction(slug: string, itemId: string, soldOut: boolean) {
+  const store = getStore();
+  const restaurant = await store.getRestaurantBySlug(slug);
+  if (!restaurant) return { ok: false as const, error: "Not found" };
+  const menu = await store.getMenu(restaurant.id);
+  const item = menu?.items.find((i) => i.id === itemId);
+  if (!item) return { ok: false as const, error: "Item not found" };
+  await store.upsertMenuItem(restaurant.id, { ...item, soldOut });
+  revalidatePath(`/[locale]/dashboard/${slug}`, "layout");
+  return { ok: true as const };
+}
+
+export async function deleteMenuItemAction(slug: string, itemId: string) {
+  const store = getStore();
+  const restaurant = await store.getRestaurantBySlug(slug);
+  if (!restaurant) return { ok: false as const, error: "Not found" };
+  await store.deleteMenuItem(restaurant.id, itemId);
+  revalidatePath(`/[locale]/dashboard/${slug}`, "layout");
+  return { ok: true as const };
+}
+
+export async function saveSettingsAction(
+  slug: string,
+  input: { ordering: Restaurant["ordering"]; hours: DayHours[] },
+) {
+  const store = getStore();
+  const restaurant = await store.getRestaurantBySlug(slug);
+  if (!restaurant) return { ok: false as const, error: "Not found" };
+
+  const o = input.ordering;
+  if (!o.pickup && !o.delivery)
+    return { ok: false as const, error: "Enable pickup or delivery" };
+  const intIn = (n: number, max: number) =>
+    Number.isInteger(n) && n >= 0 && n <= max;
+  if (
+    !intIn(o.deliveryFeeCents, 5_000) ||
+    !intIn(o.deliveryMinimumCents, 100_000) ||
+    !intIn(o.prepMinutes, 240)
+  )
+    return { ok: false as const, error: "Check the delivery and prep values" };
+
+  const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
+  const hours = input.hours.filter(
+    (h) =>
+      Number.isInteger(h.day) &&
+      h.day >= 0 &&
+      h.day <= 6 &&
+      TIME_RE.test(h.open) &&
+      TIME_RE.test(h.close),
+  );
+
+  await store.updateRestaurantSettings(restaurant.id, {
+    ordering: { ...o, paused: restaurant.ordering.paused },
+    hours,
+  });
+  revalidatePath(`/[locale]/dashboard/${slug}`, "layout");
+  return { ok: true as const };
 }

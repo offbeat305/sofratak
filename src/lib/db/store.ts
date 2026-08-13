@@ -1,6 +1,8 @@
 import "server-only";
 import type {
+  DayHours,
   Menu,
+  MenuItem,
   Order,
   OrderRefund,
   OrderStatus,
@@ -29,6 +31,13 @@ export interface DataStore {
   setOrderingPaused(restaurantId: string, paused: boolean): Promise<void>;
   listOrders(restaurantId: string): Promise<Order[]>;
   recordSms(sms: SmsRecord): Promise<void>;
+  /** Menu manager (Phase 4). Insert when the id is new, update otherwise. */
+  upsertMenuItem(restaurantId: string, item: MenuItem): Promise<void>;
+  deleteMenuItem(restaurantId: string, itemId: string): Promise<void>;
+  updateRestaurantSettings(
+    restaurantId: string,
+    settings: { ordering: Restaurant["ordering"]; hours: DayHours[] },
+  ): Promise<void>;
 }
 
 let backend: DataStore | null = null;

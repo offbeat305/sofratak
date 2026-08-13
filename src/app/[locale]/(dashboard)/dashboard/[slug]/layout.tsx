@@ -31,7 +31,9 @@ export default async function DashboardLayout({
   const tabs = [
     { href: `/dashboard/${slug}`, label: t("today"), icon: "today" },
     { href: `/dashboard/${slug}/orders`, label: t("orders"), icon: "orders" },
+    { href: `/dashboard/${slug}/menu`, label: t("menu"), icon: "menu" },
     { href: `/dashboard/${slug}/customers`, label: t("customers"), icon: "customers" },
+    { href: `/dashboard/${slug}/settings`, label: t("settings"), icon: "settings" },
   ] as const;
 
   return (

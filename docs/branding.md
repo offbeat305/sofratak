@@ -26,6 +26,7 @@ Feel: premium hospitality + modern SaaS + trusted operator. Never: generic SaaS 
 - Motion: subtle fades, slight rise on scroll, card hover lift, number count-up. Nothing bouncy/flashy.
 
 ## Voice
+Founder name: always "Zizo (Ahmad Zeidan)" wherever the founder is named — website, emails, legal footer bylines. Never just "Ahmad Zeidan", never just "Zizo" in formal contexts.
 Short, confident, practical. Talk money, time, orders, control. Banned: ecosystem, synergy, revolutionary, disruptive, omnichannel, digital transformation. Never "guaranteed savings" — always "Estimated/Potential Savings" + disclaimer: "Illustrative estimate based on the information provided. Actual results may vary."
 
 ## Design check before any screen is "done"

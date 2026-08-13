@@ -20,7 +20,7 @@ export default async function CalculatorPage({
   const t = await getTranslations("site.estimator");
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
+    <div className="mx-auto max-w-2xl px-4 pt-28 pb-14 sm:px-6">
       <h1 className="font-display text-3xl font-bold text-olive sm:text-4xl">
         {t("title")}
       </h1>

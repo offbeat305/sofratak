@@ -18,7 +18,8 @@ export function ArchDivider({
   } as const;
   return (
     <div className={cn("flex justify-center py-2", colors[tone], className)} aria-hidden>
-      <svg viewBox="0 0 120 28" className="h-5 w-28" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+      {/* strokes draw in when a parent .reveal becomes .revealed (design-pass §6) */}
+      <svg viewBox="0 0 120 28" className="arch-draw h-5 w-28" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
         <path d="M30 26 V16 a12 12 0 0 1 24 0 V26" />
         <path d="M2 26 h20" />
         <path d="M60 26 v-10 a12 12 0 0 1 24 0 v10" opacity="0.55" />

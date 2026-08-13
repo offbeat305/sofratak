@@ -18,6 +18,7 @@
     "tagline": "Your restaurant, under your control.",
     "product": "Product",
     "language": "Language",
+    "contact": "Contact",
     "rights": "© {year} Sofratak · Offbeat Creative LLC. All rights reserved."
   },
   "home": {
@@ -108,8 +109,32 @@
       "estimator": "Calculate Your Savings"
     },
     "hero": {
-      "headline": "The apps take 15–30% of every order. Keep it instead.",
-      "sub": "Your own ordering website. Zero commission. Your customers stay yours."
+      "eyebrow": "For Arab, Middle Eastern & Halal restaurants",
+      "headline": "The apps take 15–30% of every order.",
+      "keep": "Keep it instead.",
+      "sub": "Your own ordering website. Zero commission. Orders on the tablet you already run. Your customers stay yours.",
+      "chips": ["0% commission", "79¢ flat, diner-paid", "Live in ~2 weeks"]
+    },
+    "strip": { "now": "Now serving" },
+    "dollar": {
+      "title": "Where your $30 order goes",
+      "sub": "The same order, two very different outcomes.",
+      "rowApps": "On the apps",
+      "rowSofratak": "On your Sofratak site",
+      "appsCaption": "estimated 25% blended marketplace cost",
+      "sofratakCaption": "your customer pays it — not you",
+      "keeps": "{amount} keeps",
+      "replay": "Replay"
+    },
+    "tour": {
+      "title": "See it working",
+      "sub": "Real screens from the product — not mockups.",
+      "captions": [
+        "A storefront with your name on it.",
+        "Your customers order in Arabic or English.",
+        "Orders ring on the tablet you already have.",
+        "Your money and your numbers, every morning."
+      ]
     },
     "math": {
       "line": "500 app orders/mo × 25% ≈ {amount}/mo gone.",
@@ -195,7 +220,8 @@
           ]
         }
       ],
-      "footnote": "Diners pay a flat $0.79 service fee per order. Card processing (2.9% + 30¢) passes through at cost — we add nothing on top."
+      "footnote": "Diners pay a flat $0.79 service fee per order. Card processing (2.9% + 30¢) passes through at cost — we add nothing on top.",
+      "honest": "Diner pays 79¢/order. You pay $0 per order. Card processing at cost."
     },
     "estimator": {
       "title": "What are the apps costing you?",
@@ -206,6 +232,9 @@
       "monthly": "Estimated going to the apps monthly",
       "yearly": "Estimated per year",
       "sofratak": "Sofratak: {price}/mo flat + $0 commission.",
+      "resultLine": "Estimated <m>{monthly}</m>/month → <m>{yearly}</m>/year going to the apps",
+      "growthLine": "With Sofratak Growth ({price}/mo flat): estimated difference {diff}/year.",
+      "bookDemo": "Book a 15-min demo",
       "difference": "Estimated difference per year",
       "textMe": "Text me this estimate",
       "name": "Name",
@@ -234,7 +263,7 @@
       "p1": "Sofratak started in Tampa, at the counter of family restaurants watching a quarter of every delivery order leave through an app. The owners worked the same hours; the apps kept more of the money every year.",
       "p2": "We build one thing: your own ordering site, with your name on it, where your food revenue settles to your bank and your customer list belongs to you. Flat monthly price. No commission. No lock-in.",
       "p3": "It's called Sofratak — «سفرتك», your table — because that's whose it is.",
-      "founder": "Zizo — Offbeat Creative LLC, Tampa, Florida",
+      "founder": "Zizo (Ahmad Zeidan) — Offbeat Creative LLC, Tampa, Florida",
       "photoNote": "PHOTO_PLACEHOLDER"
     },
     "citiesPage": {

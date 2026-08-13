@@ -1,5 +1,53 @@
 # Sofratak — Progress Log
 
+## 2026-08-13 (cont.) — Design pass (docs/design-pass.md)
+
+Homepage rebuilt to the design spec, verified at 390px/desktop, EN+AR:
+
+- **Navbar**: transparent over the hero → solid olive at 80px (200ms),
+  real logo (public/brand/ processed into transparent full-color + ivory
+  variants; white-halo cleaned), EN|ع pill, brass pill CTA w/ hover scale
+  + shine; full-screen olive mobile drawer, Cormorant 28px staggered links.
+- **Hero = the live calculator** (min 88vh olive, arch watermark w/ slow
+  parallax): eyebrow, two-tone Cormorant H1, dual slogans, 3 trust chips;
+  ivory card w/ 2° tilt, custom sliders (olive track, brass 22px thumb w/
+  drag glow + value bubbles), 120ms odometer results in an olive panel,
+  Growth-difference line, always-visible disclaimer, "Book a 15-min demo"
+  + ghost "Text me this estimate" (inline capture). Verified interactive
+  above the fold at 390px (done-when #1).
+- **Band rhythm** per §3: olive → ivory strip (honest "Now serving" city
+  list instead of a fake logo strip — we have no client logos; flagged) →
+  sand $30 band → ivory features → olive product tour → ivory steps →
+  sand who-for → ivory pricing → olive promise → gradient CTA + watermark.
+  1200px grid, 96/64 padding, left-aligned Cormorant headers.
+- **"$30 order" animation** (§4): scroll-triggered bar comparison, 25%
+  chunk breaks off + slides away w/ live count to $22.50, brass 79¢
+  sliver "your customer pays it", replay button; transform/opacity only.
+- **Product tour** (§5): snap carousel of REAL screenshots (captured via
+  Playwright incl. authenticated kitchen/dashboard w/ seeded orders,
+  cleaned up after) in CSS device frames; EN→AR storefront flip animation;
+  dots, drag, 5s auto-advance w/ pause; captions in Cormorant.
+- **Motion system** (§6): .reveal fade-up w/ 80ms stagger, count-ups on
+  view (resting state = true value — no more $0 flashes), hover-lift,
+  brass shine sweep, arch-divider stroke draw-in; ALL gated behind
+  prefers-reduced-motion in CSS + JS.
+- **Pricing** (§7): Growth card olive/elevated w/ brass MOST POPULAR
+  ribbon, 44px count-up prices, honest fee line; reused on /pricing.
+- **Footer** (§8): deep olive 3-col, logo + mission + dual slogans,
+  links, contact (WhatsApp/phone/IG — env-gated), brass arch motif line.
+- **RTL** (§9): verified — sliders run right-to-left, bubbles mirror,
+  carousel direction flips, Latin numerals for money.
+- **Done-when**: comparison screenshot vs owner.com committed at
+  docs/design-pass-comparison.png — ours reads premium hospitality;
+  owner.com reads generic SaaS.
+- Founder-name rule (branding.md edit): about page now says
+  "Zizo (Ahmad Zeidan)". Leads migration 0003 applied by Zizo; backup
+  lead replayed into Supabase.
+
+Still needed from Zizo: WhatsApp number + contact phone + IG URL (env),
+founder photo, Arabic review of ALL site copy incl. the new design-pass
+strings. Next: Phase 7 (billing + internal admin).
+
 ## 2026-08-13 (cont.) — Public website (Phase 8 pulled forward)
 
 Money loop confirmed by Zizo first (order Q171 on the connected account,

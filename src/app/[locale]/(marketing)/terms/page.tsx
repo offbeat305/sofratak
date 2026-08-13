@@ -16,7 +16,7 @@ export default async function TermsPage({
   const t = await getTranslations("site.legal");
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
+    <div className="mx-auto max-w-2xl px-4 pt-28 pb-14 sm:px-6">
       <h1 className="font-display text-3xl font-bold text-olive">{t("termsTitle")}</h1>
       <p className="mt-1 text-sm text-stone">{t("updated", { date: "2026-08-13" })}</p>
       <p className="mt-6 leading-relaxed whitespace-pre-line text-charcoal">

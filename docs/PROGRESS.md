@@ -1,5 +1,53 @@
 # Sofratak — Progress Log
 
+## 2026-08-12 — Phase 2: diner storefront (demo-complete on local adapters)
+
+### Built
+- **Constitution updated**: Zizo's business constants + renumbered phases
+  (build order 2 → 3 → 4 → 7 → 5 → 6 → 8) are now in CLAUDE.md.
+- **Adapters** (no real keys exist on this machine yet — see CLAUDE.md
+  "Local dev fallbacks"):
+  - `src/lib/db/` — `DataStore` interface + local JSON store
+    (`.data/store.json`, gitignored). Full Supabase schema **with RLS** ready
+    in `supabase/migrations/0001_init.sql` for when credentials arrive.
+  - `src/lib/payments/` — `PaymentProvider` interface + mock (auto-approves).
+    Stripe Connect slots in behind the same interface.
+  - `src/lib/sms/` — `SmsChannel` interface + console channel that persists
+    messages so flows are verifiable.
+- **Tenant routing**: `beitzizo.localhost:3000` (and `*.sofratak.com` in prod)
+  rewrites to that restaurant's storefront; `/{locale}/s/{slug}` also works.
+- **Storefront** (`src/app/[locale]/(storefront)/s/[slug]/`):
+  menu page (restaurant branding via CSS vars, cover, halal badge, category
+  chips, EN/AR item names + descriptions, schema.org Restaurant+Menu JSON-LD),
+  item sheet with modifier groups (required/optional, price deltas), cart
+  (localStorage per restaurant), checkout (pickup/delivery toggle, ASAP or
+  30-min schedule slots, guest details w/ required phone, SMS marketing
+  opt-in checkbox, tip presets 10/15/20%/custom — 100% to restaurant,
+  **$0.79 service fee line**, delivery fee + minimum), order confirmation +
+  SMS with tracking link, live order status page (10s polling).
+  Server reprices every order from the live menu — client totals are never
+  trusted.
+- **Demo restaurant**: Beit Zizo Shawarma (`beitzizo`), 25 items across 6
+  categories, full EN/AR, 5 modifier groups, Tampa hours/address.
+- **Verified end-to-end** on a phone viewport: menu → modifiers → cart →
+  checkout → paid (mock) → confirmation + SMS record + status page. Build
+  and lint clean.
+
+### Flagged for Zizo (checkout-visible defaults I chose)
+- Tip presets 10/15/20% with 15% preselected.
+- Sales tax is NOT charged/shown (needs a decision: who files, per-county FL
+  rates, Stripe Tax?).
+- Mock payment shows a "Test mode" note instead of a card form until Stripe
+  keys exist.
+- Arabic prices render as "9.49 US$" (proper ar-locale currency, Latin
+  digits). Alternative: force "$9.49" style in AR too.
+
+### Next
+- Phase 3: `OrderChannel` adapter + kitchen web view with new-order alert,
+  accept/preparing/ready/complete; SMS + printable ticket fallback; Otter
+  stub; unaccepted-order alerting.
+
+
 ## 2026-08-12 — Phase 0, part 1: scaffold + design system + styleguide
 
 ### Built

@@ -21,12 +21,17 @@ export interface PaymentProvider {
     restaurant: Restaurant;
     origin: string;
   }): Promise<PaymentStart>;
-  /** True if the referenced payment is settled (idempotent check). */
-  verifyPayment(ref: string): Promise<boolean>;
+  /**
+   * True if the referenced payment is settled (idempotent check).
+   * Direct charges live on the restaurant's connected account, so the
+   * restaurant context is required to find them.
+   */
+  verifyPayment(ref: string, restaurant: Restaurant): Promise<boolean>;
   /** Refund part or all of a settled payment. */
   refund(input: {
     paymentRef: string;
     amountCents: number;
+    restaurant: Restaurant;
   }): Promise<{ ok: true; ref: string } | { ok: false; error: string }>;
 }
 
@@ -38,7 +43,7 @@ class MockPaymentProvider implements PaymentProvider {
   async verifyPayment(): Promise<boolean> {
     return true;
   }
-  async refund({ paymentRef }: { paymentRef: string }) {
+  async refund({ paymentRef }: { paymentRef: string; amountCents: number; restaurant: Restaurant }) {
     return { ok: true as const, ref: `mock_re_${paymentRef.slice(-8)}` };
   }
 }

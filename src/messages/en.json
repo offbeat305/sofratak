@@ -98,6 +98,17 @@
     "paymentPending": "Payment hasn't been completed for this order.",
     "returnToCheckout": "Return to checkout"
   },
+  "auth": {
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "email": "Email",
+    "password": "Password",
+    "loginTitle": "Restaurant sign in",
+    "loginSubtitle": "For owners and staff. Diners don't need an account.",
+    "invalidCredentials": "Wrong email or password.",
+    "notAMember": "This account doesn't have access to this restaurant.",
+    "signOut": "Sign out"
+  },
   "dash": {
     "today": "Today",
     "orders": "Orders",
@@ -173,7 +184,13 @@
     "open": "Open",
     "close": "Close",
     "closedDay": "Closed",
-    "modifiersNote": "Modifier groups (sizes, add-ons) are edited by Sofratak support for now — send us the change."
+    "modifiersNote": "Modifier groups (sizes, add-ons) are edited by Sofratak support for now — send us the change.",
+    "payoutsTitle": "Payouts",
+    "payoutsNone": "Connect your bank through Stripe so food revenue and tips settle directly to you. Sofratak only takes the $0.79 per-order service fee.",
+    "payoutsIncomplete": "Stripe setup was started but isn't finished — payments still land in the platform account until it's done.",
+    "payoutsActive": "Payouts active — orders settle to your account.",
+    "payoutsConnect": "Set up payouts",
+    "payoutsResume": "Finish Stripe setup"
   },
   "kitchen": {
     "title": "Kitchen · {name}",

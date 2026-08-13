@@ -54,6 +54,9 @@ export async function refundOrder(
     amountCents = Math.min(amountCents, remaining);
   }
 
+  const restaurant = await store.getRestaurantById(order.restaurantId);
+  if (!restaurant) return { ok: false, error: "Restaurant not found" };
+
   // Orders paid through the mock provider (pre-Stripe dev data) refund
   // mock-style even when Stripe is configured.
   const payment = order.paymentRef.startsWith("mock_")
@@ -61,6 +64,7 @@ export async function refundOrder(
     : await getPaymentProvider().refund({
         paymentRef: order.paymentRef,
         amountCents,
+        restaurant,
       });
   if (!payment.ok) return { ok: false, error: payment.error };
 
@@ -78,8 +82,7 @@ export async function refundOrder(
     newStatus,
   );
 
-  const restaurant = await store.getRestaurantById(order.restaurantId);
-  if (restaurant) {
+  {
     const amount = formatCents(amountCents, order.locale);
     await getSmsChannel().send({
       to: order.customer.phone,

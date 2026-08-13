@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
+import { redirect } from "@/i18n/navigation";
 import { getStore } from "@/lib/db/store";
+import { getMembership } from "@/lib/auth/server";
 import { formatCents } from "@/lib/money";
 import { PrintButton } from "./print-button";
 
@@ -16,9 +18,12 @@ export default async function TicketPage({
   const { locale, slug, orderId } = await params;
   setRequestLocale(locale);
 
+  const membership = await getMembership(slug);
+  if (!membership) {
+    redirect({ href: `/login?next=/${locale}/kitchen/${slug}`, locale });
+  }
+  const { restaurant } = membership!;
   const store = getStore();
-  const restaurant = await store.getRestaurantBySlug(slug);
-  if (!restaurant) notFound();
   const order = await store.getOrder(orderId);
   if (!order || order.restaurantId !== restaurant.id) notFound();
 

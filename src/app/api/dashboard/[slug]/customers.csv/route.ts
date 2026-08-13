@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getStore } from "@/lib/db/store";
+import { getMembership } from "@/lib/auth/server";
 import { customersForRestaurant, toCsv } from "@/lib/crm/customers";
 
 /** One-click CSV — the data is the restaurant's (CLAUDE.md sales promise). */
@@ -8,8 +8,10 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
-  const restaurant = await getStore().getRestaurantBySlug(slug);
-  if (!restaurant) return NextResponse.json({ error: "not found" }, { status: 404 });
+  const membership = await getMembership(slug);
+  if (!membership)
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const { restaurant } = membership;
 
   const customers = await customersForRestaurant(restaurant.id);
   const csv = toCsv(

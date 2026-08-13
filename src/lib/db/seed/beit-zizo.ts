@@ -47,6 +47,7 @@ export const beitZizo: Restaurant = {
     prepMinutes: 20,
     paused: false,
   },
+  stripe: { accountId: null, chargesEnabled: false },
 };
 
 const groups: Menu["modifierGroups"] = [

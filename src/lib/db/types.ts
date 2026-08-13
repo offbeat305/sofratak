@@ -31,6 +31,11 @@ export type Restaurant = {
     /** big obvious pause switch (Phase 4 exposes it in the dashboard) */
     paused: boolean;
   };
+  /** Stripe Connect (direct charges when onboarded + charges enabled) */
+  stripe: {
+    accountId: string | null;
+    chargesEnabled: boolean;
+  };
 };
 
 export type ModifierOption = {

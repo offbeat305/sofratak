@@ -1,20 +1,37 @@
 import "server-only";
 import Stripe from "stripe";
 import type { Order, Restaurant } from "@/lib/db/types";
+import { SERVICE_FEE_CENTS } from "@/lib/fees";
 import type { PaymentProvider, PaymentStart } from "./index";
 
 /**
- * Hosted Stripe Checkout. The diner sees every line item — including the
- * $0.79 "Service fee" as its own line (business requirement) — pays on
- * Stripe's page, and lands back on the order status page, which verifies
- * the session and finalizes the order. checkout.session.completed webhook
- * does the same in production (src/app/api/webhooks/stripe/route.ts).
+ * Hosted Stripe Checkout. Two modes:
+ *
+ * DIRECT CHARGES (restaurant onboarded via Connect, charges enabled): the
+ * charge is created ON the restaurant's connected account — they are the
+ * merchant of record and pay Stripe processing at cost (2.9% + 30¢), and
+ * Sofratak collects exactly the $0.79 application fee. This matches the
+ * business constants in CLAUDE.md.
+ *
+ * PLATFORM CHARGES (not yet onboarded — demo/dev): the charge lands on the
+ * Sofratak account with no fee split.
+ *
+ * Either way the diner sees every line item — including "Service fee" —
+ * card data never touches our servers, and finalization happens on the
+ * status page (dev) or the signature-verified webhook (production).
  */
 export class StripePaymentProvider implements PaymentProvider {
   private stripe: Stripe;
 
   constructor(secretKey: string) {
     this.stripe = new Stripe(secretKey);
+  }
+
+  /** Direct-charge routing applies only when onboarding is complete. */
+  private accountFor(restaurant: Restaurant): string | undefined {
+    return restaurant.stripe.chargesEnabled && restaurant.stripe.accountId
+      ? restaurant.stripe.accountId
+      : undefined;
   }
 
   async startPayment({
@@ -73,22 +90,29 @@ export class StripePaymentProvider implements PaymentProvider {
       });
     }
 
+    const account = this.accountFor(restaurant);
     const statusUrl = `${origin}/${loc}/s/${restaurant.slug}/order/${order.id}`;
     try {
-      const session = await this.stripe.checkout.sessions.create({
-        mode: "payment",
-        locale: loc === "ar" ? "auto" : loc, // Stripe has no ar locale yet
-        line_items: lineItems,
-        success_url: `${statusUrl}?new=1&session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${origin}/${loc}/s/${restaurant.slug}/checkout?canceled=1`,
-        metadata: {
-          orderId: order.id,
-          restaurantId: order.restaurantId,
-          serviceFeeCents: String(order.serviceFeeCents),
+      const session = await this.stripe.checkout.sessions.create(
+        {
+          mode: "payment",
+          locale: loc === "ar" ? "auto" : loc, // Stripe has no ar locale yet
+          line_items: lineItems,
+          success_url: `${statusUrl}?new=1&session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${origin}/${loc}/s/${restaurant.slug}/checkout?canceled=1`,
+          metadata: {
+            orderId: order.id,
+            restaurantId: order.restaurantId,
+            serviceFeeCents: String(order.serviceFeeCents),
+          },
+          ...(account && {
+            payment_intent_data: {
+              application_fee_amount: SERVICE_FEE_CENTS,
+            },
+          }),
         },
-        // TODO Phase 4 (Stripe Connect): transfer_data.destination to the
-        // restaurant's connected account + application_fee_amount = $0.79.
-      });
+        account ? { stripeAccount: account } : undefined,
+      );
       if (!session.url) return { kind: "error", error: "Stripe session has no URL" };
       return { kind: "redirect", url: session.url, ref: session.id };
     } catch (err) {
@@ -97,10 +121,15 @@ export class StripePaymentProvider implements PaymentProvider {
     }
   }
 
-  async verifyPayment(ref: string): Promise<boolean> {
+  async verifyPayment(ref: string, restaurant: Restaurant): Promise<boolean> {
     if (!ref.startsWith("cs_")) return false;
+    const account = this.accountFor(restaurant);
     try {
-      const session = await this.stripe.checkout.sessions.retrieve(ref);
+      const session = await this.stripe.checkout.sessions.retrieve(
+        ref,
+        undefined,
+        account ? { stripeAccount: account } : undefined,
+      );
       return session.payment_status === "paid";
     } catch {
       return false;
@@ -110,22 +139,32 @@ export class StripePaymentProvider implements PaymentProvider {
   async refund({
     paymentRef,
     amountCents,
+    restaurant,
   }: {
     paymentRef: string;
     amountCents: number;
+    restaurant: Restaurant;
   }): Promise<{ ok: true; ref: string } | { ok: false; error: string }> {
+    const account = this.accountFor(restaurant);
+    const opts = account ? { stripeAccount: account } : undefined;
     try {
-      const session = await this.stripe.checkout.sessions.retrieve(paymentRef);
+      const session = await this.stripe.checkout.sessions.retrieve(paymentRef, undefined, opts);
       const paymentIntent =
         typeof session.payment_intent === "string"
           ? session.payment_intent
           : session.payment_intent?.id;
       if (!paymentIntent)
         return { ok: false, error: "No payment found for this order" };
-      const refund = await this.stripe.refunds.create({
-        payment_intent: paymentIntent,
-        amount: amountCents,
-      });
+      const refund = await this.stripe.refunds.create(
+        {
+          payment_intent: paymentIntent,
+          amount: amountCents,
+          // On direct charges, claw back the proportional application fee
+          // so the restaurant isn't out of pocket for Sofratak's share.
+          ...(account && { refund_application_fee: true }),
+        },
+        opts,
+      );
       return { ok: true, ref: refund.id };
     } catch (err) {
       console.error("[stripe] refund failed", err);

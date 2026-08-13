@@ -1,5 +1,48 @@
 # Sofratak — Progress Log
 
+## 2026-08-13 (cont.) — Owner logins + Stripe Connect
+
+### Auth (Supabase Auth, @supabase/ssr)
+- `/login` (EN/AR) with email + password; session cookies refresh in
+  middleware; sign-out in the dashboard sidebar.
+- `getMembership(slug)` gate: signed in AND a `restaurant_members` row for
+  that tenant (checked under RLS with the user's own token). Enforced on:
+  dashboard layout + kitchen board + ticket (redirect to login), kitchen
+  feed API + both CSV routes (401), and EVERY dashboard/kitchen server
+  action (pause, menu, settings, refunds, status changes).
+- Verified: signed-out dashboard → 307 to /login?next=…, APIs → 401,
+  storefront stays public.
+- `scripts/create-owner.ts <email> <slug> [owner|staff]` provisions logins
+  (REST-based; prints a temp password once, self-checks sign-in). Owner
+  account created for offbeat305@gmail.com on beitzizo.
+
+### Stripe Connect (direct charges)
+- Migration `0002_stripe_connect.sql` (⚠ Zizo must paste in SQL editor):
+  stripe_account_id + stripe_charges_enabled on restaurants.
+- Onboarding from Settings → "Set up payouts": creates an Express account,
+  redirects to Stripe-hosted onboarding, and the settings page polls the
+  account on return to flip charges_enabled — no Connect webhook needed in
+  dev.
+- Checkout switches to DIRECT charges once enabled: the charge lives on
+  the restaurant's account (they're merchant of record, pay 2.9% + 30¢ at
+  cost) and Sofratak collects application_fee_amount = $0.79 per order —
+  exactly the business model. Refunds run on the connected account and
+  claw back the proportional application fee. Not-yet-onboarded
+  restaurants keep platform charges (demo mode).
+
+### For Zizo
+1. Paste supabase/migrations/0002_stripe_connect.sql in the SQL editor.
+2. Sign in at /en/login (temp password from create-owner output — store in
+   a password manager; password-change UI not built yet).
+3. Settings → Set up payouts → complete Stripe test onboarding → place a
+   4242 order → the $0.79 fee appears under Connect in the Stripe
+   dashboard.
+
+### Next
+Phase 7 (billing tiers + internal admin) per build order, then 5 → 6 → 8.
+Password change/reset UI, staff invites from Settings, Connect webhooooks at
+deploy time.
+
 ## 2026-08-13 (cont.) — Today-tile fix + menu manager + settings
 
 ### Fixed (Zizo's bug report on order J575)

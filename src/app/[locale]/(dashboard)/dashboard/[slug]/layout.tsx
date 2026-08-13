@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LayoutGrid, MonitorCheck } from "lucide-react";
-import { Link } from "@/i18n/navigation";
-import { getStore } from "@/lib/db/store";
+import { Link, redirect } from "@/i18n/navigation";
+import { getMembership } from "@/lib/auth/server";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { Wordmark } from "@/components/Wordmark";
 import { PauseButton } from "@/components/dashboard/pause-button";
 import { DashNav } from "@/components/dashboard/dash-nav";
+import { SignOutButton } from "@/components/dashboard/sign-out-button";
 
 export const metadata: Metadata = { robots: { index: false } };
 
-// NOTE: unauthenticated until owner/staff logins land (Phase 4b, needs the
-// Supabase schema applied). Keep URLs private.
 export default async function DashboardLayout({
   children,
   params,
@@ -25,8 +23,11 @@ export default async function DashboardLayout({
   const loc = locale as "en" | "ar";
   const t = await getTranslations("dash");
 
-  const restaurant = await getStore().getRestaurantBySlug(slug);
-  if (!restaurant) notFound();
+  const membership = await getMembership(slug);
+  if (!membership) {
+    redirect({ href: `/login?next=/${locale}/dashboard/${slug}`, locale });
+  }
+  const { restaurant } = membership!;
 
   const tabs = [
     { href: `/dashboard/${slug}`, label: t("today"), icon: "today" },
@@ -75,8 +76,8 @@ export default async function DashboardLayout({
             >
               <LayoutGrid className="size-4" aria-hidden /> {t("storefront")}
             </Link>
+            <SignOutButton />
           </div>
-          <p className="mt-4 text-xs text-stone">{t("authNote")}</p>
         </aside>
 
         <main className="min-w-0 flex-1">{children}</main>

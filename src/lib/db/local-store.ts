@@ -194,4 +194,8 @@ export class LocalStore implements DataStore {
   async updateRestaurantSettings(): Promise<void> {
     throw new Error("Settings editing requires the Supabase backend");
   }
+
+  async setStripeAccount(): Promise<void> {
+    throw new Error("Stripe Connect requires the Supabase backend");
+  }
 }

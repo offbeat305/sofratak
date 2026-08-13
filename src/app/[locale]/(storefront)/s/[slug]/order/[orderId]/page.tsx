@@ -41,7 +41,7 @@ export default async function OrderStatusPage({
 
   // Back from Stripe: verify the session and finalize exactly once.
   if (order.paymentStatus === "pending" && sessionId) {
-    const paid = await getPaymentProvider().verifyPayment(sessionId);
+    const paid = await getPaymentProvider().verifyPayment(sessionId, restaurant);
     if (paid) {
       const h = await headers();
       const origin = `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host") ?? "localhost:3000"}`;

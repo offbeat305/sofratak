@@ -38,6 +38,11 @@ export interface DataStore {
     restaurantId: string,
     settings: { ordering: Restaurant["ordering"]; hours: DayHours[] },
   ): Promise<void>;
+  setStripeAccount(
+    restaurantId: string,
+    accountId: string,
+    chargesEnabled: boolean,
+  ): Promise<void>;
 }
 
 let backend: DataStore | null = null;

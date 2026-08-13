@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { redirect } from "@/i18n/navigation";
 import { getStore } from "@/lib/db/store";
+import { getMembership } from "@/lib/auth/server";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { Wordmark } from "@/components/Wordmark";
 import { KitchenBoard } from "@/components/kitchen/kitchen-board";
 
 export const metadata: Metadata = { robots: { index: false } };
 
-// NOTE: unauthenticated until Phase 4 (owner/staff logins). Flagged in
-// docs/PROGRESS.md — do not share kitchen URLs publicly before then.
 export default async function KitchenPage({
   params,
 }: {
@@ -20,9 +19,12 @@ export default async function KitchenPage({
   const loc = locale as "en" | "ar";
   const t = await getTranslations("kitchen");
 
+  const membership = await getMembership(slug);
+  if (!membership) {
+    redirect({ href: `/login?next=/${locale}/kitchen/${slug}`, locale });
+  }
+  const { restaurant } = membership!;
   const store = getStore();
-  const restaurant = await store.getRestaurantBySlug(slug);
-  if (!restaurant) notFound();
 
   const orders = (await store.listOrders(restaurant.id)).filter(
     (o) => o.paymentStatus !== "pending",

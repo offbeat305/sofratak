@@ -33,6 +33,10 @@ function rowToRestaurant(row: any): Restaurant {
     instagramUrl: row.instagram_url,
     googleReviewsUrl: row.google_reviews_url,
     ordering: row.ordering,
+    stripe: {
+      accountId: row.stripe_account_id ?? null,
+      chargesEnabled: row.stripe_charges_enabled ?? false,
+    },
   };
 }
 
@@ -290,5 +294,20 @@ export class SupabaseStore implements DataStore {
       .update({ ordering: settings.ordering, hours: settings.hours })
       .eq("id", restaurantId);
     if (error) throw new Error(`updateRestaurantSettings failed: ${error.message}`);
+  }
+
+  async setStripeAccount(
+    restaurantId: string,
+    accountId: string,
+    chargesEnabled: boolean,
+  ): Promise<void> {
+    const { error } = await this.client
+      .from("restaurants")
+      .update({
+        stripe_account_id: accountId,
+        stripe_charges_enabled: chargesEnabled,
+      })
+      .eq("id", restaurantId);
+    if (error) throw new Error(`setStripeAccount failed: ${error.message}`);
   }
 }

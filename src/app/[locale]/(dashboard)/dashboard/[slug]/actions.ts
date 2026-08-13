@@ -2,8 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { getStore } from "@/lib/db/store";
+import {
+  getMembership,
+  getMembershipByRestaurantId,
+} from "@/lib/auth/server";
 import { refundOrder, type RefundRequest } from "@/lib/orders/refunds";
 import type { DayHours, LocalizedText, Restaurant } from "@/lib/db/types";
+
+const UNAUTHORIZED = { ok: false as const, error: "Unauthorized" };
 
 export type MenuItemInput = {
   /** null = create new item */
@@ -17,18 +23,22 @@ export type MenuItemInput = {
 };
 
 export async function setPausedAction(slug: string, paused: boolean) {
-  const restaurant = await getStore().getRestaurantBySlug(slug);
-  if (!restaurant) return { ok: false as const, error: "Not found" };
-  await getStore().setOrderingPaused(restaurant.id, paused);
+  const membership = await getMembership(slug);
+  if (!membership) return UNAUTHORIZED;
+  await getStore().setOrderingPaused(membership.restaurant.id, paused);
   revalidatePath(`/[locale]/dashboard/${slug}`, "layout");
   return { ok: true as const };
 }
 
 export async function refundOrderAction(orderId: string, request: RefundRequest) {
+  const order = await getStore().getOrder(orderId);
+  if (!order) return { ok: false as const, error: "Order not found" };
+  if (!(await getMembershipByRestaurantId(order.restaurantId))) return UNAUTHORIZED;
   return refundOrder(orderId, request);
 }
 
 export async function saveMenuItemAction(slug: string, input: MenuItemInput) {
+  if (!(await getMembership(slug))) return UNAUTHORIZED;
   const store = getStore();
   const restaurant = await store.getRestaurantBySlug(slug);
   if (!restaurant) return { ok: false as const, error: "Not found" };
@@ -66,6 +76,7 @@ export async function saveMenuItemAction(slug: string, input: MenuItemInput) {
 }
 
 export async function toggleSoldOutAction(slug: string, itemId: string, soldOut: boolean) {
+  if (!(await getMembership(slug))) return UNAUTHORIZED;
   const store = getStore();
   const restaurant = await store.getRestaurantBySlug(slug);
   if (!restaurant) return { ok: false as const, error: "Not found" };
@@ -78,6 +89,7 @@ export async function toggleSoldOutAction(slug: string, itemId: string, soldOut:
 }
 
 export async function deleteMenuItemAction(slug: string, itemId: string) {
+  if (!(await getMembership(slug))) return UNAUTHORIZED;
   const store = getStore();
   const restaurant = await store.getRestaurantBySlug(slug);
   if (!restaurant) return { ok: false as const, error: "Not found" };
@@ -86,10 +98,26 @@ export async function deleteMenuItemAction(slug: string, itemId: string) {
   return { ok: true as const };
 }
 
+export async function startConnectOnboardingAction(slug: string, locale: string) {
+  const membership = await getMembership(slug);
+  if (!membership) return UNAUTHORIZED;
+  if (membership.role !== "owner")
+    return { ok: false as const, error: "Owner access required" };
+  const { headers } = await import("next/headers");
+  const h = await headers();
+  const origin = `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host") ?? "localhost:3000"}`;
+  const { startConnectOnboarding } = await import("@/lib/payments/connect");
+  return startConnectOnboarding(
+    membership.restaurant,
+    `${origin}/${locale}/dashboard/${slug}/settings`,
+  );
+}
+
 export async function saveSettingsAction(
   slug: string,
   input: { ordering: Restaurant["ordering"]; hours: DayHours[] },
 ) {
+  if (!(await getMembership(slug))) return UNAUTHORIZED;
   const store = getStore();
   const restaurant = await store.getRestaurantBySlug(slug);
   if (!restaurant) return { ok: false as const, error: "Not found" };

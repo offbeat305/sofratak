@@ -1,21 +1,23 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getStore } from "@/lib/db/store";
+import { getMembership } from "@/lib/auth/server";
 import { alertOverdueOrders } from "@/lib/orders/lifecycle";
 
 /**
  * Live orders feed for the kitchen board (polled every few seconds).
  * Piggybacks the unaccepted-order check so overdue alerts fire even with
- * no cron in local dev. NOTE: unauthenticated until Phase 4 auth lands.
+ * no cron in local dev. Members only.
  */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> },
 ) {
   const { slug } = await params;
+  const membership = await getMembership(slug);
+  if (!membership)
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const { restaurant } = membership;
   const store = getStore();
-  const restaurant = await store.getRestaurantBySlug(slug);
-  if (!restaurant)
-    return NextResponse.json({ error: "not found" }, { status: 404 });
 
   const origin = request.nextUrl.origin;
   await alertOverdueOrders(restaurant, origin);

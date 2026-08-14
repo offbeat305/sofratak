@@ -7,8 +7,22 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/en/dashboard/", "/ar/dashboard/", "/en/kitchen/", "/ar/kitchen/"],
+      disallow: [
+        "/api/",
+        "/en/dashboard/",
+        "/ar/dashboard/",
+        "/en/kitchen/",
+        "/ar/kitchen/",
+        "/en/styleguide",
+        "/ar/styleguide",
+        "/en/login",
+        "/ar/login",
+      ],
     },
+    // GEO: no separate rules needed for AI answer-engine crawlers
+    // (GPTBot, ClaudeBot, PerplexityBot, Google-Extended, etc.) — the
+    // default "*" allow already covers them. See /llms.txt for the
+    // structured, crawler-friendly summary those bots prefer.
     sitemap: `${BASE}/sitemap.xml`,
   };
 }

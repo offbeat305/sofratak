@@ -59,7 +59,7 @@ export function Navbar() {
           <Image
             src="/brand/logo-ivory.png"
             alt="Sofratak"
-            width={93}
+            width={174}
             height={40}
             priority
             className="h-9 w-auto sm:h-10"
@@ -127,7 +127,7 @@ export function Navbar() {
             <Image
               src="/brand/logo-ivory.png"
               alt="Sofratak"
-              width={93}
+              width={174}
               height={40}
               className="h-9 w-auto"
             />

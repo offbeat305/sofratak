@@ -3,10 +3,21 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { buttonClasses } from "@/components/ui/Button";
 import { ArchDivider } from "@/components/marketing/arch-divider";
+import { localeAlternates } from "@/lib/seo";
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
   const t = await getTranslations("site.how");
-  return { title: t("title") };
+  const tNote = await getTranslations("site");
+  return {
+    title: t("title"),
+    description: tNote("how.note"),
+    alternates: localeAlternates(locale, "/how-it-works"),
+  };
 }
 
 export default async function HowItWorksPage({

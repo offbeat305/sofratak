@@ -6,6 +6,7 @@ import { buttonClasses } from "@/components/ui/Button";
 import { ArchDivider } from "@/components/marketing/arch-divider";
 import { Reveal } from "@/components/marketing/reveal";
 import { FOUNDER_STORY as S } from "@/content/founder-story";
+import { localeAlternates } from "@/lib/seo";
 
 export async function generateMetadata({
   params,
@@ -13,11 +14,12 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const alternates = localeAlternates(locale, "/about");
   if (locale === "en") {
-    return { title: S.meta.title, description: S.meta.description };
+    return { title: S.meta.title, description: S.meta.description, alternates };
   }
   const t = await getTranslations("site.about");
-  return { title: t("title") };
+  return { title: t("title"), alternates };
 }
 
 function Paragraphs({

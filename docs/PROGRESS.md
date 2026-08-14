@@ -1,6 +1,65 @@
 # Sofratak — Progress Log
 
-## 2026-08-13 (cont.) — City pages rebuilt + Sofratak assistant
+## 2026-08-13 (cont.) — Full site review: SEO/GEO audit + interactive cities map
+
+Zizo asked for a full functional re-review plus SEO/GEO work for the city
+pages, and gave discretion to add an interactive map if it'd help.
+
+### SEO/GEO fixes (real gaps found and closed)
+- **`metadataBase`** was never set on the root layout — OG/Twitter image
+  URLs could resolve incorrectly when shared. Fixed, plus added sitewide
+  `openGraph.siteName` and a `twitter.card` default.
+- **No canonical URLs or hreflang anywhere.** Every EN/AR page pair was
+  invisible to Google as a language-alternate of the other — a real risk
+  of duplicate-content flags. Added `src/lib/seo.ts` (`localeAlternates`)
+  and wired it into all 8 indexable page types (home, pricing, calculator,
+  how-it-works, about, demo, cities index, every city page).
+- **`/styleguide`** (an internal dev reference) was indexable — added
+  `robots: noindex` and disallowed it (+ `/login`) in `robots.ts`.
+- **Sitewide Organization JSON-LD** added to the marketing layout (name,
+  logo, service area = all 12 cities, sameAs WhatsApp/Instagram) — gives
+  search AND AI answer engines one unambiguous entity to cite, on top of
+  the existing per-city Service/FAQPage schema.
+- **`/llms.txt`** added (llmstxt.org convention) — a structured, factual
+  summary of pricing/fees/features/cities for AI answer engines (ChatGPT,
+  Perplexity, Claude, Gemini) to ground answers on, instead of guessing.
+  Explicitly notes Sofratak isn't affiliated with DoorDash/Toast/Owner.com
+  etc., and to prefer live pages over cached summaries.
+- Homepage got a real `generateMetadata` (it had none — was relying on
+  the generic layout default) with keyword-rich EN/AR title+description.
+- Verified: sitemap.xml math is exact (19 unique paths × 2 locales = 38
+  URLs, zero orphans, zero extras).
+
+### Interactive cities map (new)
+`src/components/marketing/cities-map.tsx` — replaces the plain city list
+on `/cities` (was genuinely thin, per Zizo's complaint) with two low-poly
+silhouettes (Florida, Metro Detroit — matching the brand's geometric-arch
+aesthetic rather than literal cartography) and a brass pin per city at an
+approximate real-relative position. Hover/focus shows a tooltip (city name
++ first "known for" chip + "View city"); click/tap/Enter navigates to the
+city page. A plain-text city list under each map keeps it fully usable
+without hover. Forced `dir="ltr"` on the map only (geography doesn't
+mirror for RTL) while tooltip text still renders each locale's script
+correctly — verified on `/ar/cities`. Added a `knownFor` chip array (3
+real local details per city, e.g. "Warren Avenue", "Busch Blvd halal
+corridor") to `src/content/cities.ts`, reused in both the map tooltips and
+each city page's hero.
+
+### Functional audit (full crawl, both locales)
+Playwright crawl of all 21 marketing paths × 2 locales (42 page loads):
+zero console errors, zero pageerrors, zero 4xx/5xx. Separately crawled and
+verified all 31 unique internal links resolve. Found and fixed one real
+bug along the way: the site logo's `width`/`height` props (93×40 navbar,
+140×60 footer) didn't match its actual 1390×320 aspect ratio — CSS
+(`w-auto`) was masking it visually, but Next.js flagged it and it's a
+Cumulative-Layout-Shift risk on slow connections. Fixed to the correct
+174×40 / 261×60. Re-crawled after the fix: zero console warnings anywhere.
+Verified map click/tap/keyboard-Enter navigation in EN, AR, and mobile
+touch (iPhone 13 viewport).
+
+### Next
+Phase 7: Stripe Billing tiers + internal Sofratak admin, as before.
+
 
 **City pages** were thin; each of the 12 is now a full landing page with
 the band rhythm: olive hero (H1, the honest local paragraph, new

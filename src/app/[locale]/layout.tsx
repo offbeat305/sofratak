@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import { SITE_URL } from "@/lib/seo";
 import "../globals.css";
 
 const manrope = Manrope({
@@ -30,12 +31,20 @@ const plexArabic = IBM_Plex_Sans_Arabic({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Sofratak — Take Control. Own Your Growth.",
     template: "%s · Sofratak",
   },
   description:
     "Sofratak helps restaurant owners save time, reduce unnecessary costs, and manage orders, customers, marketing, reporting, and operations from one place.",
+  openGraph: {
+    siteName: "Sofratak",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export function generateStaticParams() {

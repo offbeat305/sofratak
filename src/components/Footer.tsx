@@ -37,7 +37,7 @@ export async function Footer() {
           <Image
             src="/brand/logo-ivory.png"
             alt="Sofratak"
-            width={140}
+            width={261}
             height={60}
             className="h-12 w-auto self-start"
           />

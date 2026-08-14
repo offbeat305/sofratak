@@ -3,10 +3,20 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { TierCards } from "@/components/marketing/tier-cards";
 import { FOUNDER_STORY } from "@/content/founder-story";
+import { localeAlternates } from "@/lib/seo";
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
   const t = await getTranslations("site.pricing");
-  return { title: t("title"), description: t("sub") };
+  return {
+    title: t("title"),
+    description: t("sub"),
+    alternates: localeAlternates(locale, "/pricing"),
+  };
 }
 
 export default async function PricingPage({

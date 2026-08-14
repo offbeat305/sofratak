@@ -1,9 +1,11 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BadgeCheck } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { FOUNDER_STORY } from "@/content/founder-story";
 import { CITIES } from "@/content/cities";
+import { localeAlternates } from "@/lib/seo";
 import { ArchDivider } from "@/components/marketing/arch-divider";
 import { ArchWatermark } from "@/components/marketing/arch-watermark";
 import { ComparisonTable } from "@/components/marketing/comparison-table";
@@ -16,6 +18,24 @@ import { ProductTour } from "@/components/marketing/product-tour";
 import { Reveal } from "@/components/marketing/reveal";
 import { TierCards } from "@/components/marketing/tier-cards";
 import { WhatsAppLink } from "@/components/marketing/whatsapp-link";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const isAr = locale === "ar";
+  return {
+    title: isAr
+      ? "سفرتك — طلبات أونلاين بدون عمولة لمطاعم العرب والحلال"
+      : "Sofratak — Commission-Free Online Ordering for Arab & Halal Restaurants",
+    description: isAr
+      ? "موقع طلبات باسم مطعمك، بدون عمولة على الطعام. مبني للمطاعم العربية والشرق أوسطية والمتوسطية والحلال في فلوريدا وميشيغان."
+      : "Your own restaurant ordering website with zero commission on food. Built for Arab, Middle Eastern, Mediterranean, and halal restaurants in Florida and Michigan. See your savings in seconds.",
+    alternates: localeAlternates(locale, ""),
+  };
+}
 
 function SectionHeader({
   title,

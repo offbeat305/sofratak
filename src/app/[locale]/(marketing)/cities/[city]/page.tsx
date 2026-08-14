@@ -12,6 +12,7 @@ import { WhatsAppLink } from "@/components/marketing/whatsapp-link";
 import { CITIES, cityBySlug } from "@/content/cities";
 import { FOUNDER_STORY } from "@/content/founder-story";
 import { routing } from "@/i18n/routing";
+import { localeAlternates } from "@/lib/seo";
 
 type Params = Promise<{ locale: string; city: string }>;
 
@@ -30,6 +31,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   return {
     title: t("h1", { city: city.name[loc] }),
     description: city.metaDescription[loc],
+    alternates: localeAlternates(locale, `/cities/${slug}`),
     openGraph: {
       title: t("h1", { city: city.name[loc] }),
       description: city.metaDescription[loc],

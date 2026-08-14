@@ -3,10 +3,20 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { DemoForm } from "@/components/marketing/demo-form";
 import { WhatsAppLink } from "@/components/marketing/whatsapp-link";
 import { FOUNDER_STORY } from "@/content/founder-story";
+import { localeAlternates } from "@/lib/seo";
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
   const t = await getTranslations("site.demo");
-  return { title: t("title"), description: t("sub") };
+  return {
+    title: t("title"),
+    description: t("sub"),
+    alternates: localeAlternates(locale, "/demo"),
+  };
 }
 
 export default async function DemoPage({

@@ -8,7 +8,8 @@ import { Select } from "@/components/ui/Select";
 import { StatCard } from "@/components/ui/StatCard";
 import { ModalDemo } from "./demos";
 
-export const metadata: Metadata = { title: "Styleguide" };
+// Internal dev reference, not a customer-facing page — never index it.
+export const metadata: Metadata = { title: "Styleguide", robots: { index: false, follow: false } };
 
 const swatches = [
   { name: "olive", hex: "#2F4A3C", usage: "primary — nav, headings, icons", cls: "bg-olive" },

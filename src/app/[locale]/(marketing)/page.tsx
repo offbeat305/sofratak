@@ -50,7 +50,7 @@ function SectionHeader({
     <Reveal>
       <h2
         className={cn2(
-          "font-display text-4xl leading-tight font-semibold sm:text-[44px]",
+          "font-display text-4xl leading-tight font-bold sm:text-[44px]",
           dark ? "text-ivory" : "text-olive",
         )}
       >
@@ -93,7 +93,7 @@ export default async function HomePage({
             <p className="text-xs font-semibold tracking-[0.18em] text-brass uppercase brightness-150">
               {t("hero.eyebrow")}
             </p>
-            <h1 className="font-display mt-3 text-[clamp(34px,6vw,68px)] leading-[1.05] font-semibold">
+            <h1 className="font-display mt-3 text-[clamp(34px,6vw,68px)] leading-[1.05] font-bold">
               {t("hero.headline")}{" "}
               <span className="text-brass brightness-150">{t("hero.keep")}</span>
             </h1>
@@ -177,7 +177,7 @@ export default async function HomePage({
 
           {/* full capability grid — live vs rolling-out, labeled honestly */}
           <Reveal className="mt-16">
-            <h3 className="font-display text-2xl font-semibold text-olive sm:text-3xl">
+            <h3 className="font-display text-2xl font-bold text-olive sm:text-3xl">
               {t("grid.title")}
             </h3>
             <p className="mt-1 text-stone">{t("grid.sub")}</p>
@@ -215,7 +215,7 @@ export default async function HomePage({
             <p className="text-xs font-bold tracking-[0.18em] text-stone uppercase">
               {t("who.title")}
             </p>
-            <p className="font-display mt-3 max-w-2xl text-3xl leading-snug font-semibold text-olive sm:text-4xl">
+            <p className="font-display mt-3 max-w-2xl text-3xl leading-snug font-bold text-olive sm:text-4xl">
               {t("who.line")}
             </p>
             <p className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-positive">
@@ -242,7 +242,7 @@ export default async function HomePage({
                   <p className="mt-2 text-[15px] text-charcoal">
                     {FOUNDER_STORY.reuse.homeBlurb}
                   </p>
-                  <blockquote className="font-display mt-4 border-s-4 border-brass ps-4 text-xl leading-snug font-semibold text-olive italic sm:text-2xl">
+                  <blockquote className="font-display mt-4 border-s-4 border-brass ps-4 text-xl leading-snug font-bold text-olive italic sm:text-2xl">
                     {FOUNDER_STORY.why.pullQuote}
                   </blockquote>
                   <Link
@@ -305,7 +305,7 @@ export default async function HomePage({
       <section className="bg-olive text-ivory">
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <Reveal>
-            <h2 className="font-display text-4xl leading-tight font-semibold sm:text-[44px]">
+            <h2 className="font-display text-4xl leading-tight font-bold sm:text-[44px]">
               {t("promise.title")}
             </h2>
             <p className="mt-4 max-w-xl text-lg text-ivory/80">{t("promise.body")}</p>
@@ -331,7 +331,7 @@ export default async function HomePage({
         <ArchWatermark parallax={false} />
         <div className="relative mx-auto max-w-[1200px] px-4 py-16 text-center sm:px-6 md:py-24">
           <Reveal>
-            <h2 className="font-display text-4xl font-semibold sm:text-[44px]">
+            <h2 className="font-display text-4xl font-bold sm:text-[44px]">
               {t("finalCta.title")}
             </h2>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">

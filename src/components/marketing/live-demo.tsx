@@ -23,7 +23,7 @@ export function LiveDemo() {
         <p className="text-xs font-semibold tracking-[0.18em] text-brass-deep uppercase">
           {t("eyebrow")}
         </p>
-        <h2 className="font-display mt-3 text-4xl leading-tight font-semibold text-olive sm:text-[44px]">
+        <h2 className="font-display mt-3 text-4xl leading-tight font-bold text-olive sm:text-[44px]">
           {t("title")}
         </h2>
         <p className="mt-3 max-w-md text-lg text-stone">{t("sub")}</p>

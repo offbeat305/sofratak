@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, IBM_Plex_Sans_Arabic } from "next/font/google";
+import { DM_Sans, Manrope, IBM_Plex_Sans_Arabic } from "next/font/google";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
@@ -15,11 +15,23 @@ const manrope = Manrope({
 });
 
 // Self-hosted: Google Fonts' CDN copy 404s from next/font/google (stale
-// version). Variable file covers the 600–700 range we use.
+// version). Variable file covers the 600–700 range we use. Currently
+// unused by --font-display (see globals.css) — titles run on bold DM
+// Sans instead — kept loaded in case we revert.
 const cormorant = localFont({
   src: "../../fonts/cormorant-garamond-latin.woff2",
   weight: "300 700",
   variable: "--font-cormorant",
+  display: "swap",
+});
+
+// Titles/headlines font (design change, Aug 2026): bold DM Sans in place
+// of the Cormorant Garamond serif — reads stronger at a glance. Variable
+// font, so weight utilities (font-bold etc.) work directly.
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  variable: "--font-dm-sans",
   display: "swap",
 });
 
@@ -68,7 +80,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       dir={locale === "ar" ? "rtl" : "ltr"}
-      className={`${manrope.variable} ${cormorant.variable} ${plexArabic.variable}`}
+      className={`${manrope.variable} ${cormorant.variable} ${dmSans.variable} ${plexArabic.variable}`}
     >
       <body className="min-h-dvh bg-ivory font-sans text-charcoal antialiased">
         <NextIntlClientProvider>{children}</NextIntlClientProvider>

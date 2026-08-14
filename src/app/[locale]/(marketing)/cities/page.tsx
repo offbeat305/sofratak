@@ -34,7 +34,7 @@ export default async function CitiesIndexPage({
     <div className="pt-16">
       <section className="bg-olive text-ivory">
         <div className="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 md:py-20">
-          <h1 className="font-display text-4xl leading-tight font-semibold sm:text-5xl">
+          <h1 className="font-display text-4xl leading-tight font-bold sm:text-5xl">
             {t("indexTitle")}
           </h1>
           <p className="mt-3 max-w-xl text-lg text-ivory/80">{t("indexSub")}</p>
@@ -44,7 +44,7 @@ export default async function CitiesIndexPage({
       <section className="bg-ivory">
         <div className="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 md:py-20">
           <Reveal>
-            <h2 className="font-display text-3xl leading-tight font-semibold text-olive sm:text-4xl">
+            <h2 className="font-display text-3xl leading-tight font-bold text-olive sm:text-4xl">
               {t("mapTitle")}
             </h2>
             <p className="mt-1 text-stone">{t("mapSub")}</p>
@@ -58,7 +58,7 @@ export default async function CitiesIndexPage({
       <section className="bg-sand/25">
         <div className="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 md:py-20">
           <Reveal>
-            <h2 className="font-display text-3xl leading-tight font-semibold text-olive sm:text-4xl">
+            <h2 className="font-display text-3xl leading-tight font-bold text-olive sm:text-4xl">
               {t("otherCities")}
             </h2>
           </Reveal>

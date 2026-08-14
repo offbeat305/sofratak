@@ -59,7 +59,7 @@ function Band({
 function SectionTitle({ title, dark = false }: { title: string; dark?: boolean }) {
   return (
     <h2
-      className={`font-display mb-6 text-3xl leading-tight font-semibold sm:text-4xl ${
+      className={`font-display mb-6 text-3xl leading-tight font-bold sm:text-4xl ${
         dark ? "text-ivory" : "text-olive"
       }`}
     >
@@ -118,7 +118,7 @@ export default async function AboutPage({
             <p className="text-xs font-semibold tracking-[0.18em] text-brass uppercase brightness-150">
               {S.hero.eyebrow}
             </p>
-            <h1 className="font-display mt-3 text-4xl leading-tight font-semibold sm:text-5xl">
+            <h1 className="font-display mt-3 text-4xl leading-tight font-bold sm:text-5xl">
               {S.hero.name}
             </h1>
             <p className="mt-2 text-lg font-semibold text-sand">{S.hero.subhead}</p>
@@ -176,7 +176,7 @@ export default async function AboutPage({
       <Band tone="ivory">
         <Reveal>
           <SectionTitle title={S.why.title} />
-          <blockquote className="font-display border-s-4 border-brass ps-5 text-2xl leading-snug font-semibold text-olive italic sm:text-3xl">
+          <blockquote className="font-display border-s-4 border-brass ps-5 text-2xl leading-snug font-bold text-olive italic sm:text-3xl">
             {S.why.pullQuote}
           </blockquote>
           <div className="mt-7">
@@ -242,7 +242,7 @@ export default async function AboutPage({
                     className="object-cover object-top"
                   />
                 </div>
-                <h2 className="font-display text-2xl font-semibold text-sand sm:text-3xl">
+                <h2 className="font-display text-2xl font-bold text-sand sm:text-3xl">
                   {S.note.title}
                 </h2>
               </div>

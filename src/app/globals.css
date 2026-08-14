@@ -25,12 +25,16 @@
   --radius-modal: 1.5rem; /* 24px — modals */
 }
 
-/* Font stacks: Manrope/Cormorant carry Latin; Arabic glyphs fall through
-   to IBM Plex Sans Arabic automatically, so one stack serves both locales. */
+/* Font stacks: Latin carried by Manrope (body/UI) and DM Sans (titles);
+   Arabic glyphs fall through to IBM Plex Sans Arabic automatically, so
+   one stack serves both locales. Titles run bold DM Sans, not the
+   Cormorant Garamond serif (design change, Aug 2026) — still available
+   as --font-cormorant if we revert. */
 @theme inline {
   --font-sans: var(--font-manrope), var(--font-plex-arabic), ui-sans-serif,
     system-ui, sans-serif;
-  --font-display: var(--font-cormorant), var(--font-plex-arabic), serif;
+  --font-display: var(--font-dm-sans), var(--font-plex-arabic), ui-sans-serif,
+    system-ui, sans-serif;
 }
 
 body {

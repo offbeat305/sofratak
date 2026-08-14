@@ -124,7 +124,7 @@ export function Assistant({ whatsappNumber }: { whatsappNumber: string | null })
           {/* header */}
           <div className="flex items-start justify-between gap-3 bg-olive p-4 text-ivory">
             <div>
-              <p className="font-display text-lg font-semibold">{t("title")}</p>
+              <p className="font-display text-lg font-bold">{t("title")}</p>
               <p className="text-xs text-ivory/70">{t("subtitle")}</p>
             </div>
             <button

@@ -26,17 +26,31 @@ const SLIDES: Slide[] = [
 export function ProductTour() {
   const t = useTranslations("site.tour");
   const captions = t.raw("captions") as string[];
+  const sectionRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const [flipped, setFlipped] = useState(false);
   const paused = useRef(false);
   const interacted = useRef(false);
+  const visible = useRef(false);
 
+  /**
+   * Horizontal-only scroll, scoped to the track's own scrollport.
+   * `scrollIntoView` (the previous approach) also nudges the PAGE'S
+   * vertical scroll to bring the target into view — with a 5s auto-
+   * advance timer, that yanked the whole page back to this section
+   * every 5 seconds no matter which way the visitor had scrolled.
+   * `track.scrollTo` never touches anything outside the track.
+   */
   const goTo = (index: number) => {
     const track = trackRef.current;
-    if (!track) return;
-    const target = track.children[index] as HTMLElement | undefined;
-    target?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    const target = track?.children[index] as HTMLElement | undefined;
+    if (!track || !target) return;
+    const trackRect = track.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const delta =
+      targetRect.left - trackRect.left - (track.clientWidth - target.clientWidth) / 2;
+    track.scrollTo({ left: track.scrollLeft + delta, behavior: "smooth" });
   };
 
   // track active slide from scroll position (RTL-safe via per-slide offset)
@@ -59,11 +73,26 @@ export function ProductTour() {
     if (best === 1) setFlipped(true);
   };
 
-  // auto-advance every 5s, pause on hover/touch, off for reduced motion
+  // Only auto-advance while the carousel is actually on screen — belt and
+  // suspenders on top of the horizontal-only goTo() above.
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visible.current = entry.isIntersecting;
+      },
+      { threshold: 0.4 },
+    );
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
+
+  // auto-advance every 5s, pause on hover/touch/off-screen, off for reduced motion
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const timer = setInterval(() => {
-      if (paused.current || interacted.current) return;
+      if (paused.current || interacted.current || !visible.current) return;
       const track = trackRef.current;
       if (!track) return;
       const next = (Math.min(active, SLIDES.length - 1) + 1) % SLIDES.length;
@@ -74,6 +103,7 @@ export function ProductTour() {
 
   return (
     <div
+      ref={sectionRef}
       onMouseEnter={() => {
         paused.current = true;
       }}
@@ -115,7 +145,7 @@ export function ProductTour() {
                 )}
               />
             </div>
-            <figcaption className="font-display text-center text-xl font-semibold text-ivory sm:text-2xl">
+            <figcaption className="font-display text-center text-xl font-bold text-ivory sm:text-2xl">
               {captions[i]}
             </figcaption>
           </figure>

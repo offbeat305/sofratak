@@ -92,7 +92,7 @@ export default async function CityPage({ params }: { params: Params }) {
           <p className="text-xs font-semibold tracking-[0.18em] text-brass uppercase brightness-150">
             {t("citiesPage.eyebrow")} · {city.state}
           </p>
-          <h1 className="font-display mt-3 max-w-3xl text-4xl leading-tight font-semibold sm:text-5xl">
+          <h1 className="font-display mt-3 max-w-3xl text-4xl leading-tight font-bold sm:text-5xl">
             {t("citiesPage.h1", { city: cityName })}
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-ivory/85">
@@ -151,7 +151,7 @@ export default async function CityPage({ params }: { params: Params }) {
             <p className="text-xs font-bold tracking-[0.18em] text-stone uppercase">
               {t("citiesPage.community")}
             </p>
-            <p className="font-display mt-3 max-w-2xl text-3xl leading-snug font-semibold text-olive sm:text-4xl">
+            <p className="font-display mt-3 max-w-2xl text-3xl leading-snug font-bold text-olive sm:text-4xl">
               {t("who.line")}
             </p>
             <p className="mt-4 flex items-center gap-2 text-sm font-semibold text-charcoal">
@@ -171,7 +171,7 @@ export default async function CityPage({ params }: { params: Params }) {
       <section className="bg-ivory">
         <div className="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 md:py-20">
           <Reveal>
-            <h2 className="font-display text-3xl leading-tight font-semibold text-olive sm:text-4xl">
+            <h2 className="font-display text-3xl leading-tight font-bold text-olive sm:text-4xl">
               {t("grid.title")}
             </h2>
             <p className="mt-1 text-stone">{t("grid.sub")}</p>
@@ -186,7 +186,7 @@ export default async function CityPage({ params }: { params: Params }) {
       <section className="bg-sand/25">
         <div className="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 md:py-20">
           <Reveal>
-            <h2 className="font-display text-3xl leading-tight font-semibold text-olive sm:text-4xl">
+            <h2 className="font-display text-3xl leading-tight font-bold text-olive sm:text-4xl">
               {t("citiesPage.pricingTitle", { city: cityName })}
             </h2>
             <p className="mt-1 text-stone">
@@ -203,7 +203,7 @@ export default async function CityPage({ params }: { params: Params }) {
       <section className="bg-ivory">
         <div className="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 md:py-20">
           <Reveal>
-            <h2 className="font-display text-3xl leading-tight font-semibold text-olive sm:text-4xl">
+            <h2 className="font-display text-3xl leading-tight font-bold text-olive sm:text-4xl">
               {t("citiesPage.faqTitle")}
             </h2>
           </Reveal>
@@ -227,7 +227,7 @@ export default async function CityPage({ params }: { params: Params }) {
         <ArchWatermark parallax={false} />
         <div className="relative mx-auto max-w-[1200px] px-4 py-14 text-center sm:px-6 md:py-20">
           <Reveal>
-            <h2 className="font-display text-3xl font-semibold sm:text-[40px]">
+            <h2 className="font-display text-3xl font-bold sm:text-[40px]">
               {t("finalCta.title")}
             </h2>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">

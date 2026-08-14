@@ -1,5 +1,36 @@
 # Sofratak — Progress Log
 
+## 2026-08-14 — Product-tour scroll-jack bug + bold DM Sans titles
+
+### Fixed: "See it working" kept pulling the page back to it
+Root cause found in `product-tour.tsx`: the carousel's 5-second auto-
+advance timer called `target.scrollIntoView({ block: "nearest", ... })`
+to slide to the next screenshot. `scrollIntoView` adjusts the PAGE's
+vertical scroll too, not just the carousel's own horizontal scrollbar —
+so every 5 seconds, no matter where on the page the visitor had scrolled
+to (above or below the carousel), the page got yanked back to bring the
+carousel into view. Exactly the reported symptom.
+Fix: `goTo()` now scrolls the carousel's track element directly via
+`track.scrollTo({ left })` computed from bounding-rect deltas — this
+never touches page-level scroll, only the carousel's own horizontal
+scrollport. Also added an IntersectionObserver so auto-advance only
+fires while the carousel is actually on screen (belt and suspenders).
+Verified: scrollY stays byte-identical across two full 5s auto-advance
+cycles both well above and well below the carousel section; carousel
+still auto-advances normally (scrollLeft 0→638px) when it IS in view.
+
+### Titles: bold DM Sans in place of the Cormorant Garamond serif
+Zizo's call — titles needed to read "stronger and bold." Added `DM_Sans`
+via next/font/google (variable font, loaded cleanly — unlike Cormorant's
+CDN 404, kept as a self-hosted fallback in case of revert) as the new
+`--font-display` value; `font-plex-arabic` still carries Arabic glyphs
+in the same stack, unaffected. Bumped every heading/pull-quote combining
+`font-display` + `font-semibold` (26 occurrences across 10 files) to
+`font-bold`. Verified computed style: H1 renders "DM Sans" at
+font-weight 700 in English, correctly falls through to bold IBM Plex
+Sans Arabic in Arabic (DM Sans has no Arabic glyphs). Full 18-page ×
+2-locale regression crawl after both fixes: zero console/page errors.
+
 ## 2026-08-13 (cont.) — Full site review: SEO/GEO audit + interactive cities map
 
 Zizo asked for a full functional re-review plus SEO/GEO work for the city

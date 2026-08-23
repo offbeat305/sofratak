@@ -6,6 +6,7 @@ import type {
   AdminAuditEntry,
   Campaign,
   CustomerProfile,
+  FunnelCounts,
   LoyaltyAccount,
   MarketingOptIn,
   Menu,
@@ -316,5 +317,21 @@ export class LocalStore implements DataStore {
   }
   async tryRecordAutomation(): Promise<boolean> {
     return false;
+  }
+
+  async resetDemoRestaurant(): Promise<void> {
+    // Local store re-seeds restaurants/menus on every load anyway — just
+    // drop the persisted orders/SMS.
+    this.data = null;
+    await fs.rm(DATA_FILE, { force: true });
+    await fs.rm(path.join(process.cwd(), ".data", "paused.json"), { force: true });
+  }
+
+  async recordStorefrontEvent(): Promise<void> {
+    // Funnel analytics is a Supabase-only feature; dev traffic isn't data.
+  }
+
+  async getFunnelCounts(): Promise<FunnelCounts> {
+    return { views: 0, carts: 0, checkouts: 0 };
   }
 }

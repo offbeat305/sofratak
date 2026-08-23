@@ -88,6 +88,27 @@ export async function startImpersonationAction(slug: string) {
   return { ok: true as const };
 }
 
+/** The one tenant the demo reset may ever touch. */
+const DEMO_SLUG = "beitzizo";
+
+export async function resetDemoAction() {
+  const admin = await getSuperAdmin();
+  if (!admin) return FORBIDDEN;
+  const store = getStore();
+  const restaurant = await store.getRestaurantBySlug(DEMO_SLUG);
+  if (!restaurant) return { ok: false as const, error: "Demo restaurant not found" };
+
+  await store.resetDemoRestaurant();
+  await store.recordAuditLog({
+    ...(await auditActor(admin)),
+    action: "demo.reset",
+    targetRestaurantId: restaurant.id,
+    details: { slug: DEMO_SLUG },
+  });
+  revalidatePath("/[locale]/admin", "layout");
+  return { ok: true as const };
+}
+
 export async function parseMenuTextAction(text: string): Promise<ParsedMenu> {
   if (!(await getSuperAdmin())) return EMPTY_PARSE;
   return getMenuImportProvider().parse({ text: text.slice(0, 20_000) });

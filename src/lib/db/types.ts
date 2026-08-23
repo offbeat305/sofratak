@@ -302,6 +302,15 @@ export type LoyaltyAccount = {
   points: number;
 };
 
+export type FunnelStep = "view" | "add_to_cart" | "checkout_start";
+
+/** Distinct sessions per step over a window; `paid` comes from orders. */
+export type FunnelCounts = {
+  views: number;
+  carts: number;
+  checkouts: number;
+};
+
 export type AutomationKind =
   | "win_back"
   | "welcome"

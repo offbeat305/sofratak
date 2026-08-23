@@ -56,7 +56,19 @@ export const beitZizo: Restaurant = {
     periodEnd: null,
     canceledAt: null,
   },
-  loyaltySettings: { enabled: false, centsPerPoint: 100, rewards: [] },
+  // Punch card on by default — the demo restaurant should showcase it.
+  loyaltySettings: {
+    enabled: true,
+    centsPerPoint: 100,
+    rewards: [
+      {
+        id: "rwd-free-dessert",
+        name: { en: "Free dessert", ar: "حلوى مجانية" },
+        pointsCost: 5,
+        valueCents: 799,
+      },
+    ],
+  },
   automations: {
     winBack: true,
     winBackOfferCode: null,

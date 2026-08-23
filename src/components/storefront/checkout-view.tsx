@@ -14,6 +14,7 @@ import {
   type LoyaltyStatus,
 } from "@/app/[locale]/(storefront)/s/[slug]/actions";
 import { useCart } from "./cart-context";
+import { FunnelBeacon } from "./funnel-beacon";
 
 const TIP_PRESETS = [0.1, 0.15, 0.2] as const;
 
@@ -192,6 +193,7 @@ export function CheckoutView({
 
   return (
     <div className="flex flex-col gap-4 pb-28">
+      <FunnelBeacon slug={restaurant.slug} step="checkout_start" />
       {paymentCanceled && (
         <p className="rounded-card border border-clay/30 bg-clay/8 p-4 text-sm font-semibold text-clay">
           {t("paymentCanceled")}

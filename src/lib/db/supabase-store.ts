@@ -1,6 +1,7 @@
 import "server-only";
 import { randomBytes } from "crypto";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { beitZizo, beitZizoMenu } from "./seed/beit-zizo";
 import type { DataStore } from "./store";
 import type {
   AdminAuditEntry,
@@ -8,6 +9,8 @@ import type {
   Campaign,
   CustomerProfile,
   DayHours,
+  FunnelCounts,
+  FunnelStep,
   LoyaltyAccount,
   MarketingOptIn,
   Menu,
@@ -920,5 +923,128 @@ export class SupabaseStore implements DataStore {
       throw new Error(`tryRecordAutomation failed: ${error.message}`);
     }
     return Boolean(data);
+  }
+
+  // ── Phase 8B: demo reset ───────────────────────────────────────────────
+
+  async resetDemoRestaurant(): Promise<void> {
+    const id = beitZizo.id; // hard-scoped: only ever the seeded demo tenant
+
+    // 1. Wipe transactional/demo-session data. loyalty_ledger cascades
+    // from loyalty_accounts; menu_items cascade from menu_categories.
+    const wipeTables = [
+      "orders",
+      "sms_log",
+      "loyalty_accounts",
+      "campaigns",
+      "marketing_optins",
+      "customer_profiles",
+      "automation_log",
+      "offer_codes",
+      "menu_items",
+      "menu_categories",
+      "modifier_groups",
+    ];
+    for (const table of wipeTables) {
+      const { error } = await this.client.from(table).delete().eq("restaurant_id", id);
+      if (error) throw new Error(`resetDemoRestaurant wipe ${table} failed: ${error.message}`);
+    }
+
+    // 2. Restore the restaurant's content fields from the seed — but never
+    // touch billing/Stripe columns; those are infrastructure, not demo data.
+    const { error: restaurantError } = await this.client
+      .from("restaurants")
+      .update({
+        name: beitZizo.name,
+        tagline: beitZizo.tagline,
+        logo_url: beitZizo.logoUrl,
+        cover_url: beitZizo.coverUrl,
+        brand: beitZizo.brand,
+        halal: beitZizo.halal,
+        phone: beitZizo.phone,
+        address: beitZizo.address,
+        timezone: beitZizo.timezone,
+        hours: beitZizo.hours,
+        instagram_url: beitZizo.instagramUrl,
+        google_reviews_url: beitZizo.googleReviewsUrl,
+        ordering: beitZizo.ordering,
+        loyalty_settings: beitZizo.loyaltySettings,
+        automations: beitZizo.automations,
+      })
+      .eq("id", id);
+    if (restaurantError)
+      throw new Error(`resetDemoRestaurant restaurant failed: ${restaurantError.message}`);
+
+    // 3. Reseed the menu.
+    const { error: catError } = await this.client.from("menu_categories").insert(
+      beitZizoMenu.categories.map((c) => ({
+        id: c.id,
+        restaurant_id: id,
+        name: c.name,
+        sort: c.sort,
+      })),
+    );
+    if (catError) throw new Error(`resetDemoRestaurant categories failed: ${catError.message}`);
+
+    const { error: groupError } = await this.client.from("modifier_groups").insert(
+      beitZizoMenu.modifierGroups.map((g) => ({
+        id: g.id,
+        restaurant_id: id,
+        name: g.name,
+        min: g.min,
+        max: g.max,
+        options: g.options,
+      })),
+    );
+    if (groupError) throw new Error(`resetDemoRestaurant groups failed: ${groupError.message}`);
+
+    const { error: itemError } = await this.client.from("menu_items").insert(
+      beitZizoMenu.items.map((i) => ({
+        id: i.id,
+        restaurant_id: id,
+        category_id: i.categoryId,
+        name: i.name,
+        description: i.description,
+        price_cents: i.priceCents,
+        image_url: i.imageUrl,
+        sold_out: i.soldOut,
+        modifier_group_ids: i.modifierGroupIds,
+        sort: i.sort,
+      })),
+    );
+    if (itemError) throw new Error(`resetDemoRestaurant items failed: ${itemError.message}`);
+  }
+
+  // ── Phase 8C: order funnel ─────────────────────────────────────────────
+
+  async recordStorefrontEvent(
+    restaurantId: string,
+    sessionHash: string,
+    step: FunnelStep,
+  ): Promise<void> {
+    const { error } = await this.client
+      .from("storefront_events")
+      .insert({ restaurant_id: restaurantId, session_hash: sessionHash, step });
+    // Analytics must never break a storefront page — log and move on.
+    if (error) console.error(`[funnel] record failed: ${error.message}`);
+  }
+
+  async getFunnelCounts(restaurantId: string, sinceDays: number): Promise<FunnelCounts> {
+    const since = new Date(Date.now() - sinceDays * 86_400_000).toISOString();
+    const { data } = await this.client
+      .from("storefront_events")
+      .select("session_hash, step")
+      .eq("restaurant_id", restaurantId)
+      .gte("created_at", since)
+      .limit(20_000);
+    const distinct = { view: new Set<string>(), add_to_cart: new Set<string>(), checkout_start: new Set<string>() };
+    for (const row of data ?? []) {
+      distinct[row.step as FunnelStep]?.add(row.session_hash);
+    }
+    return {
+      views: distinct.view.size,
+      carts: distinct.add_to_cart.size,
+      checkouts: distinct.checkout_start.size,
+    };
   }
 }

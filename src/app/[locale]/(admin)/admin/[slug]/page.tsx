@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { getStore } from "@/lib/db/store";
 import { PLANS } from "@/lib/billing/plans";
 import { ImpersonateButton } from "@/components/admin/impersonate-button";
+import { DemoResetButton } from "@/components/admin/demo-reset-button";
 
 export default async function TenantDetailPage({
   params,
@@ -68,6 +69,7 @@ export default async function TenantDetailPage({
           <ImportIcon className="size-4" aria-hidden />
           {t("menuImport")}
         </Link>
+        {slug === "beitzizo" && <DemoResetButton />}
       </div>
 
       <section className="max-w-2xl rounded-card border border-olive/10 bg-white p-5">

@@ -49,6 +49,16 @@ export default async function TodayPage({
     (o) => o.status !== "completed" && o.status !== "canceled",
   );
 
+  // Order funnel, last 7 days (Phase 8C). "Paid" = this week's paid orders.
+  const funnel = await store.getFunnelCounts(restaurant.id, 7);
+  const funnelSteps = [
+    { label: t("funnelViews"), value: funnel.views },
+    { label: t("funnelCarts"), value: funnel.carts },
+    { label: t("funnelCheckouts"), value: funnel.checkouts },
+    { label: t("funnelPaid"), value: thisWeek.length },
+  ];
+  const funnelMax = Math.max(1, ...funnelSteps.map((s) => s.value));
+
   return (
     <div className="flex flex-col gap-6">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -63,6 +73,31 @@ export default async function TodayPage({
           animate={false}
         />
       </div>
+
+      {(funnel.views > 0 || thisWeek.length > 0) && (
+        <section className="rounded-card border border-olive/10 bg-white p-5">
+          <h2 className="text-lg font-bold text-olive">{t("funnelTitle")}</h2>
+          <p className="mt-0.5 text-sm text-stone">{t("funnelSub")}</p>
+          <div className="mt-4 flex flex-col gap-2.5">
+            {funnelSteps.map((step) => (
+              <div key={step.label} className="flex items-center gap-3">
+                <span className="w-40 shrink-0 text-sm font-semibold text-charcoal">
+                  {step.label}
+                </span>
+                <div className="h-5 flex-1 overflow-hidden rounded-full bg-olive/8">
+                  <div
+                    className="h-full rounded-full bg-brass"
+                    style={{ width: `${Math.round((step.value / funnelMax) * 100)}%` }}
+                  />
+                </div>
+                <span className="w-10 shrink-0 text-end text-sm font-bold text-olive tabular-nums" dir="ltr">
+                  {step.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section>
         <div className="mb-2 flex items-center justify-between">

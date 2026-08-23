@@ -453,6 +453,12 @@
     "orders": "Orders",
     "customers": "Customers",
     "marketing": "Marketing",
+    "funnelTitle": "Order funnel — last 7 days",
+    "funnelSub": "How many visitors make it from browsing to a paid order.",
+    "funnelViews": "Storefront visits",
+    "funnelCarts": "Added to cart",
+    "funnelCheckouts": "Started checkout",
+    "funnelPaid": "Paid orders",
     "kitchen": "Kitchen screen",
     "storefront": "View storefront",
     "pause": "Pause orders",
@@ -651,7 +657,13 @@
     "removeItem": "Remove item",
     "skippedLines": "{count} lines skipped (no price or heading detected)",
     "commitImport": "Add to menu",
-    "importCommitted": "Added {count} items to the menu."
+    "importCommitted": "Added {count} items to the menu.",
+    "demoReset": "Reset demo restaurant",
+    "demoResetConfirm": "Wipe all demo orders, loyalty punches, campaigns, and opt-ins, and restore the menu and settings from the seed? Billing and Stripe setup are untouched.",
+    "demoResetYes": "Yes, reset",
+    "demoResetNo": "Cancel",
+    "demoResetting": "Resetting…",
+    "demoResetDone": "Demo restaurant reset to a clean slate."
   },
   "kitchen": {
     "title": "Kitchen · {name}",

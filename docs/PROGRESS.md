@@ -1,5 +1,78 @@
 # Sofratak — Progress Log
 
+## 2026-08-23 (cont.) — Phase 8: launch polish (8A–8D)
+
+Approved by Zizo with two conditions, both honored below. 0007 applied
+and verified first (cron run 1: sent=1; immediate rerun: skipped=1 — the
+once-per-week guard works).
+
+### 8A · Security hardening
+- **Migration 0008 (RLS lockdown)**: drops all five public-read policies
+  (restaurants, menu tables, offer_codes). Verified first that no
+  browser code reads these tables — the browser Supabase client does
+  auth only, and every storefront read is server-rendered via the
+  service role. **Condition 1 baseline recorded pre-0008**: a real
+  checkout with code PHASE8TEST → order Z156, discount_cents=260 (20%
+  of $12.98), total $11.17, use_count 0→1. The identical test must be
+  re-run after 0008 is applied (the redemption path is service-role, so
+  it should pass unchanged).
+- **Rate limiting** (`lib/rate-limit.ts`): per-IP sliding window on
+  grader autocomplete/run/unlock, lead submission, order placement
+  (also throttles offer-code brute-forcing), post-order prefs, funnel
+  beacon, and the loyalty punch lookup (the phone-enumeration surface,
+  15/min). Honest caveat per Zizo's condition 2: in-memory, per-instance
+  on Vercel — documented in LAUNCH.md §8 with the Redis upgrade path.
+  Verified by code review + typecheck only: the server-action transport
+  plus client debounce makes a legitimate-UI hammer test impractical.
+- **Twilio webhook signature validation** on /api/webhooks/twilio-sms
+  (HMAC-SHA1 per Twilio's scheme, timing-safe compare; enforced when
+  TWILIO_AUTH_TOKEN exists, open in keyless dev). Also fixed a latent
+  bug in that route while there: a shared module-level Response was
+  reused across requests (a body can only be consumed once).
+- **Security headers** (frame-ancestors 'self' — the homepage live-demo
+  iframes the storefront same-origin, so not DENY — HSTS, nosniff,
+  referrer + permissions policies). Verified live via curl -I.
+- **Auth-gate sweep**: every dashboard/kitchen/admin server action and
+  API route checks membership or super-admin; public endpoints are
+  rate-limited + honeypotted; webhooks signature-checked; crons
+  CRON_SECRET-gated. One deliberate ungated action:
+  stopImpersonationAction (only deletes the caller's own cookie).
+
+### 8B · Demo reset
+`resetDemoRestaurant()` store method + audit-logged /admin button,
+hard-scoped to beitzizo (shown only on that tenant's page, slug
+constant server-side). Wipes orders/SMS/loyalty/campaigns/opt-ins/
+profiles/automation-log/offer-codes and reseeds menu + settings; never
+touches billing/Stripe columns. Seed updated so the demo restaurant
+ships with the punch card on (Free dessert after 5 orders) — resets
+stay demo-ready. Live click-through needs a super-admin session (can't
+enter Zizo's password), so runtime verification is his one-click.
+
+### 8C · Order funnel
+Migration 0009: `storefront_events` (no PII — server-side hash of a
+random client uuid; writes service-role-only, member-only reads).
+Beacons: storefront view, first add-to-cart (cart context), checkout
+start (only with a non-empty cart). Today dashboard gains a funnel
+card: visits → carts → checkouts → paid (last 7 days, distinct
+sessions; paid from orders). Verified live that the beacon fires and
+fails silently server-side while 0009 is unapplied — diner pages show
+zero errors.
+
+### 8D · docs/LAUNCH.md
+Full runbook: Supabase (migrations, PITR backups, auth hardening),
+Vercel (env vars, crons), DNS incl. wildcard *.sofratak.com (the
+subdomain middleware already exists), Stripe live mode + webhook
+endpoint, Twilio + A2P 10DLC + TWILIO_WEBHOOK_URL, Google key
+restrictions + billing budget, Resend domain, known limitations
+(per-instance rate limiting → Redis upgrade, per condition 2), and a
+15-minute launch-day smoke test.
+
+### Waiting on Zizo
+1. Apply `0008_rls_lockdown.sql`, then say so — I'll re-run the
+   offer-code checkout to close condition 1.
+2. Apply `0009_funnel_events.sql` (funnel starts recording immediately).
+3. One click on "Reset demo restaurant" in /admin to confirm 8B live.
+
 ## 2026-08-23 (cont.) — Grader verified live · punch-card loyalty · Phase 6
 
 Migrations 0004–0006 applied by Zizo; GOOGLE_PLACES_API_KEY added.

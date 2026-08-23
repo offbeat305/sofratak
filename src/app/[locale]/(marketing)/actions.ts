@@ -1,6 +1,7 @@
 "use server";
 
 import { captureLead, type LeadInput } from "@/lib/leads";
+import { allowRequest } from "@/lib/rate-limit";
 
 const PHONE_RE = /^[+()\-.\s\d]{7,20}$/;
 
@@ -21,6 +22,7 @@ export type LeadFormInput = {
 export async function submitLeadAction(
   input: LeadFormInput,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (!(await allowRequest("submit-lead", 5))) return { ok: false, error: "rate" };
   // Honeypot: pretend success so bots don't adapt.
   if (input.website) return { ok: true };
 

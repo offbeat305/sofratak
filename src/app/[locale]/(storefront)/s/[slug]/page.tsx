@@ -6,6 +6,7 @@ import { BadgeCheck } from "lucide-react";
 import { getStore } from "@/lib/db/store";
 import type { Menu, Restaurant } from "@/lib/db/types";
 import { MenuBrowser } from "@/components/storefront/menu-browser";
+import { FunnelBeacon } from "@/components/storefront/funnel-beacon";
 
 type Params = Promise<{ locale: string; slug: string }>;
 
@@ -124,6 +125,7 @@ export default async function StorefrontMenuPage({ params }: { params: Params })
       <div className="pt-4">
         <MenuBrowser slug={slug} menu={menu} />
       </div>
+      <FunnelBeacon slug={slug} step="view" />
     </>
   );
 }

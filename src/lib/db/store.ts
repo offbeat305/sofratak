@@ -5,6 +5,8 @@ import type {
   Campaign,
   CustomerProfile,
   DayHours,
+  FunnelCounts,
+  FunnelStep,
   LoyaltyAccount,
   MarketingOptIn,
   Menu,
@@ -77,6 +79,18 @@ export interface DataStore {
   recordAuditLog(entry: Omit<AdminAuditEntry, "id" | "createdAt">): Promise<void>;
   listAuditLog(restaurantId?: string): Promise<AdminAuditEntry[]>;
   upsertMenuCategory(restaurantId: string, category: MenuCategory): Promise<void>;
+  /**
+   * Phase 8B: wipe the DEMO restaurant's transactional data (orders,
+   * loyalty, campaigns, opt-ins, automation log) and restore its
+   * menu + settings from the seed. Hard-scoped to the demo tenant —
+   * never callable against a real restaurant.
+   */
+  resetDemoRestaurant(): Promise<void>;
+
+  // ── Phase 8C: order funnel ────────────────────────────────────────────
+  recordStorefrontEvent(restaurantId: string, sessionHash: string, step: FunnelStep): Promise<void>;
+  /** Distinct sessions per step over the last `sinceDays` days. */
+  getFunnelCounts(restaurantId: string, sinceDays: number): Promise<FunnelCounts>;
 
   // ── Phase 5: campaigns (email + SMS) ─────────────────────────────────
   createCampaign(restaurantId: string, input: NewCampaignInput): Promise<Campaign>;

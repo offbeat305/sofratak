@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import type { LocalizedText } from "@/lib/db/types";
+import { fireFunnelEvent } from "./funnel-beacon";
 
 export type CartLine = {
   /** stable key: itemId + serialized options */
@@ -73,18 +74,22 @@ export function CartProvider({
     }
   }, [lines, hydrated, storageKey]);
 
-  const addLine = useCallback((line: Omit<CartLine, "key">) => {
-    const key = lineKey(line.menuItemId, line.options, line.notes);
-    setLines((prev) => {
-      const existing = prev.find((l) => l.key === key);
-      if (existing) {
-        return prev.map((l) =>
-          l.key === key ? { ...l, qty: Math.min(20, l.qty + line.qty) } : l,
-        );
-      }
-      return [...prev, { ...line, key }];
-    });
-  }, []);
+  const addLine = useCallback(
+    (line: Omit<CartLine, "key">) => {
+      fireFunnelEvent(slug, "add_to_cart");
+      const key = lineKey(line.menuItemId, line.options, line.notes);
+      setLines((prev) => {
+        const existing = prev.find((l) => l.key === key);
+        if (existing) {
+          return prev.map((l) =>
+            l.key === key ? { ...l, qty: Math.min(20, l.qty + line.qty) } : l,
+          );
+        }
+        return [...prev, { ...line, key }];
+      });
+    },
+    [slug],
+  );
 
   const updateQty = useCallback((key: string, qty: number) => {
     setLines((prev) =>

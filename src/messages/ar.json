@@ -584,6 +584,8 @@
       "welcomeNote": "رسالة شكر بعد أول طلب لشخص ما.",
       "winBackLabel": "استعادة العملاء المتوقفين",
       "winBackNote": "تذكير شهري للعملاء اللي ما طلبوا منذ ٣٠+ يوم.",
+      "winBackCodeLabel": "إرفاق كود خصم",
+      "winBackCodeNone": "بدون كود",
       "reviewRequestLabel": "طلب تقييم على جوجل",
       "reviewRequestNote": "تُرسل بعد ساعتين تقريبًا من تحديد الطلب كمكتمل.",
       "reviewRequestDisabledNote": "أضف رابط تقييم جوجل في الإعدادات لتفعيل هذا.",

@@ -34,6 +34,7 @@ export default async function MarketingPage({
           slug={slug}
           settings={restaurant.automations}
           hasReviewsUrl={Boolean(restaurant.googleReviewsUrl)}
+          offerCodes={offerCodes.filter((c) => c.active).map((c) => c.code)}
         />
       </div>
     </div>

@@ -6,22 +6,25 @@ import { Zap } from "lucide-react";
 import { saveAutomationSettingsAction } from "@/app/[locale]/(dashboard)/dashboard/[slug]/marketing/actions";
 import type { Restaurant } from "@/lib/db/types";
 
+type ToggleKey = "welcome" | "winBack" | "reviewRequest" | "birthday";
+
 export function AutomationsCard({
   slug,
   settings,
   hasReviewsUrl,
+  offerCodes,
 }: {
   slug: string;
   settings: Restaurant["automations"];
   hasReviewsUrl: boolean;
+  offerCodes: string[];
 }) {
   const t = useTranslations("dash.marketing");
   const [, startTransition] = useTransition();
   const [state, setState] = useState(settings);
   const [saved, setSaved] = useState(false);
 
-  const toggle = (key: keyof Restaurant["automations"]) => {
-    const next = { ...state, [key]: !state[key] };
+  const save = (next: Restaurant["automations"]) => {
     setState(next);
     setSaved(false);
     startTransition(async () => {
@@ -30,7 +33,9 @@ export function AutomationsCard({
     });
   };
 
-  const rows: Array<{ key: keyof Restaurant["automations"]; label: string; note: string; disabled?: boolean }> = [
+  const toggle = (key: ToggleKey) => save({ ...state, [key]: !state[key] });
+
+  const rows: Array<{ key: ToggleKey; label: string; note: string; disabled?: boolean }> = [
     { key: "welcome", label: t("welcomeLabel"), note: t("welcomeNote") },
     { key: "winBack", label: t("winBackLabel"), note: t("winBackNote") },
     {
@@ -70,6 +75,24 @@ export function AutomationsCard({
             </span>
           </label>
         ))}
+
+        {state.winBack && offerCodes.length > 0 && (
+          <label className="ms-7 flex flex-col gap-1 text-sm font-semibold text-charcoal">
+            {t("winBackCodeLabel")}
+            <select
+              value={state.winBackOfferCode ?? ""}
+              onChange={(e) => save({ ...state, winBackOfferCode: e.target.value || null })}
+              className="h-10 max-w-48 rounded-field border border-olive/20 bg-white px-3 text-[15px] focus:outline-none focus-visible:ring-2 focus-visible:ring-olive/25"
+            >
+              <option value="">{t("winBackCodeNone")}</option>
+              {offerCodes.map((code) => (
+                <option key={code} value={code}>
+                  {code}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
       </div>
 
       {saved && <p className="mt-3 text-sm font-semibold text-positive">{t("saved")}</p>}

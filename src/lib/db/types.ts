@@ -58,6 +58,8 @@ export type Restaurant = {
   /** Phase 5: which automated sends are on for this restaurant. */
   automations: {
     winBack: boolean;
+    /** An existing offer code to include in the win-back text, if set. */
+    winBackOfferCode: string | null;
     welcome: boolean;
     reviewRequest: boolean;
     birthday: boolean;

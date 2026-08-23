@@ -50,10 +50,13 @@ export async function runAutomationsForRestaurant(restaurant: Restaurant): Promi
 
   if (restaurant.automations.winBack) {
     const lapsed = customersFromOrders(orders).filter((c) => c.tags.includes("lapsed"));
+    const codeNote = restaurant.automations.winBackOfferCode
+      ? ` Use code ${restaurant.automations.winBackOfferCode} for a little something extra.`
+      : "";
     for (const c of lapsed) {
       if (!(await isSmsOptedIn(restaurant.id, c.phone))) continue;
       if (!(await store.tryRecordAutomation(restaurant.id, "win_back", c.phone, monthKey()))) continue;
-      const body = `${restaurant.name.en}: We miss you! Come back and order again — we'd love to see you.`;
+      const body = `${restaurant.name.en}: We miss you! Come back and order again — we'd love to see you.${codeNote}`;
       await getSmsChannel().send({ to: c.phone, body });
       sent++;
     }

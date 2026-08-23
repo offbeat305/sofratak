@@ -1,5 +1,35 @@
 # Sofratak — Progress Log
 
+## 2026-08-23 (cont.) — Two fixes against CLAUDE.md's original Phase 5 spec
+
+Re-read CLAUDE.md's own Phase 5 line after the fact and caught two real
+gaps against it:
+
+1. **"SMS campaigns (TCPA: opt-in at checkout...)"** — the checkout
+   `smsOptIn` checkbox already exists and its own copy says "text me
+   offers," but nothing fed that signal into the new `marketing_optins`
+   table — campaigns would only have reached people who separately used
+   the new post-order card, silently ignoring everyone who'd already
+   said yes at checkout. Fixed: `finalizePaidOrder` now syncs a true
+   checkout opt-in into `marketing_optins` (never downgrades an existing
+   opt-in when left unchecked on a later order). Keeping the new table
+   rather than reverting to the old per-order boolean on purpose — the
+   old design had no way to record a STOP reply, which is a hard TCPA
+   requirement the constitution also lists.
+2. **"automations (30-day win-back w/ offer code...)"** — my first pass
+   sent a plain "we miss you" text with no code. Added
+   `automations.winBackOfferCode` (owner picks from their existing
+   active codes in the dashboard); the win-back text includes it when set.
+
+One deliberate deviation left as-is, flagged rather than silently
+changed: CLAUDE.md says "loyalty v1 (every Nth order)"; what got built
+is points-based instead, matching what the Phase 5 spec (which Zizo saw
+and let proceed) recommended after benchmarking Owner.com/Toast — both
+run points, not punch-cards. Not a pricing or checkout change, so it
+didn't hit the one thing I held to asking about, but Zizo should know
+the mechanic differs from his original one-liner and say if he wants it
+changed to a punch-card model instead.
+
 ## 2026-08-23 (cont.) — Phase 5 marketing suite: built
 
 Zizo asked me to keep working overnight and finish everything that didn't

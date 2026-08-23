@@ -584,6 +584,8 @@
       "welcomeNote": "A thank-you text after someone's first order.",
       "winBackLabel": "Win back lapsed customers",
       "winBackNote": "A nudge once a month to customers who haven't ordered in 30+ days.",
+      "winBackCodeLabel": "Include an offer code",
+      "winBackCodeNone": "No code",
       "reviewRequestLabel": "Ask for a Google review",
       "reviewRequestNote": "Sent a couple hours after an order is marked completed.",
       "reviewRequestDisabledNote": "Add your Google review link in Settings to turn this on.",

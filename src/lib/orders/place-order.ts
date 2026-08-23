@@ -266,6 +266,23 @@ export async function finalizePaidOrder(
   // Route to the kitchen (OrderChannel adapters — never blocks a paid order).
   await dispatchNewOrder(order, restaurant, origin);
 
+  // The checkout "text me offers" checkbox IS the marketing opt-in (its
+  // own copy says "offers", separate from the always-on confirmation
+  // above) — feed it into the same opt-in record campaigns read, so
+  // checking it at checkout actually does something. Never downgrades an
+  // existing opt-in: a customer who already said yes on the post-order
+  // card and then leaves it unchecked on a later order stays opted in.
+  if (order.customer.smsOptIn) {
+    try {
+      await store.setMarketingOptIn(restaurant.id, order.customer.phone, {
+        smsOptedIn: true,
+        source: "checkout",
+      });
+    } catch (err) {
+      console.error("[marketing] checkout opt-in sync failed", err);
+    }
+  }
+
   // Points earn on the food spend only (same base offer codes discount) —
   // never blocks the order; a loyalty hiccup shouldn't fail a paid order.
   if (restaurant.loyaltySettings.enabled && restaurant.loyaltySettings.centsPerPoint > 0) {

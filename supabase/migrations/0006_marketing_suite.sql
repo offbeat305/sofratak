@@ -90,7 +90,7 @@ create table loyalty_ledger (
 
 -- ── Automations ─────────────────────────────────────────────────────────
 alter table restaurants add column if not exists automations jsonb not null default
-  '{"winBack": true, "welcome": true, "reviewRequest": true, "birthday": false}';
+  '{"winBack": true, "winBackOfferCode": null, "welcome": true, "reviewRequest": true, "birthday": false}';
 
 -- Idempotency guard: a (restaurant, kind, phone, ref) row can only exist
 -- once, so a retried cron run or webhook redelivery never double-sends.

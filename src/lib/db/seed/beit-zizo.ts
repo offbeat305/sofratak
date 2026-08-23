@@ -57,7 +57,13 @@ export const beitZizo: Restaurant = {
     canceledAt: null,
   },
   loyaltySettings: { enabled: false, centsPerPoint: 100, rewards: [] },
-  automations: { winBack: true, welcome: true, reviewRequest: true, birthday: false },
+  automations: {
+    winBack: true,
+    winBackOfferCode: null,
+    welcome: true,
+    reviewRequest: true,
+    birthday: false,
+  },
 };
 
 const groups: Menu["modifierGroups"] = [

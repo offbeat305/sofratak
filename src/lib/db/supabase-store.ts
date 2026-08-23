@@ -57,11 +57,13 @@ function rowToRestaurant(row: any): Restaurant {
       canceledAt: row.subscription_canceled_at ?? null,
     },
     loyaltySettings: row.loyalty_settings ?? { enabled: false, centsPerPoint: 100, rewards: [] },
-    automations: row.automations ?? {
+    automations: {
       winBack: true,
+      winBackOfferCode: null,
       welcome: true,
       reviewRequest: true,
       birthday: false,
+      ...row.automations,
     },
   };
 }

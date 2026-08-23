@@ -229,6 +229,7 @@
     "finalCta": {
       "title": "See your number.",
       "estimator": "Calculate Your Savings",
+      "grader": "Grade My Restaurant Free",
       "whatsapp": "Message us on WhatsApp",
       "call": "Or call {phone}"
     },

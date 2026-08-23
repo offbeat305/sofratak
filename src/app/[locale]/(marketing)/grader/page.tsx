@@ -1,7 +1,23 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { GraderTool } from "@/components/marketing/grader-tool";
-import { localeAlternates } from "@/lib/seo";
+import { localeAlternates, SITE_URL } from "@/lib/seo";
+
+/** GEO/SEO: lets AI answer engines and Google cite this as a real, free tool. */
+function graderJsonLd(locale: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "Sofratak Restaurant Grader",
+    url: `${SITE_URL}/${locale}/grader`,
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Any (web-based)",
+    description:
+      "Free tool that scores a restaurant's Google Business Profile, website, and online ordering setup, with an estimated monthly dollar impact.",
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    publisher: { "@id": `${SITE_URL}/#organization` },
+  };
+}
 
 export async function generateMetadata({
   params,
@@ -28,6 +44,10 @@ export default async function GraderPage({
 
   return (
     <div className="mx-auto max-w-2xl px-4 pt-28 pb-14 sm:px-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(graderJsonLd(locale)) }}
+      />
       <h1 className="font-display text-3xl font-bold text-olive sm:text-4xl">{t("title")}</h1>
       <p className="mt-2 text-stone">{t("sub")}</p>
       <div className="mt-8">

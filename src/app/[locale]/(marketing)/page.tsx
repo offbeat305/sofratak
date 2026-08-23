@@ -341,6 +341,12 @@ export default async function HomePage({
               >
                 {t("finalCta.estimator")}
               </Link>
+              <Link
+                href="/grader"
+                className="inline-flex h-13 items-center rounded-btn border border-ivory/40 px-7 text-lg font-bold text-ivory transition-colors hover:bg-ivory/10"
+              >
+                {t("finalCta.grader")}
+              </Link>
               <WhatsAppLink />
             </div>
           </Reveal>

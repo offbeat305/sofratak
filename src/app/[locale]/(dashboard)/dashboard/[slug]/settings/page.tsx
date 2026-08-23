@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
+import { CreditCard } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { getStore } from "@/lib/db/store";
 import { syncConnectStatus } from "@/lib/payments/connect";
 import { SettingsForm } from "@/components/dashboard/settings-form";
@@ -33,6 +35,13 @@ export default async function SettingsPage({
       <div className="max-w-xl">
         <PayoutsCard slug={slug} status={payoutStatus} />
       </div>
+      <Link
+        href={`/dashboard/${slug}/settings/billing`}
+        className="flex max-w-xl items-center gap-2 rounded-card border border-olive/10 bg-white p-5 font-bold text-olive transition-colors hover:bg-olive/5"
+      >
+        <CreditCard className="size-4" aria-hidden />
+        {t("billingTitle")}
+      </Link>
       <SettingsForm slug={slug} restaurant={restaurant} />
     </div>
   );

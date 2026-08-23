@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getMembership } from "@/lib/auth/server";
-import { customersForRestaurant, toCsv } from "@/lib/crm/customers";
+import { customersForRestaurant } from "@/lib/crm/customers";
+import { customersToCsv } from "@/lib/exports/csv";
 
 /** One-click CSV — the data is the restaurant's (CLAUDE.md sales promise). */
 export async function GET(
@@ -14,17 +15,7 @@ export async function GET(
   const { restaurant } = membership;
 
   const customers = await customersForRestaurant(restaurant.id);
-  const csv = toCsv(
-    customers.map((c) => ({
-      name: c.name,
-      phone: c.phone,
-      orders: c.orderCount,
-      total_spent_usd: (c.totalSpentCents / 100).toFixed(2),
-      last_order: c.lastOrderAt,
-      sms_opt_in: c.smsOptIn ? "yes" : "no",
-      tags: c.tags.join("|"),
-    })),
-  );
+  const csv = customersToCsv(customers);
   return new NextResponse(csv, {
     headers: {
       "Content-Type": "text/csv; charset=utf-8",

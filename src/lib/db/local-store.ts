@@ -3,6 +3,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import type { DataStore } from "./store";
 import type {
+  AdminAuditEntry,
   Menu,
   Order,
   OrderRefund,
@@ -197,5 +198,50 @@ export class LocalStore implements DataStore {
 
   async setStripeAccount(): Promise<void> {
     throw new Error("Stripe Connect requires the Supabase backend");
+  }
+
+  async setBillingInfo(): Promise<void> {
+    throw new Error("Billing requires the Supabase backend");
+  }
+
+  async getRestaurantByCustomerId(): Promise<Restaurant | null> {
+    throw new Error("Billing requires the Supabase backend");
+  }
+
+  async getRestaurantBySubscriptionId(): Promise<Restaurant | null> {
+    throw new Error("Billing requires the Supabase backend");
+  }
+
+  async markCancelExportSent(): Promise<boolean> {
+    throw new Error("Billing requires the Supabase backend");
+  }
+
+  async getOwnerEmail(): Promise<string | null> {
+    throw new Error("Billing requires the Supabase backend");
+  }
+
+  async listAllRestaurants(): Promise<Restaurant[]> {
+    const data = await this.load();
+    return data.restaurants;
+  }
+
+  async createRestaurant(): Promise<Restaurant> {
+    throw new Error("Onboarding requires the Supabase backend");
+  }
+
+  async createOwnerAccount(): Promise<{ userId: string; temporaryPassword: string | null }> {
+    throw new Error("Onboarding requires the Supabase backend");
+  }
+
+  async recordAuditLog(): Promise<void> {
+    throw new Error("Audit log requires the Supabase backend");
+  }
+
+  async listAuditLog(): Promise<AdminAuditEntry[]> {
+    return [];
+  }
+
+  async upsertMenuCategory(): Promise<void> {
+    throw new Error("Menu editing requires the Supabase backend");
   }
 }

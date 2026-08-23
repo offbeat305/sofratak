@@ -8,6 +8,7 @@ import { Wordmark } from "@/components/Wordmark";
 import { PauseButton } from "@/components/dashboard/pause-button";
 import { DashNav } from "@/components/dashboard/dash-nav";
 import { SignOutButton } from "@/components/dashboard/sign-out-button";
+import { ImpersonationBanner } from "@/components/dashboard/impersonation-banner";
 
 export const metadata: Metadata = { robots: { index: false } };
 
@@ -27,7 +28,7 @@ export default async function DashboardLayout({
   if (!membership) {
     redirect({ href: `/login?next=/${locale}/dashboard/${slug}`, locale });
   }
-  const { restaurant } = membership!;
+  const { restaurant, impersonating } = membership!;
 
   const tabs = [
     { href: `/dashboard/${slug}`, label: t("today"), icon: "today" },
@@ -57,6 +58,7 @@ export default async function DashboardLayout({
             {t("paused")}
           </p>
         )}
+        {impersonating && <ImpersonationBanner adminEmail={impersonating.adminEmail} />}
       </header>
 
       <div className="mx-auto flex max-w-6xl gap-6 px-4 py-6">

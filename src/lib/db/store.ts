@@ -1,8 +1,11 @@
 import "server-only";
 import type {
+  AdminAuditEntry,
   DayHours,
   Menu,
+  MenuCategory,
   MenuItem,
+  NewRestaurantInput,
   Order,
   OrderRefund,
   OrderStatus,
@@ -43,6 +46,29 @@ export interface DataStore {
     accountId: string,
     chargesEnabled: boolean,
   ): Promise<void>;
+
+  // ── Phase 7: billing ────────────────────────────────────────────────
+  setBillingInfo(
+    restaurantId: string,
+    billing: Partial<Restaurant["billing"]>,
+  ): Promise<void>;
+  getRestaurantByCustomerId(stripeCustomerId: string): Promise<Restaurant | null>;
+  getRestaurantBySubscriptionId(subscriptionId: string): Promise<Restaurant | null>;
+  markCancelExportSent(restaurantId: string): Promise<boolean>;
+  /** For billing emails/SMS — the restaurant_members(role=owner) user's email. */
+  getOwnerEmail(restaurantId: string): Promise<string | null>;
+
+  // ── Phase 7: internal admin ─────────────────────────────────────────
+  listAllRestaurants(): Promise<Restaurant[]>;
+  createRestaurant(input: NewRestaurantInput): Promise<Restaurant>;
+  /** Creates the owner's Supabase Auth login (or reuses it if the email already has one) and memberships them in. */
+  createOwnerAccount(
+    restaurantId: string,
+    email: string,
+  ): Promise<{ userId: string; temporaryPassword: string | null }>;
+  recordAuditLog(entry: Omit<AdminAuditEntry, "id" | "createdAt">): Promise<void>;
+  listAuditLog(restaurantId?: string): Promise<AdminAuditEntry[]>;
+  upsertMenuCategory(restaurantId: string, category: MenuCategory): Promise<void>;
 }
 
 let backend: DataStore | null = null;

@@ -48,6 +48,14 @@ export const beitZizo: Restaurant = {
     paused: false,
   },
   stripe: { accountId: null, chargesEnabled: false },
+  billing: {
+    stripeCustomerId: null,
+    subscriptionId: null,
+    tier: null,
+    status: "none",
+    periodEnd: null,
+    canceledAt: null,
+  },
 };
 
 const groups: Menu["modifierGroups"] = [

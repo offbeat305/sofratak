@@ -1,12 +1,15 @@
 import "server-only";
+import { randomBytes } from "crypto";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { DataStore } from "./store";
 import type {
+  AdminAuditEntry,
   DayHours,
   Menu,
   MenuCategory,
   MenuItem,
   ModifierGroup,
+  NewRestaurantInput,
   Order,
   OrderRefund,
   OrderStatus,
@@ -37,6 +40,26 @@ function rowToRestaurant(row: any): Restaurant {
       accountId: row.stripe_account_id ?? null,
       chargesEnabled: row.stripe_charges_enabled ?? false,
     },
+    billing: {
+      stripeCustomerId: row.stripe_customer_id ?? null,
+      subscriptionId: row.subscription_id ?? null,
+      tier: row.subscription_tier ?? null,
+      status: row.subscription_status ?? "none",
+      periodEnd: row.subscription_period_end ?? null,
+      canceledAt: row.subscription_canceled_at ?? null,
+    },
+  };
+}
+
+function rowToAuditEntry(row: any): AdminAuditEntry {
+  return {
+    id: row.id,
+    actorUserId: row.actor_user_id,
+    actorEmail: row.actor_email,
+    action: row.action,
+    targetRestaurantId: row.target_restaurant_id,
+    details: row.details ?? {},
+    createdAt: row.created_at,
   };
 }
 
@@ -309,5 +332,193 @@ export class SupabaseStore implements DataStore {
       })
       .eq("id", restaurantId);
     if (error) throw new Error(`setStripeAccount failed: ${error.message}`);
+  }
+
+  // ── Phase 7: billing ────────────────────────────────────────────────
+
+  async setBillingInfo(
+    restaurantId: string,
+    billing: Partial<Restaurant["billing"]>,
+  ): Promise<void> {
+    const row: Record<string, unknown> = {};
+    if ("stripeCustomerId" in billing) row.stripe_customer_id = billing.stripeCustomerId;
+    if ("subscriptionId" in billing) row.subscription_id = billing.subscriptionId;
+    if ("tier" in billing) row.subscription_tier = billing.tier;
+    if ("status" in billing) row.subscription_status = billing.status;
+    if ("periodEnd" in billing) row.subscription_period_end = billing.periodEnd;
+    if ("canceledAt" in billing) row.subscription_canceled_at = billing.canceledAt;
+    if (Object.keys(row).length === 0) return;
+    const { error } = await this.client.from("restaurants").update(row).eq("id", restaurantId);
+    if (error) throw new Error(`setBillingInfo failed: ${error.message}`);
+  }
+
+  async getRestaurantByCustomerId(stripeCustomerId: string): Promise<Restaurant | null> {
+    const { data } = await this.client
+      .from("restaurants")
+      .select("*")
+      .eq("stripe_customer_id", stripeCustomerId)
+      .maybeSingle();
+    return data ? rowToRestaurant(data) : null;
+  }
+
+  async getRestaurantBySubscriptionId(subscriptionId: string): Promise<Restaurant | null> {
+    const { data } = await this.client
+      .from("restaurants")
+      .select("*")
+      .eq("subscription_id", subscriptionId)
+      .maybeSingle();
+    return data ? rowToRestaurant(data) : null;
+  }
+
+  /** Atomic: returns true only the first time (safe against duplicate webhooks). */
+  async markCancelExportSent(restaurantId: string): Promise<boolean> {
+    const { data } = await this.client
+      .from("restaurants")
+      .update({ cancel_export_sent_at: new Date().toISOString() })
+      .eq("id", restaurantId)
+      .is("cancel_export_sent_at", null)
+      .select("id")
+      .maybeSingle();
+    return Boolean(data);
+  }
+
+  async getOwnerEmail(restaurantId: string): Promise<string | null> {
+    const { data: member } = await this.client
+      .from("restaurant_members")
+      .select("user_id")
+      .eq("restaurant_id", restaurantId)
+      .eq("role", "owner")
+      .limit(1)
+      .maybeSingle();
+    if (!member) return null;
+    const { data, error } = await this.client.auth.admin.getUserById(member.user_id);
+    if (error || !data.user) return null;
+    return data.user.email ?? null;
+  }
+
+  // ── Phase 7: internal admin ─────────────────────────────────────────
+
+  async listAllRestaurants(): Promise<Restaurant[]> {
+    const { data } = await this.client
+      .from("restaurants")
+      .select("*")
+      .order("created_at", { ascending: false });
+    return (data ?? []).map(rowToRestaurant);
+  }
+
+  async createRestaurant(input: NewRestaurantInput): Promise<Restaurant> {
+    const id = `rest-${input.slug}`;
+    const row = {
+      id,
+      slug: input.slug,
+      name: input.name,
+      tagline: { en: "", ar: "" },
+      brand: { primary: "#2F4A3C", accent: "#A9792B" },
+      halal: input.halal,
+      phone: input.phone,
+      address: input.address,
+      timezone: input.timezone,
+      hours: [
+        { day: 0, open: "11:00", close: "21:00" },
+        { day: 1, open: "11:00", close: "21:00" },
+        { day: 2, open: "11:00", close: "21:00" },
+        { day: 3, open: "11:00", close: "21:00" },
+        { day: 4, open: "11:00", close: "21:00" },
+        { day: 5, open: "11:00", close: "21:00" },
+        { day: 6, open: "11:00", close: "21:00" },
+      ],
+      ordering: {
+        pickup: true,
+        delivery: false,
+        deliveryFeeCents: 0,
+        deliveryMinimumCents: 0,
+        prepMinutes: 20,
+        paused: true, // stays paused until the owner has a menu + reviews settings
+      },
+    };
+    const { data, error } = await this.client
+      .from("restaurants")
+      .insert(row)
+      .select()
+      .single();
+    if (error) throw new Error(`createRestaurant failed: ${error.message}`);
+    return rowToRestaurant(data);
+  }
+
+  async createOwnerAccount(
+    restaurantId: string,
+    email: string,
+  ): Promise<{ userId: string; temporaryPassword: string | null }> {
+    const password = randomBytes(9).toString("base64url");
+    const { data: created, error: createError } = await this.client.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+    });
+
+    let userId: string;
+    let temporaryPassword: string | null;
+    if (!createError && created.user) {
+      userId = created.user.id;
+      temporaryPassword = password;
+    } else {
+      let match: { id: string } | undefined;
+      for (let page = 1; page <= 10 && !match; page++) {
+        const { data: list, error: listError } = await this.client.auth.admin.listUsers({
+          page,
+          perPage: 100,
+        });
+        if (listError) throw new Error(`createOwnerAccount failed: ${listError.message}`);
+        match = list.users.find((u) => u.email?.toLowerCase() === email.toLowerCase());
+        if (!list.users.length) break;
+      }
+      if (!match) {
+        throw new Error(`createOwnerAccount failed: ${createError?.message ?? "unknown error"}`);
+      }
+      userId = match.id;
+      temporaryPassword = null;
+    }
+
+    const { error: memberError } = await this.client
+      .from("restaurant_members")
+      .upsert(
+        { restaurant_id: restaurantId, user_id: userId, role: "owner" },
+        { onConflict: "restaurant_id,user_id" },
+      );
+    if (memberError) throw new Error(`createOwnerAccount failed: ${memberError.message}`);
+
+    return { userId, temporaryPassword };
+  }
+
+  async recordAuditLog(entry: Omit<AdminAuditEntry, "id" | "createdAt">): Promise<void> {
+    const { error } = await this.client.from("admin_audit_log").insert({
+      actor_user_id: entry.actorUserId,
+      actor_email: entry.actorEmail,
+      action: entry.action,
+      target_restaurant_id: entry.targetRestaurantId,
+      details: entry.details,
+    });
+    if (error) throw new Error(`recordAuditLog failed: ${error.message}`);
+  }
+
+  async listAuditLog(restaurantId?: string): Promise<AdminAuditEntry[]> {
+    let query = this.client
+      .from("admin_audit_log")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (restaurantId) query = query.eq("target_restaurant_id", restaurantId);
+    const { data } = await query;
+    return (data ?? []).map(rowToAuditEntry);
+  }
+
+  async upsertMenuCategory(restaurantId: string, category: MenuCategory): Promise<void> {
+    const { error } = await this.client.from("menu_categories").upsert({
+      id: category.id,
+      restaurant_id: restaurantId,
+      name: category.name,
+      sort: category.sort,
+    });
+    if (error) throw new Error(`upsertMenuCategory failed: ${error.message}`);
   }
 }

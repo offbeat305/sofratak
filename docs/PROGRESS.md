@@ -1,5 +1,61 @@
 # Sofratak — Progress Log
 
+## 2026-08-23 — Phase 7: platform billing + internal admin
+
+Top priority per Zizo: "ready to onboard a real paying restaurant." Ships
+Stripe Billing for the 3 tiers, dunning, cancel-with-auto-CSV-export, and
+an internal Sofratak admin panel (onboarding, menu import, impersonation
+with audit log, tenant health).
+
+### Platform billing (separate Stripe object graph from Connect)
+Diner→restaurant food money already runs on Stripe Connect (Phase 6);
+this is restaurant→Sofratak SaaS fee, billed on the platform's own Stripe
+account. `lib/billing/stripe.ts`: `startSubscriptionCheckout` (dynamic
+`price_data`, no pre-created Products needed — `lib/billing/plans.ts` is
+the single source of truth the marketing pricing page also reads, so the
+price a prospect sees can never drift from what billing charges),
+`openBillingPortal`, `cancelSubscription` (cancel-at-period-end — "no
+lock-in" per CLAUDE.md), `syncBillingStatus` (polls on page load, mirrors
+the existing Connect-return pattern for local dev without live webhooks).
+Webhook (`api/webhooks/stripe/route.ts`) is the single source of truth
+for status transitions: `customer.subscription.updated/deleted`,
+`invoice.payment_failed/succeeded`. The auto-CSV-export "sales weapon"
+fires the moment `cancel_at_period_end` flips true (immediate, not weeks
+later at actual period end) via `lib/billing/export.ts`, guarded by an
+atomic `markCancelExportSent` column flip so a retried webhook never
+double-sends. Dashboard UI at `dashboard/[slug]/settings/billing`.
+
+### Internal admin (`/admin`, gated on `app_metadata.role = "super_admin"`)
+- **Tenant list + health**: billing status/tier, paused flag, orders in
+  the last 7 days, last order date.
+- **Onboarding wizard** (`/admin/new`): creates the restaurant row +
+  a real Supabase Auth login for the owner in one step
+  (`DataStore.createOwnerAccount`, same create-or-reuse-user pattern as
+  `scripts/create-owner.ts`), shows the temporary password once.
+- **Impersonation** (`/admin/[slug]` → "Log in as owner"): signed,
+  30-minute HMAC cookie (`lib/auth/impersonation.ts`, off entirely
+  without `IMPERSONATION_SECRET` configured — no insecure fallback mode).
+  `getMembership()` falls back to a verified impersonation token only
+  after a real-membership lookup misses. Every grant is written to
+  `admin_audit_log` at issue time; the dashboard shows a persistent
+  "support session" banner with a one-click stop.
+- **Menu import** (`/admin/[slug]/menu-import`): adapter-shaped
+  (`lib/menu-import/`) — only a free text-paste heuristic ships today (no
+  OCR/vision API key yet); lines ending in a price become items, short
+  lines become category headings. Admin reviews/edits the parse in an
+  editable table before committing — nothing writes to the menu
+  unreviewed.
+- `scripts/promote-super-admin.ts` grants the role to an existing login.
+
+Verified: `tsc --noEmit`, `eslint`, `next build` all clean. Confirmed
+live in-browser that `/admin` and `/dashboard/[slug]/settings/billing`
+correctly redirect unauthenticated visitors to `/login?next=...`, and
+that `/pricing` still shows $249/$349/$499 (no drift from the billing
+refactor). Full logged-in walkthrough (real onboarding → impersonation →
+a real test-mode Stripe subscription checkout) needs a super-admin
+account — next step for Zizo, or ask me to run it.
+
+
 ## 2026-08-14 — Product-tour scroll-jack bug + bold DM Sans titles
 
 ### Fixed: "See it working" kept pulling the page back to it

@@ -7,9 +7,17 @@ import {
   getMembershipByRestaurantId,
 } from "@/lib/auth/server";
 import { refundOrder, type RefundRequest } from "@/lib/orders/refunds";
-import type { DayHours, LocalizedText, Restaurant } from "@/lib/db/types";
+import type { DayHours, LocalizedText, Restaurant, SubscriptionTier } from "@/lib/db/types";
+import { IMPERSONATION_COOKIE } from "@/lib/auth/impersonation";
 
 const UNAUTHORIZED = { ok: false as const, error: "Unauthorized" };
+
+/** Ends a support impersonation session started from /admin. */
+export async function stopImpersonationAction() {
+  const { cookies } = await import("next/headers");
+  (await cookies()).delete(IMPERSONATION_COOKIE);
+  return { ok: true as const };
+}
 
 export type MenuItemInput = {
   /** null = create new item */
@@ -111,6 +119,54 @@ export async function startConnectOnboardingAction(slug: string, locale: string)
     membership.restaurant,
     `${origin}/${locale}/dashboard/${slug}/settings`,
   );
+}
+
+async function currentOrigin(): Promise<string> {
+  const { headers } = await import("next/headers");
+  const h = await headers();
+  return `${h.get("x-forwarded-proto") ?? "http"}://${h.get("host") ?? "localhost:3000"}`;
+}
+
+export async function startSubscriptionCheckoutAction(
+  slug: string,
+  tier: SubscriptionTier,
+  locale: string,
+) {
+  const membership = await getMembership(slug);
+  if (!membership) return UNAUTHORIZED;
+  if (membership.role !== "owner")
+    return { ok: false as const, error: "Owner access required" };
+  const { startSubscriptionCheckout } = await import("@/lib/billing/stripe");
+  return startSubscriptionCheckout(
+    membership.restaurant,
+    tier,
+    await currentOrigin(),
+    locale as "en" | "ar",
+  );
+}
+
+export async function openBillingPortalAction(slug: string, locale: string) {
+  const membership = await getMembership(slug);
+  if (!membership) return UNAUTHORIZED;
+  if (membership.role !== "owner")
+    return { ok: false as const, error: "Owner access required" };
+  const { openBillingPortal } = await import("@/lib/billing/stripe");
+  const origin = await currentOrigin();
+  return openBillingPortal(
+    membership.restaurant,
+    `${origin}/${locale}/dashboard/${slug}/settings/billing`,
+  );
+}
+
+export async function cancelSubscriptionAction(slug: string) {
+  const membership = await getMembership(slug);
+  if (!membership) return UNAUTHORIZED;
+  if (membership.role !== "owner")
+    return { ok: false as const, error: "Owner access required" };
+  const { cancelSubscription } = await import("@/lib/billing/stripe");
+  const result = await cancelSubscription(membership.restaurant);
+  revalidatePath(`/[locale]/dashboard/${slug}/settings/billing`, "page");
+  return result;
 }
 
 export async function saveSettingsAction(

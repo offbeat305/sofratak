@@ -4,8 +4,11 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 import { CountUp } from "./count-up";
 import { Reveal } from "./reveal";
+import { PLANS, PLAN_ORDER } from "@/lib/billing/plans";
 
-const PRICES = [249, 349, 499]; // business constants — see CLAUDE.md
+// Single source of truth shared with actual billing (lib/billing/plans.ts)
+// — the marketing price can never drift from what Stripe charges.
+const PRICES = PLAN_ORDER.map((tier) => PLANS[tier].priceCents / 100);
 
 /** Pricing cards with the Growth tier elevated (design-pass §7). */
 export async function TierCards() {

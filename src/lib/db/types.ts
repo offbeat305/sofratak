@@ -36,6 +36,42 @@ export type Restaurant = {
     accountId: string | null;
     chargesEnabled: boolean;
   };
+  /**
+   * Platform subscription billing (Phase 7) — restaurant paying Sofratak,
+   * completely separate Stripe object graph from `stripe` above (which is
+   * the restaurant's own Connect account for receiving diner payments).
+   */
+  billing: {
+    stripeCustomerId: string | null;
+    subscriptionId: string | null;
+    tier: "starter" | "growth" | "partner" | null;
+    status: "none" | "active" | "past_due" | "canceled";
+    periodEnd: string | null;
+    canceledAt: string | null;
+  };
+};
+
+export type SubscriptionTier = NonNullable<Restaurant["billing"]["tier"]>;
+
+export type AdminAuditEntry = {
+  id: string;
+  actorUserId: string;
+  actorEmail: string;
+  action: string;
+  targetRestaurantId: string | null;
+  details: Record<string, unknown>;
+  createdAt: string;
+};
+
+/** Minimal shape for creating a new tenant from the admin onboarding wizard. */
+export type NewRestaurantInput = {
+  slug: string;
+  name: LocalizedText;
+  phone: string;
+  address: Restaurant["address"];
+  timezone: string;
+  halal: boolean;
+  ownerEmail: string;
 };
 
 export type ModifierOption = {

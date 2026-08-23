@@ -36,6 +36,7 @@ export function Navbar() {
   }, [open]);
 
   const links = [
+    { href: "/grader", label: t("grader") },
     { href: "/how-it-works", label: t("howItWorks") },
     { href: "/pricing", label: t("pricing") },
     { href: "/cities", label: t("cities") },

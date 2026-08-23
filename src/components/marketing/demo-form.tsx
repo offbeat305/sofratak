@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { submitLeadAction } from "@/app/[locale]/(marketing)/actions";
 
@@ -8,9 +9,11 @@ export function DemoForm() {
   const t = useTranslations("site.demo");
   const tEst = useTranslations("site.estimator");
   const locale = useLocale() as "en" | "ar";
+  // Prefilled when arriving from the Grader's "Book a demo" CTA.
+  const restaurantParam = useSearchParams().get("restaurant") ?? "";
   const [form, setForm] = useState({
     name: "",
-    restaurant: "",
+    restaurant: restaurantParam,
     phone: "",
     email: "",
     city: "",

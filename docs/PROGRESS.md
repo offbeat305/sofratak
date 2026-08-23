@@ -1,5 +1,71 @@
 # Sofratak — Progress Log
 
+## 2026-08-23 (cont.) — Restaurant Grader (lead-gen tool)
+
+Priority 2 per Zizo, approach approved before building (paid Google
+Places API with a hard daily cap, `/grader` on the main site rather than
+a subdomain, full report gated behind email). Free, ~60 seconds: type a
+restaurant name → scored report → estimated $ impact → Sofratak pitch +
+demo CTA. Every completed grade (email submitted) becomes a lead.
+
+### What it scans, and what it costs
+`lib/grader/`: Google Places API (New) for restaurant lookup (Autocomplete
+session-token billing — every keystroke in one search session plus the
+ending Details call bills as a single Autocomplete charge) and profile
+data (rating, review count, hours, phone, website). Website itself is
+scanned with a plain `fetch` + regex — no new HTML-parsing dependency —
+for HTTPS, a viewport meta tag (mobile-friendly proxy), and known
+ordering-platform/marketplace domains found in the site's own links
+(Toast, Square, ChowNow, Olo, Owner.com, DoorDash, Uber Eats, Grubhub,
+etc. — plus a `sofratak` pattern so restaurants already on Sofratak don't
+get a false "you have no ordering" pitch). PageSpeed Insights (free,
+works unauthenticated) adds a performance score. Confirmed live pricing
+from Google's own docs before building: Autocomplete + Place Details
+(Essentials/Pro/Enterprise field tiers) are free up to 1,000–10,000
+calls/month depending on tier: real cost is ~$0 until the tool is
+already succeeding as a lead source.
+
+### Guardrails
+- `grader_cache` table (7-day TTL, keyed by `place_id`) — a repeat or
+  anonymous scan of the same restaurant never re-pays for API calls,
+  independent of whether a lead is ever captured.
+- `grader_api_usage` + `increment_grader_usage()` — atomic conditional-
+  UPDATE (same idiom as `markOrderPaid`/`markCancelExportSent`) hard
+  daily cap on Autocomplete/Details calls, per Zizo's ask. Fails open on
+  a DB error so an infra hiccup doesn't take down the funnel; the real
+  cost backstop is a billing cap set in the Google Cloud Console.
+- `leads.kind` gained `'grader'`; grader leads store the full score/
+  findings JSON so we can later see what's most correlated with
+  converting to a demo.
+
+### The $ impact number
+Deliberately illustrative, not a claim about the specific restaurant —
+built from a stated order-volume band (150–400/mo) and marketplace
+commission rate (15–30%), shown in the UI as a range with a "how we
+calculate this" note. Avoids the two credibility risks: inventing a
+precise-sounding number pulled from nowhere, or citing an unverified
+industry statistic as fact.
+
+### Lead capture
+Score + $ impact range shown immediately after grading; the category
+breakdown and specific findings stay visually gated (CSS blur/hide, not
+a second server round-trip) until an email is submitted, which is what
+actually creates the lead row. Reuses `captureLead()`/the existing
+Supabase-with-local-file-fallback pipeline. Report ends in a "Book a
+demo" CTA that hands the restaurant name to `/demo` via a query param —
+added `useSearchParams` prefill to `DemoForm` (wrapped in `Suspense` on
+the demo page so it stays statically prerendered) for that handoff.
+
+Verified: `tsc`/`eslint`/`next build` clean; confirmed live in-browser in
+both EN and AR (RTL layout, mobile drawer nav) that the page renders with
+no console errors, and specifically that a missing `GOOGLE_PLACES_API_KEY`
+degrades gracefully to a visible "not available right now" message
+instead of a silent dead end (caught and fixed during this same pass —
+the first version only surfaced that error after picking a result, not
+while typing). Did not test a live Places API call or a live email
+submission — needs `GOOGLE_PLACES_API_KEY` in `.env.local` first.
+
+
 ## 2026-08-23 — Phase 7: platform billing + internal admin
 
 Top priority per Zizo: "ready to onboard a real paying restaurant." Ships

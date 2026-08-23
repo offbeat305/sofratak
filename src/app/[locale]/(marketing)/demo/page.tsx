@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { DemoForm } from "@/components/marketing/demo-form";
 import { WhatsAppLink } from "@/components/marketing/whatsapp-link";
@@ -41,7 +42,9 @@ export default async function DemoPage({
         </p>
       )}
       <div className="mt-8 rounded-card border border-olive/10 bg-white p-5 sm:p-6">
-        <DemoForm />
+        <Suspense fallback={null}>
+          <DemoForm />
+        </Suspense>
       </div>
       <div className="mt-6 flex flex-col items-center gap-3 text-center">
         <p className="text-sm font-semibold text-stone">{t("whatsappNote")}</p>

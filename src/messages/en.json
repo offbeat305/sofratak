@@ -101,6 +101,7 @@
   },
   "site": {
     "nav": {
+      "grader": "Restaurant Grader",
       "pricing": "Pricing",
       "howItWorks": "How it works",
       "cities": "Cities",
@@ -308,6 +309,54 @@
       "sending": "Sending…",
       "success": "Got it — we'll reach out within one business day.",
       "whatsappNote": "Faster on WhatsApp? Message us directly:"
+    },
+    "grader": {
+      "title": "Restaurant Grader",
+      "sub": "See what's costing you orders — free, no card, about 60 seconds.",
+      "searchPlaceholder": "Type your restaurant's name…",
+      "searchHint": "Start typing and pick your restaurant from the list.",
+      "notConfigured": "The Grader isn't available right now — try again soon.",
+      "error": "Something went wrong — try again.",
+      "grading": "Grading {name}…",
+      "gradeHeadline": "{name}'s Sofratak Grade",
+      "impactLabel": "Estimated money left on the table",
+      "impactNote": "An illustrative estimate based on typical order volumes and marketplace commission rates for restaurants in a similar situation — not a measurement of your numbers. See how we calculate it below.",
+      "impactZero": "Nice — you're not showing the signals that usually cost restaurants orders.",
+      "unlockTitle": "See the full breakdown",
+      "unlockSub": "Enter your email to see exactly what's driving your score, and how to fix it.",
+      "emailPlaceholder": "you@restaurant.com",
+      "unlock": "Show my full report",
+      "unlocking": "Unlocking…",
+      "categories": {
+        "googleProfile": "Google Business Profile",
+        "reviews": "Reviews & reputation",
+        "website": "Website",
+        "onlineOrdering": "Online ordering"
+      },
+      "findings": {
+        "no_website_on_profile": "Your Google Business Profile has no website listed.",
+        "no_phone_on_profile": "Your Google Business Profile has no phone number listed.",
+        "no_hours_on_profile": "Your Google Business Profile doesn't list hours — diners can't tell if you're open.",
+        "no_reviews": "No reviews yet on Google — reviews are often the first thing a diner checks before ordering.",
+        "low_rating": "Your rating is below the 4.0+ most diners look for before ordering.",
+        "low_review_count": "You don't have many reviews yet — more reviews build trust with new diners.",
+        "no_website": "We couldn't find a website — diners have nowhere to land besides Google or social media.",
+        "website_unreachable": "We tried to load your website but couldn't reach it — worth checking it's up.",
+        "no_https": "Your site isn't served securely (HTTPS) — browsers flag this to visitors.",
+        "not_mobile_friendly": "Your site doesn't look built for phones — most diners order from mobile.",
+        "slow_site": "Your site loads slowly — slow pages lose diners before they even see the menu.",
+        "ordering_unknown": "We couldn't check your website for online ordering.",
+        "already_on_sofratak": "You're already ordering through Sofratak — nice.",
+        "has_paid_ordering_platform": "You have online ordering, but it's running through a paid platform — worth comparing against a flat $0.79/order, $0 commission.",
+        "marketplace_dependent": "Your online ordering runs through a delivery marketplace — expect a real commission cut on every one of those orders.",
+        "no_ordering_detected": "We couldn't find online ordering on your website — you may be missing orders from diners who'd rather not call."
+      },
+      "methodologyTitle": "How we calculate this",
+      "methodologyBody": "We estimate this using a typical range of 150–400 delivery-marketplace orders a month at a ~$25 average ticket, and a 15–30% commission rate common on those platforms. It's an illustrative range based on patterns we see across restaurants, not a measurement of your specific order volume.",
+      "ctaTitle": "Want Sofratak instead?",
+      "ctaBody": "Your own branded ordering site, $0.79 flat per order, $0 commission. Book a 15-minute demo.",
+      "ctaButton": "Book a demo",
+      "regrade": "Grade another restaurant"
     },
     "about": {
       "title": "Why Sofratak exists",

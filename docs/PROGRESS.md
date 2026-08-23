@@ -1,5 +1,41 @@
 # Sofratak — Progress Log
 
+## 2026-08-23 (cont.) — CRITICAL FIX: discounts never reached Stripe
+
+Found by the Cowork session during post-0008 verification (great catch):
+orders recorded the discounted total in the DB, but the Stripe Checkout
+session was built from raw line items + fees — `order.discountCents`
+never entered — so the DINER WAS ASKED FULL PRICE while the dashboard
+showed the discounted revenue. Confirmed against all three discounted
+test orders on the connected account (beitzizo is a live Connect
+direct-charge account): K975 DB 838 vs Stripe 1028, Z156 1117 vs 1377,
+K500 (loyalty redemption) 578 vs 1377 — so BOTH discount paths (promo
+codes and punch-card rewards) were affected. The bug shipped with the
+Phase 5 offer-code work and was only reachable on discounted orders.
+
+Fix in `lib/payments/stripe.ts`:
+1. When `discountCents > 0`, create a one-time `amount_off` coupon on
+   the same account as the session (connected account for direct
+   charges) and attach it via `discounts` — the diner sees it as a
+   proper discount line in Stripe Checkout.
+2. **Hard invariant**: after session creation, if
+   `session.amount_total !== order.totalCents`, the payment start fails
+   closed (logged loudly) — a total mismatch can never silently reach a
+   diner again, whatever causes it next time.
+
+Verified live with the hardest case — one order carrying BOTH discounts
+(PHASE8TEST 20% = $2.60 + Free-dessert reward = $7.99 on a $12.98
+subtotal): order C152, DB total 318 = Stripe amount_total 318, session
+amount_discount 1059, punches 6→1, use_count 2→3. Stopped at the Stripe
+payment page as usual (no card entered).
+
+Note: one-time coupons accumulate on the (connected) account, one per
+discounted order. Harmless clutter; deleting them post-session risks
+invalidating unpaid sessions, so they're left alone.
+
+Awaiting Zizo/Cowork retest, then the demo reset click (which wipes all
+this test data).
+
 ## 2026-08-23 (cont.) — Phase 8: launch polish (8A–8D)
 
 Approved by Zizo with two conditions, both honored below. 0007 applied

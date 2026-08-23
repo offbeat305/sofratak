@@ -91,13 +91,39 @@ export class StripePaymentProvider implements PaymentProvider {
     }
 
     const account = this.accountFor(restaurant);
+    const accountOpts = account ? { stripeAccount: account } : undefined;
     const statusUrl = `${origin}/${loc}/s/${restaurant.slug}/order/${order.id}`;
     try {
+      // Offer-code / loyalty-reward discount: Checkout line items can't be
+      // negative, so the discount rides as a one-time amount_off coupon —
+      // created on the same account as the session (connected account for
+      // direct charges). The diner sees it as a proper discount line.
+      let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined;
+      if (order.discountCents > 0) {
+        const coupon = await this.stripe.coupons.create(
+          {
+            amount_off: order.discountCents,
+            currency: "usd",
+            duration: "once",
+            name: order.offerCode
+              ? loc === "ar"
+                ? `خصم (${order.offerCode})`
+                : `Discount (${order.offerCode})`
+              : loc === "ar"
+                ? "مكافأة الولاء"
+                : "Loyalty reward",
+          },
+          accountOpts,
+        );
+        discounts = [{ coupon: coupon.id }];
+      }
+
       const session = await this.stripe.checkout.sessions.create(
         {
           mode: "payment",
           locale: loc === "ar" ? "auto" : loc, // Stripe has no ar locale yet
           line_items: lineItems,
+          ...(discounts && { discounts }),
           success_url: `${statusUrl}?new=1&session_id={CHECKOUT_SESSION_ID}`,
           cancel_url: `${origin}/${loc}/s/${restaurant.slug}/checkout?canceled=1`,
           metadata: {
@@ -111,9 +137,18 @@ export class StripePaymentProvider implements PaymentProvider {
             },
           }),
         },
-        account ? { stripeAccount: account } : undefined,
+        accountOpts,
       );
       if (!session.url) return { kind: "error", error: "Stripe session has no URL" };
+      // Hard invariant: what Stripe will charge must equal what the order
+      // recorded — the diner must never pay a cent more or less than the
+      // total shown at checkout. Fail closed rather than mischarge.
+      if (session.amount_total !== order.totalCents) {
+        console.error(
+          `[stripe] session total ${session.amount_total} != order total ${order.totalCents} for ${order.id} — refusing to start payment`,
+        );
+        return { kind: "error", error: "Payment could not be started" };
+      }
       return { kind: "redirect", url: session.url, ref: session.id };
     } catch (err) {
       console.error("[stripe] checkout session failed", err);

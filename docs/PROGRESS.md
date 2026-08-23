@@ -1,5 +1,21 @@
 # Sofratak — Progress Log
 
+## 2026-08-23 (cont.) — Phase 5 marketing suite: spec delivered, not built
+
+Priority 3, spec-only per Zizo's instruction — see
+`docs/phase5-marketing-spec.md`. Benchmarked email/SMS/automations/offer
+codes/loyalty against Owner.com's and Toast's actual current feature
+lists (pulled live from their product pages and support docs, not from
+memory). Key finding surfaced: the public pricing page already lists
+"SMS and email campaigns," "offer codes and win-back automation" (Growth)
+and "loyalty program" (Partner) as included — this is a live gap between
+what's marketed and what's built, not a speculative feature. Spec
+recommends bundling the whole suite into Growth (matches Owner.com's
+all-in-one pricing, undercuts Toast's $185/mo add-on) and a build order
+(email → offer codes → SMS/compliance → automations → loyalty) chosen so
+each phase reuses plumbing the previous one proved out. Four open
+questions need Zizo's call before any of it gets built.
+
 ## 2026-08-23 (cont.) — Restaurant Grader (lead-gen tool)
 
 Priority 2 per Zizo, approach approved before building (paid Google

@@ -43,5 +43,8 @@ next-env.d.ts
 # local dev data store
 .data/
 
+# supabase CLI local cache
+supabase/.temp/
+
 # keep the credentials template tracked
 !.env.example

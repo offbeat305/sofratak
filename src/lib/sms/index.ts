@@ -1,6 +1,7 @@
 import "server-only";
 import { getStore } from "@/lib/db/store";
 import type { SmsRecord } from "@/lib/db/types";
+import { TwilioSmsChannel } from "./twilio";
 
 /**
  * SMS adapter. Real implementation: Twilio (TCPA rules apply from Phase 5:
@@ -27,10 +28,11 @@ class ConsoleSmsChannel implements SmsChannel {
 }
 
 export function getSmsChannel(): SmsChannel {
-  if (process.env.TWILIO_ACCOUNT_SID) {
-    throw new Error(
-      "Twilio channel not implemented yet — remove TWILIO_ACCOUNT_SID or implement src/lib/sms/twilio.ts.",
-    );
+  const sid = process.env.TWILIO_ACCOUNT_SID;
+  const token = process.env.TWILIO_AUTH_TOKEN;
+  const from = process.env.TWILIO_PHONE_NUMBER;
+  if (sid && token && from) {
+    return new TwilioSmsChannel(sid, token, from);
   }
   return new ConsoleSmsChannel();
 }

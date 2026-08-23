@@ -4,7 +4,12 @@ import path from "path";
 import type { DataStore } from "./store";
 import type {
   AdminAuditEntry,
+  Campaign,
+  CustomerProfile,
+  LoyaltyAccount,
+  MarketingOptIn,
   Menu,
+  OfferCode,
   Order,
   OrderRefund,
   OrderStatus,
@@ -243,5 +248,73 @@ export class LocalStore implements DataStore {
 
   async upsertMenuCategory(): Promise<void> {
     throw new Error("Menu editing requires the Supabase backend");
+  }
+
+  // ── Phase 5: marketing suite — all requires the Supabase backend ─────
+  async createCampaign(): Promise<Campaign> {
+    throw new Error("Campaigns require the Supabase backend");
+  }
+  async listCampaigns(): Promise<Campaign[]> {
+    return [];
+  }
+  async markCampaignSent(): Promise<void> {
+    throw new Error("Campaigns require the Supabase backend");
+  }
+
+  async getMarketingOptIn(): Promise<MarketingOptIn | null> {
+    return null;
+  }
+  async setMarketingOptIn(): Promise<void> {
+    throw new Error("Marketing opt-in requires the Supabase backend");
+  }
+  async unsubscribeSms(): Promise<void> {
+    throw new Error("Marketing opt-in requires the Supabase backend");
+  }
+  async unsubscribeSmsEverywhere(): Promise<void> {
+    throw new Error("Marketing opt-in requires the Supabase backend");
+  }
+  async listOptedIn(): Promise<MarketingOptIn[]> {
+    return [];
+  }
+  async getCustomerProfile(): Promise<CustomerProfile | null> {
+    return null;
+  }
+  async setCustomerBirthday(): Promise<void> {
+    throw new Error("Customer profiles require the Supabase backend");
+  }
+  async listBirthdaysToday(): Promise<CustomerProfile[]> {
+    return [];
+  }
+  async createOfferCode(): Promise<OfferCode> {
+    throw new Error("Offer codes require the Supabase backend");
+  }
+  async listOfferCodes(): Promise<OfferCode[]> {
+    return [];
+  }
+  async setOfferCodeActive(): Promise<void> {
+    throw new Error("Offer codes require the Supabase backend");
+  }
+  async validateAndRedeemOfferCode(): Promise<
+    { ok: true; offerCode: OfferCode } | { ok: false; error: "not_found" | "expired" | "exhausted" }
+  > {
+    return { ok: false, error: "not_found" };
+  }
+  async getLoyaltyAccount(): Promise<LoyaltyAccount | null> {
+    return null;
+  }
+  async earnLoyaltyPoints(): Promise<void> {
+    throw new Error("Loyalty requires the Supabase backend");
+  }
+  async redeemLoyaltyPoints(): Promise<{ ok: true } | { ok: false; error: "insufficient_points" }> {
+    return { ok: false, error: "insufficient_points" };
+  }
+  async setLoyaltySettings(): Promise<void> {
+    throw new Error("Loyalty requires the Supabase backend");
+  }
+  async setAutomationSettings(): Promise<void> {
+    throw new Error("Automations require the Supabase backend");
+  }
+  async tryRecordAutomation(): Promise<boolean> {
+    return false;
   }
 }

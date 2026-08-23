@@ -15,6 +15,8 @@ export interface EmailChannel {
   send(input: {
     subject: string;
     text: string;
+    /** Branded campaign sends (Phase 5) — falls back to `text` when omitted. */
+    html?: string;
     to?: string;
     attachments?: EmailAttachment[];
   }): Promise<void>;
@@ -26,18 +28,21 @@ class ConsoleEmailChannel implements EmailChannel {
   async send({
     subject,
     text,
+    html,
     to = LEADS_EMAIL,
     attachments,
   }: {
     subject: string;
     text: string;
+    html?: string;
     to?: string;
     attachments?: EmailAttachment[];
   }) {
     const attachmentNote = attachments?.length
       ? `\n[attachments: ${attachments.map((a) => a.filename).join(", ")}]`
       : "";
-    console.log(`[email → ${to}] ${subject}\n${text}${attachmentNote}`);
+    const htmlNote = html ? " [html]" : "";
+    console.log(`[email → ${to}] ${subject}${htmlNote}\n${text}${attachmentNote}`);
   }
 }
 
@@ -46,11 +51,13 @@ class ResendEmailChannel implements EmailChannel {
   async send({
     subject,
     text,
+    html,
     to = LEADS_EMAIL,
     attachments,
   }: {
     subject: string;
     text: string;
+    html?: string;
     to?: string;
     attachments?: EmailAttachment[];
   }) {
@@ -66,6 +73,7 @@ class ResendEmailChannel implements EmailChannel {
           to: [to],
           subject,
           text,
+          ...(html && { html }),
           ...(attachments?.length && {
             attachments: attachments.map((a) => ({
               filename: a.filename,

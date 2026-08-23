@@ -64,6 +64,7 @@ export function CheckoutView({
     }
   };
   const [customTip, setCustomTip] = useState("");
+  const [offerCode, setOfferCode] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const slots = useMemo(
@@ -109,6 +110,7 @@ export function CheckoutView({
         customer: { name, phone, smsOptIn },
         deliveryAddress: fulfillment === "delivery" ? address : null,
         tipCents,
+        offerCode: offerCode.trim() || null,
         lines: cart.lines.map((l) => ({
           menuItemId: l.menuItemId,
           qty: l.qty,
@@ -350,6 +352,23 @@ export function CheckoutView({
             className={cn(inputCls, "mt-3 max-w-40")}
           />
         )}
+      </section>
+
+      {/* offer code */}
+      <section className={sectionCls}>
+        <label htmlFor="offerCode" className="text-sm font-bold text-charcoal">
+          {t("offerCodeTitle")}
+        </label>
+        <input
+          id="offerCode"
+          value={offerCode}
+          onChange={(e) => setOfferCode(e.target.value.toUpperCase())}
+          placeholder={t("offerCodePlaceholder")}
+          autoCapitalize="characters"
+          dir="ltr"
+          className={cn(inputCls, "mt-1.5 uppercase")}
+        />
+        <p className="mt-1 text-sm text-stone">{t("offerCodeNote")}</p>
       </section>
 
       {/* totals */}

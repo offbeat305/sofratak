@@ -49,6 +49,27 @@ export type Restaurant = {
     periodEnd: string | null;
     canceledAt: string | null;
   };
+  /** Phase 5: points-based loyalty, keyed by diner phone number. */
+  loyaltySettings: {
+    enabled: boolean;
+    centsPerPoint: number;
+    rewards: LoyaltyReward[];
+  };
+  /** Phase 5: which automated sends are on for this restaurant. */
+  automations: {
+    winBack: boolean;
+    welcome: boolean;
+    reviewRequest: boolean;
+    birthday: boolean;
+  };
+};
+
+export type LoyaltyReward = {
+  id: string;
+  name: LocalizedText;
+  pointsCost: number;
+  /** applied as a flat discount at checkout when redeemed */
+  valueCents: number;
 };
 
 export type SubscriptionTier = NonNullable<Restaurant["billing"]["tier"]>;
@@ -172,6 +193,9 @@ export type Order = {
   paymentStatus: "pending" | "paid" | "refunded" | "partially_refunded";
   paymentRef: string;
   refunds: OrderRefund[];
+  /** Phase 5: offer code applied at checkout, if any. */
+  offerCode: string | null;
+  discountCents: number;
   /** locale the diner ordered in — drives SMS language */
   locale: "en" | "ar";
   /** set once when the owner is alerted about an unaccepted order */
@@ -187,3 +211,87 @@ export type SmsRecord = {
   orderId: string | null;
   sentAt: string;
 };
+
+// ── Phase 5: marketing suite ──────────────────────────────────────────
+
+export type CampaignChannel = "email" | "sms";
+export type CampaignSegment = "all" | "vip" | "lapsed" | "new";
+export type CampaignStatus = "draft" | "sending" | "sent" | "failed";
+
+export type Campaign = {
+  id: string;
+  restaurantId: string;
+  channel: CampaignChannel;
+  status: CampaignStatus;
+  segment: CampaignSegment;
+  /** email only */
+  subject: string | null;
+  body: string;
+  recipientCount: number;
+  sentCount: number;
+  failedCount: number;
+  createdAt: string;
+  sentAt: string | null;
+};
+
+export type NewCampaignInput = {
+  channel: CampaignChannel;
+  segment: CampaignSegment;
+  subject: string | null;
+  body: string;
+};
+
+/**
+ * Marketing consent — separate from the transactional smsOptIn captured
+ * per order (Order.customer.smsOptIn). TCPA treats the two differently;
+ * STOP must suppress this record without touching order-status texts.
+ */
+export type MarketingOptIn = {
+  restaurantId: string;
+  phone: string;
+  email: string | null;
+  smsOptedIn: boolean;
+  emailOptedIn: boolean;
+  consentedAt: string;
+  unsubscribedAt: string | null;
+  source: string;
+};
+
+export type CustomerProfile = {
+  restaurantId: string;
+  phone: string;
+  birthday: string | null; // "YYYY-MM-DD"
+};
+
+export type OfferCodeType = "percent" | "flat";
+
+export type OfferCode = {
+  id: string;
+  restaurantId: string;
+  code: string;
+  type: OfferCodeType;
+  /** percent: 1-100; flat: cents off */
+  value: number;
+  maxUses: number | null;
+  useCount: number;
+  expiresAt: string | null;
+  active: boolean;
+  createdAt: string;
+};
+
+export type NewOfferCodeInput = {
+  code: string;
+  type: OfferCodeType;
+  value: number;
+  maxUses: number | null;
+  expiresAt: string | null;
+};
+
+export type LoyaltyAccount = {
+  id: string;
+  restaurantId: string;
+  phone: string;
+  points: number;
+};
+
+export type AutomationKind = "win_back" | "welcome" | "review_request" | "birthday";

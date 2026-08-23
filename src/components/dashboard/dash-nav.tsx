@@ -3,6 +3,7 @@
 import {
   BookOpen,
   CalendarCheck,
+  Megaphone,
   ReceiptText,
   Settings,
   Users,
@@ -15,6 +16,7 @@ const ICONS = {
   orders: ReceiptText,
   customers: Users,
   menu: BookOpen,
+  marketing: Megaphone,
   settings: Settings,
 } as const;
 

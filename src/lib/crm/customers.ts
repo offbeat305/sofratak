@@ -66,6 +66,14 @@ export async function customersForRestaurant(
   return customersFromOrders(orders);
 }
 
+/** Campaign audience: "all" (with a phone/email at all) or one CRM tag. */
+export function customersBySegment(
+  customers: Customer[],
+  segment: "all" | "vip" | "lapsed" | "new",
+): Customer[] {
+  return segment === "all" ? customers : customers.filter((c) => c.tags.includes(segment));
+}
+
 /** CSV export is a one-click sales promise (CLAUDE.md) — keep it trivial. */
 export function toCsv(rows: Array<Record<string, string | number>>): string {
   if (!rows.length) return "";

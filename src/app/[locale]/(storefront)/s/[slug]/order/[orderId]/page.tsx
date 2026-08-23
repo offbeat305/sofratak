@@ -10,6 +10,7 @@ import { finalizePaidOrder } from "@/lib/orders/place-order";
 import { formatCents } from "@/lib/money";
 import { OrderStatusView } from "@/components/storefront/order-status-view";
 import { ClearCart } from "@/components/storefront/clear-cart";
+import { PostOrderPreferences } from "@/components/storefront/post-order-preferences";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("storefront");
@@ -118,6 +119,14 @@ export default async function OrderStatusPage({
             <dt className="text-stone">{t("subtotal")}</dt>
             <dd className="tabular-nums" dir="ltr">{fmt(order.subtotalCents)}</dd>
           </div>
+          {order.discountCents > 0 && (
+            <div className="flex justify-between">
+              <dt className="text-stone">{t("discount", { code: order.offerCode ?? "" })}</dt>
+              <dd className="tabular-nums text-positive" dir="ltr">
+                -{fmt(order.discountCents)}
+              </dd>
+            </div>
+          )}
           <div className="flex justify-between">
             <dt className="text-stone">{t("serviceFee")}</dt>
             <dd className="tabular-nums" dir="ltr">{fmt(order.serviceFeeCents)}</dd>
@@ -140,6 +149,10 @@ export default async function OrderStatusPage({
           </div>
         </dl>
       </section>
+
+      {isNew && (
+        <PostOrderPreferences restaurantSlug={slug} phone={order.customer.phone} />
+      )}
 
       <Link
         href={`/s/${slug}`}

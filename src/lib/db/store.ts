@@ -1,11 +1,19 @@
 import "server-only";
 import type {
   AdminAuditEntry,
+  AutomationKind,
+  Campaign,
+  CustomerProfile,
   DayHours,
+  LoyaltyAccount,
+  MarketingOptIn,
   Menu,
   MenuCategory,
   MenuItem,
+  NewCampaignInput,
+  NewOfferCodeInput,
   NewRestaurantInput,
+  OfferCode,
   Order,
   OrderRefund,
   OrderStatus,
@@ -69,6 +77,69 @@ export interface DataStore {
   recordAuditLog(entry: Omit<AdminAuditEntry, "id" | "createdAt">): Promise<void>;
   listAuditLog(restaurantId?: string): Promise<AdminAuditEntry[]>;
   upsertMenuCategory(restaurantId: string, category: MenuCategory): Promise<void>;
+
+  // ── Phase 5: campaigns (email + SMS) ─────────────────────────────────
+  createCampaign(restaurantId: string, input: NewCampaignInput): Promise<Campaign>;
+  listCampaigns(restaurantId: string): Promise<Campaign[]>;
+  markCampaignSent(
+    id: string,
+    recipientCount: number,
+    sentCount: number,
+    failedCount: number,
+  ): Promise<void>;
+
+  // ── Phase 5: marketing opt-in (separate from transactional SMS) ──────
+  getMarketingOptIn(restaurantId: string, phone: string): Promise<MarketingOptIn | null>;
+  setMarketingOptIn(
+    restaurantId: string,
+    phone: string,
+    patch: Partial<Pick<MarketingOptIn, "email" | "smsOptedIn" | "emailOptedIn" | "source">>,
+  ): Promise<void>;
+  /** STOP handling — permanently suppresses SMS marketing for this number at this restaurant. */
+  unsubscribeSms(restaurantId: string, phone: string): Promise<void>;
+  /** Same, across every restaurant — used for inbound STOP replies to the one shared Twilio number. */
+  unsubscribeSmsEverywhere(phone: string): Promise<void>;
+  listOptedIn(restaurantId: string, channel: "sms" | "email"): Promise<MarketingOptIn[]>;
+
+  // ── Phase 5: customer profile (birthday today) ───────────────────────
+  getCustomerProfile(restaurantId: string, phone: string): Promise<CustomerProfile | null>;
+  setCustomerBirthday(restaurantId: string, phone: string, birthday: string): Promise<void>;
+  listBirthdaysToday(restaurantId: string, monthDay: string): Promise<CustomerProfile[]>;
+
+  // ── Phase 5: offer codes ──────────────────────────────────────────────
+  createOfferCode(restaurantId: string, input: NewOfferCodeInput): Promise<OfferCode>;
+  listOfferCodes(restaurantId: string): Promise<OfferCode[]>;
+  setOfferCodeActive(restaurantId: string, id: string, active: boolean): Promise<void>;
+  /** Atomic: fails with a reason rather than silently no-op-ing. */
+  validateAndRedeemOfferCode(
+    restaurantId: string,
+    code: string,
+  ): Promise<
+    | { ok: true; offerCode: OfferCode }
+    | { ok: false; error: "not_found" | "expired" | "exhausted" }
+  >;
+
+  // ── Phase 5: loyalty ───────────────────────────────────────────────────
+  getLoyaltyAccount(restaurantId: string, phone: string): Promise<LoyaltyAccount | null>;
+  earnLoyaltyPoints(restaurantId: string, phone: string, delta: number, reason: string): Promise<void>;
+  /** Atomic: fails rather than letting a balance go negative. */
+  redeemLoyaltyPoints(
+    restaurantId: string,
+    phone: string,
+    delta: number,
+    reason: string,
+  ): Promise<{ ok: true } | { ok: false; error: "insufficient_points" }>;
+  setLoyaltySettings(restaurantId: string, settings: Restaurant["loyaltySettings"]): Promise<void>;
+
+  // ── Phase 5: automations ──────────────────────────────────────────────
+  setAutomationSettings(restaurantId: string, settings: Restaurant["automations"]): Promise<void>;
+  /** Atomic idempotency guard — true only the first time for this (kind, phone, ref). */
+  tryRecordAutomation(
+    restaurantId: string,
+    kind: AutomationKind,
+    phone: string,
+    ref: string,
+  ): Promise<boolean>;
 }
 
 let backend: DataStore | null = null;

@@ -22,6 +22,8 @@ export type PlaceOrderInput = {
   customer: { name: string; phone: string; smsOptIn: boolean };
   deliveryAddress: string | null;
   tipCents: number;
+  /** Phase 5 offer code, applied to the food subtotal only. */
+  offerCode: string | null;
   lines: Array<{
     menuItemId: string;
     qty: number;
@@ -156,7 +158,36 @@ export async function placeOrder(
       ? input.tipCents
       : 0;
 
-  const totalCents = subtotalCents + SERVICE_FEE_CENTS + deliveryFeeCents + tipCents;
+  // Redeemed here (before payment, not at finalize) — same tradeoff the
+  // rest of checkout already accepts for a pending order: a code use can
+  // be "spent" by an order that's later abandoned before payment. Simpler
+  // than unwinding a redemption after the fact, and abandoned-pending
+  // orders are already an accepted edge case elsewhere in this flow.
+  let discountCents = 0;
+  let offerCode: string | null = null;
+  if (input.offerCode?.trim()) {
+    const redeemed = await store.validateAndRedeemOfferCode(restaurant.id, input.offerCode);
+    if (!redeemed.ok) {
+      return {
+        ok: false,
+        error:
+          redeemed.error === "expired"
+            ? "This code has expired"
+            : redeemed.error === "exhausted"
+              ? "This code has already been used the maximum number of times"
+              : "That code isn't valid",
+      };
+    }
+    offerCode = redeemed.offerCode.code;
+    discountCents =
+      redeemed.offerCode.type === "percent"
+        ? Math.round((subtotalCents * redeemed.offerCode.value) / 100)
+        : redeemed.offerCode.value;
+    discountCents = Math.min(discountCents, subtotalCents);
+  }
+
+  const totalCents =
+    subtotalCents - discountCents + SERVICE_FEE_CENTS + deliveryFeeCents + tipCents;
 
   const id = crypto.randomUUID();
   const number =
@@ -182,6 +213,8 @@ export async function placeOrder(
     paymentStatus: "pending",
     paymentRef: "",
     refunds: [],
+    offerCode,
+    discountCents,
     locale: input.locale,
     unacceptedAlertSentAt: null,
     createdAt: now,
@@ -232,5 +265,19 @@ export async function finalizePaidOrder(
   });
   // Route to the kitchen (OrderChannel adapters — never blocks a paid order).
   await dispatchNewOrder(order, restaurant, origin);
+
+  // Points earn on the food spend only (same base offer codes discount) —
+  // never blocks the order; a loyalty hiccup shouldn't fail a paid order.
+  if (restaurant.loyaltySettings.enabled && restaurant.loyaltySettings.centsPerPoint > 0) {
+    const points = Math.floor(order.subtotalCents / restaurant.loyaltySettings.centsPerPoint);
+    if (points > 0) {
+      try {
+        await store.earnLoyaltyPoints(restaurant.id, order.customer.phone, points, `order:${order.id}`);
+      } catch (err) {
+        console.error("[loyalty] earn failed", err);
+      }
+    }
+  }
+
   return order;
 }

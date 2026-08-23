@@ -4,12 +4,20 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { DataStore } from "./store";
 import type {
   AdminAuditEntry,
+  AutomationKind,
+  Campaign,
+  CustomerProfile,
   DayHours,
+  LoyaltyAccount,
+  MarketingOptIn,
   Menu,
   MenuCategory,
   MenuItem,
   ModifierGroup,
+  NewCampaignInput,
+  NewOfferCodeInput,
   NewRestaurantInput,
+  OfferCode,
   Order,
   OrderRefund,
   OrderStatus,
@@ -48,7 +56,67 @@ function rowToRestaurant(row: any): Restaurant {
       periodEnd: row.subscription_period_end ?? null,
       canceledAt: row.subscription_canceled_at ?? null,
     },
+    loyaltySettings: row.loyalty_settings ?? { enabled: false, centsPerPoint: 100, rewards: [] },
+    automations: row.automations ?? {
+      winBack: true,
+      welcome: true,
+      reviewRequest: true,
+      birthday: false,
+    },
   };
+}
+
+function rowToCampaign(row: any): Campaign {
+  return {
+    id: row.id,
+    restaurantId: row.restaurant_id,
+    channel: row.channel,
+    status: row.status,
+    segment: row.segment,
+    subject: row.subject ?? null,
+    body: row.body,
+    recipientCount: row.recipient_count,
+    sentCount: row.sent_count,
+    failedCount: row.failed_count,
+    createdAt: row.created_at,
+    sentAt: row.sent_at ?? null,
+  };
+}
+
+function rowToMarketingOptIn(row: any): MarketingOptIn {
+  return {
+    restaurantId: row.restaurant_id,
+    phone: row.phone,
+    email: row.email ?? null,
+    smsOptedIn: row.sms_opted_in,
+    emailOptedIn: row.email_opted_in,
+    consentedAt: row.consented_at,
+    unsubscribedAt: row.unsubscribed_at ?? null,
+    source: row.source,
+  };
+}
+
+function rowToCustomerProfile(row: any): CustomerProfile {
+  return { restaurantId: row.restaurant_id, phone: row.phone, birthday: row.birthday ?? null };
+}
+
+function rowToOfferCode(row: any): OfferCode {
+  return {
+    id: row.id,
+    restaurantId: row.restaurant_id,
+    code: row.code,
+    type: row.type,
+    value: row.value,
+    maxUses: row.max_uses ?? null,
+    useCount: row.use_count,
+    expiresAt: row.expires_at ?? null,
+    active: row.active,
+    createdAt: row.created_at,
+  };
+}
+
+function rowToLoyaltyAccount(row: any): LoyaltyAccount {
+  return { id: row.id, restaurantId: row.restaurant_id, phone: row.phone, points: row.points };
 }
 
 function rowToAuditEntry(row: any): AdminAuditEntry {
@@ -82,6 +150,8 @@ function rowToOrder(row: any): Order {
     paymentStatus: row.payment_status,
     paymentRef: row.payment_ref,
     refunds: row.refunds ?? [],
+    offerCode: row.offer_code ?? null,
+    discountCents: row.discount_cents ?? 0,
     locale: row.locale,
     unacceptedAlertSentAt: row.unaccepted_alert_sent_at,
     createdAt: row.created_at,
@@ -108,6 +178,8 @@ function orderToRow(order: Order): Record<string, unknown> {
     payment_status: order.paymentStatus,
     payment_ref: order.paymentRef,
     refunds: order.refunds,
+    offer_code: order.offerCode,
+    discount_cents: order.discountCents,
     locale: order.locale,
     unaccepted_alert_sent_at: order.unacceptedAlertSentAt,
     created_at: order.createdAt,
@@ -520,5 +592,331 @@ export class SupabaseStore implements DataStore {
       sort: category.sort,
     });
     if (error) throw new Error(`upsertMenuCategory failed: ${error.message}`);
+  }
+
+  // ── Phase 5: campaigns ────────────────────────────────────────────────
+
+  async createCampaign(restaurantId: string, input: NewCampaignInput): Promise<Campaign> {
+    const { data, error } = await this.client
+      .from("campaigns")
+      .insert({
+        restaurant_id: restaurantId,
+        channel: input.channel,
+        segment: input.segment,
+        subject: input.subject,
+        body: input.body,
+      })
+      .select()
+      .single();
+    if (error) throw new Error(`createCampaign failed: ${error.message}`);
+    return rowToCampaign(data);
+  }
+
+  async listCampaigns(restaurantId: string): Promise<Campaign[]> {
+    const { data } = await this.client
+      .from("campaigns")
+      .select("*")
+      .eq("restaurant_id", restaurantId)
+      .order("created_at", { ascending: false });
+    return (data ?? []).map(rowToCampaign);
+  }
+
+  async markCampaignSent(
+    id: string,
+    recipientCount: number,
+    sentCount: number,
+    failedCount: number,
+  ): Promise<void> {
+    const { error } = await this.client
+      .from("campaigns")
+      .update({
+        status: "sent",
+        recipient_count: recipientCount,
+        sent_count: sentCount,
+        failed_count: failedCount,
+        sent_at: new Date().toISOString(),
+      })
+      .eq("id", id);
+    if (error) throw new Error(`markCampaignSent failed: ${error.message}`);
+  }
+
+  // ── Phase 5: marketing opt-in ─────────────────────────────────────────
+
+  async getMarketingOptIn(restaurantId: string, phone: string): Promise<MarketingOptIn | null> {
+    const { data } = await this.client
+      .from("marketing_optins")
+      .select("*")
+      .eq("restaurant_id", restaurantId)
+      .eq("phone", phone)
+      .maybeSingle();
+    return data ? rowToMarketingOptIn(data) : null;
+  }
+
+  async setMarketingOptIn(
+    restaurantId: string,
+    phone: string,
+    patch: Partial<Pick<MarketingOptIn, "email" | "smsOptedIn" | "emailOptedIn" | "source">>,
+  ): Promise<void> {
+    const row: Record<string, unknown> = { restaurant_id: restaurantId, phone };
+    if ("email" in patch) row.email = patch.email;
+    if ("smsOptedIn" in patch) row.sms_opted_in = patch.smsOptedIn;
+    if ("emailOptedIn" in patch) row.email_opted_in = patch.emailOptedIn;
+    if ("source" in patch) row.source = patch.source;
+    const { error } = await this.client
+      .from("marketing_optins")
+      .upsert(row, { onConflict: "restaurant_id,phone" });
+    if (error) throw new Error(`setMarketingOptIn failed: ${error.message}`);
+  }
+
+  async unsubscribeSms(restaurantId: string, phone: string): Promise<void> {
+    const { error } = await this.client
+      .from("marketing_optins")
+      .update({ sms_opted_in: false, unsubscribed_at: new Date().toISOString() })
+      .eq("restaurant_id", restaurantId)
+      .eq("phone", phone);
+    if (error) throw new Error(`unsubscribeSms failed: ${error.message}`);
+  }
+
+  async unsubscribeSmsEverywhere(phone: string): Promise<void> {
+    const { error } = await this.client
+      .from("marketing_optins")
+      .update({ sms_opted_in: false, unsubscribed_at: new Date().toISOString() })
+      .eq("phone", phone);
+    if (error) throw new Error(`unsubscribeSmsEverywhere failed: ${error.message}`);
+  }
+
+  async listOptedIn(restaurantId: string, channel: "sms" | "email"): Promise<MarketingOptIn[]> {
+    const column = channel === "sms" ? "sms_opted_in" : "email_opted_in";
+    const { data } = await this.client
+      .from("marketing_optins")
+      .select("*")
+      .eq("restaurant_id", restaurantId)
+      .eq(column, true);
+    return (data ?? []).map(rowToMarketingOptIn);
+  }
+
+  // ── Phase 5: customer profile ─────────────────────────────────────────
+
+  async getCustomerProfile(restaurantId: string, phone: string): Promise<CustomerProfile | null> {
+    const { data } = await this.client
+      .from("customer_profiles")
+      .select("*")
+      .eq("restaurant_id", restaurantId)
+      .eq("phone", phone)
+      .maybeSingle();
+    return data ? rowToCustomerProfile(data) : null;
+  }
+
+  async setCustomerBirthday(restaurantId: string, phone: string, birthday: string): Promise<void> {
+    const { error } = await this.client
+      .from("customer_profiles")
+      .upsert(
+        { restaurant_id: restaurantId, phone, birthday, updated_at: new Date().toISOString() },
+        { onConflict: "restaurant_id,phone" },
+      );
+    if (error) throw new Error(`setCustomerBirthday failed: ${error.message}`);
+  }
+
+  async listBirthdaysToday(restaurantId: string, monthDay: string): Promise<CustomerProfile[]> {
+    // monthDay: "MM-DD". Filtered client-side — the birthday list per
+    // restaurant is small enough that an index isn't worth the complexity.
+    const { data } = await this.client
+      .from("customer_profiles")
+      .select("*")
+      .eq("restaurant_id", restaurantId)
+      .not("birthday", "is", null);
+    return (data ?? [])
+      .filter((row) => String(row.birthday).slice(5) === monthDay)
+      .map(rowToCustomerProfile);
+  }
+
+  // ── Phase 5: offer codes ───────────────────────────────────────────────
+
+  async createOfferCode(restaurantId: string, input: NewOfferCodeInput): Promise<OfferCode> {
+    const { data, error } = await this.client
+      .from("offer_codes")
+      .insert({
+        restaurant_id: restaurantId,
+        code: input.code.trim().toUpperCase(),
+        type: input.type,
+        value: input.value,
+        max_uses: input.maxUses,
+        expires_at: input.expiresAt,
+      })
+      .select()
+      .single();
+    if (error) throw new Error(`createOfferCode failed: ${error.message}`);
+    return rowToOfferCode(data);
+  }
+
+  async listOfferCodes(restaurantId: string): Promise<OfferCode[]> {
+    const { data } = await this.client
+      .from("offer_codes")
+      .select("*")
+      .eq("restaurant_id", restaurantId)
+      .order("created_at", { ascending: false });
+    return (data ?? []).map(rowToOfferCode);
+  }
+
+  async setOfferCodeActive(restaurantId: string, id: string, active: boolean): Promise<void> {
+    const { error } = await this.client
+      .from("offer_codes")
+      .update({ active })
+      .eq("restaurant_id", restaurantId)
+      .eq("id", id);
+    if (error) throw new Error(`setOfferCodeActive failed: ${error.message}`);
+  }
+
+  async validateAndRedeemOfferCode(
+    restaurantId: string,
+    rawCode: string,
+  ): Promise<
+    { ok: true; offerCode: OfferCode } | { ok: false; error: "not_found" | "expired" | "exhausted" }
+  > {
+    const code = rawCode.trim().toUpperCase();
+    const { data } = await this.client
+      .from("offer_codes")
+      .select("*")
+      .eq("restaurant_id", restaurantId)
+      .eq("code", code)
+      .maybeSingle();
+    if (!data || !data.active) return { ok: false, error: "not_found" };
+    if (data.expires_at && new Date(data.expires_at).getTime() < Date.now())
+      return { ok: false, error: "expired" };
+    if (data.max_uses !== null && data.use_count >= data.max_uses)
+      return { ok: false, error: "exhausted" };
+
+    // Optimistic lock on use_count — a lost race just falls through to
+    // "exhausted", which is an honest outcome for a limited-use code.
+    const { data: updated } = await this.client
+      .from("offer_codes")
+      .update({ use_count: data.use_count + 1 })
+      .eq("id", data.id)
+      .eq("use_count", data.use_count)
+      .select()
+      .maybeSingle();
+    if (!updated) return { ok: false, error: "exhausted" };
+    return { ok: true, offerCode: rowToOfferCode(updated) };
+  }
+
+  // ── Phase 5: loyalty ───────────────────────────────────────────────────
+
+  async getLoyaltyAccount(restaurantId: string, phone: string): Promise<LoyaltyAccount | null> {
+    const { data } = await this.client
+      .from("loyalty_accounts")
+      .select("*")
+      .eq("restaurant_id", restaurantId)
+      .eq("phone", phone)
+      .maybeSingle();
+    return data ? rowToLoyaltyAccount(data) : null;
+  }
+
+  async earnLoyaltyPoints(
+    restaurantId: string,
+    phone: string,
+    delta: number,
+    reason: string,
+  ): Promise<void> {
+    const { data: existing } = await this.client
+      .from("loyalty_accounts")
+      .select("id, points")
+      .eq("restaurant_id", restaurantId)
+      .eq("phone", phone)
+      .maybeSingle();
+
+    let accountId: string;
+    if (existing) {
+      accountId = existing.id;
+      const { error } = await this.client
+        .from("loyalty_accounts")
+        .update({ points: existing.points + delta })
+        .eq("id", accountId);
+      if (error) throw new Error(`earnLoyaltyPoints failed: ${error.message}`);
+    } else {
+      const { data: created, error } = await this.client
+        .from("loyalty_accounts")
+        .insert({ restaurant_id: restaurantId, phone, points: delta })
+        .select("id")
+        .single();
+      if (error) throw new Error(`earnLoyaltyPoints failed: ${error.message}`);
+      accountId = created.id;
+    }
+
+    const { error: ledgerError } = await this.client
+      .from("loyalty_ledger")
+      .insert({ account_id: accountId, delta, reason });
+    if (ledgerError) throw new Error(`earnLoyaltyPoints failed: ${ledgerError.message}`);
+  }
+
+  async redeemLoyaltyPoints(
+    restaurantId: string,
+    phone: string,
+    delta: number,
+    reason: string,
+  ): Promise<{ ok: true } | { ok: false; error: "insufficient_points" }> {
+    const { data: existing } = await this.client
+      .from("loyalty_accounts")
+      .select("id, points")
+      .eq("restaurant_id", restaurantId)
+      .eq("phone", phone)
+      .maybeSingle();
+    if (!existing || existing.points < delta) return { ok: false, error: "insufficient_points" };
+
+    const { data: updated } = await this.client
+      .from("loyalty_accounts")
+      .update({ points: existing.points - delta })
+      .eq("id", existing.id)
+      .eq("points", existing.points)
+      .select("id")
+      .maybeSingle();
+    if (!updated) return { ok: false, error: "insufficient_points" };
+
+    const { error } = await this.client
+      .from("loyalty_ledger")
+      .insert({ account_id: existing.id, delta: -delta, reason });
+    if (error) throw new Error(`redeemLoyaltyPoints failed: ${error.message}`);
+    return { ok: true };
+  }
+
+  async setLoyaltySettings(
+    restaurantId: string,
+    settings: Restaurant["loyaltySettings"],
+  ): Promise<void> {
+    const { error } = await this.client
+      .from("restaurants")
+      .update({ loyalty_settings: settings })
+      .eq("id", restaurantId);
+    if (error) throw new Error(`setLoyaltySettings failed: ${error.message}`);
+  }
+
+  // ── Phase 5: automations ───────────────────────────────────────────────
+
+  async setAutomationSettings(
+    restaurantId: string,
+    settings: Restaurant["automations"],
+  ): Promise<void> {
+    const { error } = await this.client
+      .from("restaurants")
+      .update({ automations: settings })
+      .eq("id", restaurantId);
+    if (error) throw new Error(`setAutomationSettings failed: ${error.message}`);
+  }
+
+  async tryRecordAutomation(
+    restaurantId: string,
+    kind: AutomationKind,
+    phone: string,
+    ref: string,
+  ): Promise<boolean> {
+    const { data, error } = await this.client
+      .from("automation_log")
+      .insert({ restaurant_id: restaurantId, kind, phone, ref })
+      .select("id")
+      .maybeSingle();
+    if (error) {
+      if (error.code === "23505") return false; // unique violation — already sent
+      throw new Error(`tryRecordAutomation failed: ${error.message}`);
+    }
+    return Boolean(data);
   }
 }

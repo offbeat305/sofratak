@@ -302,4 +302,9 @@ export type LoyaltyAccount = {
   points: number;
 };
 
-export type AutomationKind = "win_back" | "welcome" | "review_request" | "birthday";
+export type AutomationKind =
+  | "win_back"
+  | "welcome"
+  | "review_request"
+  | "birthday"
+  | "weekly_report";

@@ -1,5 +1,56 @@
 # Sofratak — Progress Log
 
+## 2026-08-23 (cont.) — Grader verified live · punch-card loyalty · Phase 6
+
+Migrations 0004–0006 applied by Zizo; GOOGLE_PLACES_API_KEY added.
+
+### Grader verified against the real Places API
+Typed "Columbia Restaurant Tampa" → live autocomplete returned real
+Google results → full grade ran: C, 70/100 (Google profile 100, reviews
+94, website 75, ordering 10 — no known ordering platform detected on
+their site), $563–$3,000/mo estimated impact. Email unlock wrote a real
+`kind='grader'` lead row to Supabase. The whole funnel works.
+
+### Loyalty reworked to punch-card language (Zizo's decision)
+Points ledger stays underneath; every paid order = exactly 1 punch.
+Owner defines rewards as "after N orders → X (worth $ off)"; the
+spend-based earn-rate UI is gone (`centsPerPoint` kept in stored JSON
+for compat, unused). NEW: checkout redemption — once the diner types
+their phone number, their punch count appears with any earned rewards;
+selecting one shows the discount immediately and the server validates +
+deducts atomically at order placement (can't go negative, same
+pre-payment tradeoff as offer codes). Verified end-to-end live: seeded
+6 punches, redeemed "Free dessert (5 punches)" through real checkout —
+total $13.77 → $5.78, server deducted to 1 punch with a ledger entry,
+order row carries discount_cents=799. Stopped at the Stripe test
+payment page without entering a card.
+
+### Phase 6 — weekly Monday owner report
+`lib/reports/weekly-stats.ts` (pure math + render, directly testable) +
+`lib/reports/weekly.ts` (orchestration): orders/revenue/avg ticket vs
+prior week, new vs returning, top-3 best sellers, estimated savings vs
+a 25% marketplace rate (labeled "estimated, not guaranteed" everywhere),
+one suggested action with a deep link (rules: paused → resume; 3+
+lapsed → win-back campaign; no reviews URL → add it; no loyalty → turn
+on punch card; else best-sellers nudge). One compact bilingual EN+AR
+email + an SMS nudge with the dashboard link. Revenue math is the same
+`netCents` the Today dashboard uses — extracted both helpers into
+`lib/orders/stats.ts` so the two can never disagree. Cron at
+`/api/cron/weekly-report`, Mondays 13:00 UTC (~9am ET) in vercel.json,
+idempotent per ISO week via the automation_log guard.
+
+Verified: stats computed from real beitzizo orders came out exactly
+right (prior-week revenue $21.75 = the two paid orders minus the $0.79
+fees each); rendered email visually inspected in-browser, all rows +
+CTA correct. The live cron run correctly failed-safe (logged, nothing
+sent) because migration 0007 isn't applied yet — that's the expected
+behavior, not a bug.
+
+### Needs Zizo (small)
+- Apply `supabase/migrations/0007_weekly_report.sql` (2 lines — widens
+  an enum constraint so the weekly report's once-per-week guard works).
+- At launch, as already planned: Twilio + webhook, CRON_SECRET on Vercel.
+
 ## 2026-08-23 (cont.) — Two fixes against CLAUDE.md's original Phase 5 spec
 
 Re-read CLAUDE.md's own Phase 5 line after the fact and caught two real

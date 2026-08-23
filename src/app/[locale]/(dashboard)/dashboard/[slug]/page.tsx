@@ -5,33 +5,8 @@ import { getStore } from "@/lib/db/store";
 import { formatCents } from "@/lib/money";
 import { StatCard } from "@/components/ui/StatCard";
 import { Badge } from "@/components/ui/Badge";
+import { dayNumber, netCents } from "@/lib/orders/stats";
 import type { Order } from "@/lib/db/types";
-
-/** Calendar day number in the restaurant's timezone (not the server's). */
-function dayNumber(date: string | Date, timeZone: string): number {
-  const [y, m, d] = new Intl.DateTimeFormat("en-CA", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  })
-    .format(new Date(date))
-    .split("-")
-    .map(Number);
-  return Date.UTC(y, m - 1, d) / 86_400_000;
-}
-
-/**
- * The restaurant's take: subtotal + tip + delivery fee. The $0.79 service
- * fee is Sofratak's, so it never counts as restaurant revenue. Refunds are
- * subtracted (clamped at 0 — a full refund includes the fee).
- */
-function netCents(order: Order): number {
-  if (order.paymentStatus === "pending") return 0;
-  const take = order.totalCents - order.serviceFeeCents;
-  const refunded = order.refunds.reduce((n, r) => n + r.amountCents, 0);
-  return Math.max(0, take - refunded);
-}
 
 export default async function TodayPage({
   params,

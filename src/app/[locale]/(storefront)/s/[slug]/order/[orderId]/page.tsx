@@ -121,7 +121,9 @@ export default async function OrderStatusPage({
           </div>
           {order.discountCents > 0 && (
             <div className="flex justify-between">
-              <dt className="text-stone">{t("discount", { code: order.offerCode ?? "" })}</dt>
+              <dt className="text-stone">
+                {order.offerCode ? t("discount", { code: order.offerCode }) : t("discountGeneric")}
+              </dt>
               <dd className="tabular-nums text-positive" dir="ltr">
                 -{fmt(order.discountCents)}
               </dd>

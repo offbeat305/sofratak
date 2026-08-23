@@ -24,6 +24,8 @@ export type PlaceOrderInput = {
   tipCents: number;
   /** Phase 5 offer code, applied to the food subtotal only. */
   offerCode: string | null;
+  /** Phase 5 loyalty: id of a reward from the restaurant's catalog to redeem. */
+  redeemRewardId: string | null;
   lines: Array<{
     menuItemId: string;
     qty: number;
@@ -186,6 +188,25 @@ export async function placeOrder(
     discountCents = Math.min(discountCents, subtotalCents);
   }
 
+  // Punch-card reward redemption (Phase 5, Zizo's punch-card decision):
+  // rewards read as "after N orders" to the owner and diner; points do
+  // the math underneath (1 punch = 1 point, earned per paid order below).
+  // Same pre-payment tradeoff as offer codes above.
+  if (input.redeemRewardId) {
+    const reward = restaurant.loyaltySettings.enabled
+      ? restaurant.loyaltySettings.rewards.find((r) => r.id === input.redeemRewardId)
+      : undefined;
+    if (!reward) return { ok: false, error: "That reward isn't available" };
+    const redeemed = await store.redeemLoyaltyPoints(
+      restaurant.id,
+      phone,
+      reward.pointsCost,
+      `redeem:${reward.id}`,
+    );
+    if (!redeemed.ok) return { ok: false, error: "Not enough punches yet for that reward" };
+    discountCents += Math.min(reward.valueCents, subtotalCents - discountCents);
+  }
+
   const totalCents =
     subtotalCents - discountCents + SERVICE_FEE_CENTS + deliveryFeeCents + tipCents;
 
@@ -283,16 +304,14 @@ export async function finalizePaidOrder(
     }
   }
 
-  // Points earn on the food spend only (same base offer codes discount) —
-  // never blocks the order; a loyalty hiccup shouldn't fail a paid order.
-  if (restaurant.loyaltySettings.enabled && restaurant.loyaltySettings.centsPerPoint > 0) {
-    const points = Math.floor(order.subtotalCents / restaurant.loyaltySettings.centsPerPoint);
-    if (points > 0) {
-      try {
-        await store.earnLoyaltyPoints(restaurant.id, order.customer.phone, points, `order:${order.id}`);
-      } catch (err) {
-        console.error("[loyalty] earn failed", err);
-      }
+  // Punch-card model (Zizo's call): every paid order = exactly one punch,
+  // regardless of order size — 1 punch is stored as 1 point in the ledger.
+  // Never blocks the order; a loyalty hiccup shouldn't fail a paid order.
+  if (restaurant.loyaltySettings.enabled) {
+    try {
+      await store.earnLoyaltyPoints(restaurant.id, order.customer.phone, 1, `order:${order.id}`);
+    } catch (err) {
+      console.error("[loyalty] earn failed", err);
     }
   }
 

@@ -9,6 +9,11 @@ import type { Restaurant } from "@/lib/db/types";
 const inputCls =
   "h-10 rounded-field border border-olive/20 bg-white px-3 text-[15px] focus:outline-none focus-visible:ring-2 focus-visible:ring-olive/25";
 
+/**
+ * Punch-card framing (Zizo's call): the owner thinks in "after N orders,
+ * the customer gets X" — a points ledger does the math underneath at
+ * 1 punch = 1 point per paid order.
+ */
 export function LoyaltyCard({
   slug,
   settings,
@@ -19,7 +24,7 @@ export function LoyaltyCard({
   const t = useTranslations("dash.marketing");
   const [pending, startTransition] = useTransition();
   const [state, setState] = useState(settings);
-  const [newReward, setNewReward] = useState({ nameEn: "", pointsCost: "100", valueCents: "500" });
+  const [newReward, setNewReward] = useState({ nameEn: "", orders: "10", worth: "10.00" });
   const [saved, setSaved] = useState(false);
 
   const save = (next: Restaurant["loyaltySettings"]) => {
@@ -32,23 +37,26 @@ export function LoyaltyCard({
   };
 
   const addReward = () => {
-    if (!newReward.nameEn.trim()) return;
+    const orders = parseInt(newReward.orders, 10);
+    const worthCents = Math.round(parseFloat(newReward.worth || "0") * 100);
+    if (!newReward.nameEn.trim() || !Number.isInteger(orders) || orders < 1 || worthCents < 1) return;
     save({
       ...state,
       rewards: [
         ...state.rewards,
         {
           id: `rwd-${Date.now()}`,
-          name: { en: newReward.nameEn, ar: newReward.nameEn },
-          pointsCost: Number(newReward.pointsCost) || 0,
-          valueCents: Number(newReward.valueCents) || 0,
+          name: { en: newReward.nameEn.trim(), ar: newReward.nameEn.trim() },
+          pointsCost: orders,
+          valueCents: worthCents,
         },
       ],
     });
-    setNewReward({ nameEn: "", pointsCost: "100", valueCents: "500" });
+    setNewReward({ nameEn: "", orders: "10", worth: "10.00" });
   };
 
-  const removeReward = (id: string) => save({ ...state, rewards: state.rewards.filter((r) => r.id !== id) });
+  const removeReward = (id: string) =>
+    save({ ...state, rewards: state.rewards.filter((r) => r.id !== id) });
 
   return (
     <section className="rounded-card border border-olive/10 bg-white p-5">
@@ -69,66 +77,75 @@ export function LoyaltyCard({
       </label>
 
       {state.enabled && (
-        <>
-          <label className="mt-3 flex flex-col gap-1 text-sm font-semibold text-charcoal">
-            {t("earnRateLabel")}
-            <input
-              value={(state.centsPerPoint / 100).toFixed(2)}
-              onChange={(e) => {
-                const dollars = parseFloat(e.target.value || "0");
-                if (Number.isFinite(dollars) && dollars > 0) {
-                  setState({ ...state, centsPerPoint: Math.round(dollars * 100) });
-                }
-              }}
-              onBlur={() => save(state)}
-              dir="ltr"
-              className={`${inputCls} max-w-32`}
-            />
-            <span className="text-xs font-normal text-stone">{t("earnRateNote")}</span>
-          </label>
+        <div className="mt-4 border-t border-olive/10 pt-4">
+          <p className="mb-2 text-xs font-bold tracking-wide text-stone uppercase">
+            {t("rewardsTitle")}
+          </p>
+          {state.rewards.length > 0 && (
+            <ul className="mb-3 flex flex-col gap-1.5">
+              {state.rewards.map((r) => (
+                <li key={r.id} className="flex items-center justify-between gap-2 text-sm">
+                  <span className="text-charcoal">
+                    {t("rewardRow", {
+                      orders: r.pointsCost,
+                      reward: r.name.en,
+                      worth: (r.valueCents / 100).toFixed(2),
+                    })}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => removeReward(r.id)}
+                    className="shrink-0 text-stone hover:text-error"
+                    aria-label={t("removeReward")}
+                  >
+                    <Trash2 className="size-4" aria-hidden />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
 
-          <div className="mt-4 border-t border-olive/10 pt-4">
-            <p className="mb-2 text-xs font-bold tracking-wide text-stone uppercase">
-              {t("rewardsTitle")}
-            </p>
-            {state.rewards.length > 0 && (
-              <ul className="mb-3 flex flex-col gap-1.5">
-                {state.rewards.map((r) => (
-                  <li key={r.id} className="flex items-center justify-between text-sm">
-                    <span className="text-charcoal">
-                      {r.name.en} — {r.pointsCost} {t("points")}
-                    </span>
-                    <button type="button" onClick={() => removeReward(r.id)} className="text-stone hover:text-error">
-                      <Trash2 className="size-4" aria-hidden />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <label className="col-span-2 flex flex-col gap-1 text-xs font-semibold text-stone sm:col-span-2">
+              {t("rewardName")}
               <input
                 value={newReward.nameEn}
                 onChange={(e) => setNewReward({ ...newReward, nameEn: e.target.value })}
-                placeholder={t("rewardName")}
-                className={`${inputCls} flex-1`}
+                placeholder={t("rewardNamePlaceholder")}
+                className={inputCls}
               />
+            </label>
+            <label className="flex flex-col gap-1 text-xs font-semibold text-stone">
+              {t("rewardAfterOrders")}
               <input
-                value={newReward.pointsCost}
-                onChange={(e) => setNewReward({ ...newReward, pointsCost: e.target.value.replace(/\D/g, "") })}
-                placeholder={t("rewardPoints")}
+                value={newReward.orders}
+                onChange={(e) => setNewReward({ ...newReward, orders: e.target.value.replace(/\D/g, "") })}
+                inputMode="numeric"
                 dir="ltr"
-                className={`${inputCls} w-24`}
+                className={inputCls}
               />
-              <button
-                type="button"
-                onClick={addReward}
-                className="h-10 rounded-btn border border-olive/20 px-4 text-sm font-bold text-olive hover:bg-olive/5"
-              >
-                {t("addReward")}
-              </button>
-            </div>
+            </label>
+            <label className="flex flex-col gap-1 text-xs font-semibold text-stone">
+              {t("rewardWorth")}
+              <input
+                value={newReward.worth}
+                onChange={(e) => setNewReward({ ...newReward, worth: e.target.value.replace(/[^\d.]/g, "") })}
+                inputMode="decimal"
+                dir="ltr"
+                className={inputCls}
+              />
+            </label>
           </div>
-        </>
+          <button
+            type="button"
+            onClick={addReward}
+            disabled={pending || !newReward.nameEn.trim()}
+            className="mt-2 h-10 rounded-btn border border-olive/20 px-4 text-sm font-bold text-olive hover:bg-olive/5 disabled:opacity-50"
+          >
+            {t("addReward")}
+          </button>
+          <p className="mt-2 text-xs text-stone">{t("punchExplainer")}</p>
+        </div>
       )}
 
       {saved && !pending && <p className="mt-3 text-sm font-semibold text-positive">{t("saved")}</p>}

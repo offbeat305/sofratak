@@ -80,9 +80,27 @@ export async function saveLoyaltySettingsAction(
 ) {
   const membership = await getMembership(slug);
   if (!membership) return UNAUTHORIZED;
-  if (!Number.isInteger(settings.centsPerPoint) || settings.centsPerPoint < 1)
-    return { ok: false as const, error: "Enter a valid earn rate" };
-  await getStore().setLoyaltySettings(membership.restaurant.id, settings);
+  // Punch-card model: rewards are "after N orders, worth $X off".
+  const rewards = settings.rewards.filter(
+    (r) =>
+      r.name.en.trim() &&
+      Number.isInteger(r.pointsCost) &&
+      r.pointsCost >= 1 &&
+      r.pointsCost <= 100 &&
+      Number.isInteger(r.valueCents) &&
+      r.valueCents >= 1 &&
+      r.valueCents <= 50_000,
+  );
+  await getStore().setLoyaltySettings(membership.restaurant.id, {
+    ...settings,
+    rewards: rewards.map((r) => ({
+      ...r,
+      name: {
+        en: r.name.en.trim().slice(0, 80),
+        ar: (r.name.ar || r.name.en).trim().slice(0, 80),
+      },
+    })),
+  });
   revalidatePath(`/[locale]/dashboard/${slug}/marketing`, "page");
   return { ok: true as const };
 }

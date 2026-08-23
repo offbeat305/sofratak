@@ -1,14 +1,18 @@
 "use client";
 
-import { useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Stamp, Trash2 } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import type { Fulfillment, Restaurant } from "@/lib/db/types";
 import { SERVICE_FEE_CENTS } from "@/lib/fees";
 import { formatCents } from "@/lib/money";
 import { cn } from "@/lib/cn";
-import { placeOrderAction } from "@/app/[locale]/(storefront)/s/[slug]/actions";
+import {
+  getLoyaltyStatusAction,
+  placeOrderAction,
+  type LoyaltyStatus,
+} from "@/app/[locale]/(storefront)/s/[slug]/actions";
 import { useCart } from "./cart-context";
 
 const TIP_PRESETS = [0.1, 0.15, 0.2] as const;
@@ -65,7 +69,26 @@ export function CheckoutView({
   };
   const [customTip, setCustomTip] = useState("");
   const [offerCode, setOfferCode] = useState("");
+  const [loyalty, setLoyalty] = useState<LoyaltyStatus | null>(null);
+  const [redeemRewardId, setRedeemRewardId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Punch-card lookup once a plausible phone number is typed — the phone
+  // IS the loyalty identity (no app, no password).
+  useEffect(() => {
+    const trimmed = phone.trim();
+    if (!/^[+()\-.\s\d]{7,20}$/.test(trimmed)) {
+      setLoyalty(null);
+      setRedeemRewardId(null);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      const status = await getLoyaltyStatusAction(restaurant.slug, trimmed);
+      setLoyalty(status);
+      if (!status) setRedeemRewardId(null);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [phone, restaurant.slug]);
 
   const slots = useMemo(
     () => scheduleSlots(restaurant.ordering.prepMinutes),
@@ -92,7 +115,14 @@ export function CheckoutView({
 
   const deliveryFeeCents =
     fulfillment === "delivery" ? restaurant.ordering.deliveryFeeCents : 0;
-  const totalCents = cart.subtotalCents + SERVICE_FEE_CENTS + deliveryFeeCents + tipCents;
+  // Display-only, like every other number here — the server recomputes and
+  // validates the redemption when the order is placed.
+  const selectedReward = loyalty?.rewards.find((r) => r.id === redeemRewardId) ?? null;
+  const rewardDiscountCents = selectedReward
+    ? Math.min(selectedReward.valueCents, cart.subtotalCents)
+    : 0;
+  const totalCents =
+    cart.subtotalCents - rewardDiscountCents + SERVICE_FEE_CENTS + deliveryFeeCents + tipCents;
   const belowDeliveryMin =
     fulfillment === "delivery" &&
     cart.subtotalCents < restaurant.ordering.deliveryMinimumCents;
@@ -111,6 +141,7 @@ export function CheckoutView({
         deliveryAddress: fulfillment === "delivery" ? address : null,
         tipCents,
         offerCode: offerCode.trim() || null,
+        redeemRewardId,
         lines: cart.lines.map((l) => ({
           menuItemId: l.menuItemId,
           qty: l.qty,
@@ -315,6 +346,55 @@ export function CheckoutView({
         </div>
       </section>
 
+      {/* punch card (loyalty) — appears once a phone number is typed */}
+      {loyalty && loyalty.rewards.length > 0 && (
+        <section className={sectionCls}>
+          <h2 className="flex items-center gap-2 text-lg font-bold text-charcoal">
+            <Stamp className="size-5 shrink-0 text-[var(--sf-primary)]" aria-hidden />
+            {t("punchCardTitle")}
+          </h2>
+          <p className="mt-0.5 text-sm text-stone">
+            {t("punchCount", { count: loyalty.punches })}
+          </p>
+          <div className="mt-3 flex flex-col gap-2">
+            {loyalty.rewards.map((reward) => {
+              const affordable = loyalty.punches >= reward.punchesNeeded;
+              const selected = redeemRewardId === reward.id;
+              if (!affordable) {
+                return (
+                  <p key={reward.id} className="text-sm text-stone">
+                    {t("punchesToGo", {
+                      count: reward.punchesNeeded - loyalty.punches,
+                      reward: reward.name[locale],
+                    })}
+                  </p>
+                );
+              }
+              return (
+                <button
+                  key={reward.id}
+                  type="button"
+                  onClick={() => setRedeemRewardId(selected ? null : reward.id)}
+                  className={cn(
+                    "rounded-field border px-4 py-3 text-start text-sm font-semibold transition-colors",
+                    selected
+                      ? "border-[var(--sf-primary)] bg-[var(--sf-primary)] text-white"
+                      : "border-charcoal/15 text-charcoal hover:border-charcoal/30",
+                  )}
+                >
+                  {selected
+                    ? t("rewardSelected", { reward: reward.name[locale] })
+                    : t("redeemReward", {
+                        reward: reward.name[locale],
+                        punches: reward.punchesNeeded,
+                      })}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       {/* tip */}
       <section className={sectionCls}>
         <h2 className="text-lg font-bold text-charcoal">{t("tipTitle")}</h2>
@@ -378,6 +458,14 @@ export function CheckoutView({
             <dt className="text-stone">{t("subtotal")}</dt>
             <dd className="font-semibold tabular-nums" dir="ltr">{fmt(cart.subtotalCents)}</dd>
           </div>
+          {rewardDiscountCents > 0 && selectedReward && (
+            <div className="flex justify-between">
+              <dt className="text-stone">{t("rewardLine", { reward: selectedReward.name[locale] })}</dt>
+              <dd className="font-semibold tabular-nums text-positive" dir="ltr">
+                -{fmt(rewardDiscountCents)}
+              </dd>
+            </div>
+          )}
           <div className="flex justify-between">
             <dt className="text-stone">{t("serviceFee")}</dt>
             <dd className="font-semibold tabular-nums" dir="ltr">{fmt(SERVICE_FEE_CENTS)}</dd>

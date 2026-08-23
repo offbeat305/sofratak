@@ -49,9 +49,14 @@ export type Restaurant = {
     periodEnd: string | null;
     canceledAt: string | null;
   };
-  /** Phase 5: points-based loyalty, keyed by diner phone number. */
+  /**
+   * Phase 5 loyalty. Presented as a punch card everywhere (owner setup
+   * and diner checkout speak "after N orders"); a points ledger does the
+   * math underneath at 1 punch = 1 point per paid order.
+   */
   loyaltySettings: {
     enabled: boolean;
+    /** Legacy spend-based earn rate — unused since the punch-card decision; kept for stored-JSON compat. */
     centsPerPoint: number;
     rewards: LoyaltyReward[];
   };
@@ -69,6 +74,7 @@ export type Restaurant = {
 export type LoyaltyReward = {
   id: string;
   name: LocalizedText;
+  /** punches (orders) needed — stored as points, 1 punch = 1 point */
   pointsCost: number;
   /** applied as a flat discount at checkout when redeemed */
   valueCents: number;

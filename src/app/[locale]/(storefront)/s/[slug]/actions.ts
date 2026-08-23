@@ -19,6 +19,46 @@ export async function placeOrderAction(
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const BIRTHDAY_RE = /^\d{4}-\d{2}-\d{2}$/;
+const PHONE_RE = /^[+()\-.\s\d]{7,20}$/;
+
+export type LoyaltyStatus = {
+  enabled: boolean;
+  punches: number;
+  rewards: Array<{
+    id: string;
+    name: { en: string; ar: string };
+    punchesNeeded: number;
+    valueCents: number;
+  }>;
+};
+
+/**
+ * Punch-card status for the phone number the diner just typed at
+ * checkout. Exposes only a punch count + the public reward catalog —
+ * the phone number is the loyalty identity by design (no app, no
+ * password), same model as the big loyalty platforms.
+ */
+export async function getLoyaltyStatusAction(
+  restaurantSlug: string,
+  phone: string,
+): Promise<LoyaltyStatus | null> {
+  if (!PHONE_RE.test(phone.trim())) return null;
+  const store = getStore();
+  const restaurant = await store.getRestaurantBySlug(restaurantSlug);
+  if (!restaurant || !restaurant.loyaltySettings.enabled) return null;
+
+  const account = await store.getLoyaltyAccount(restaurant.id, phone.trim());
+  return {
+    enabled: true,
+    punches: account?.points ?? 0,
+    rewards: restaurant.loyaltySettings.rewards.map((r) => ({
+      id: r.id,
+      name: r.name,
+      punchesNeeded: r.pointsCost,
+      valueCents: r.valueCents,
+    })),
+  };
+}
 
 /**
  * Post-order "want deals?" prompt — never added to checkout itself so the

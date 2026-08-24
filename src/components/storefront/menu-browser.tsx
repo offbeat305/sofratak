@@ -10,7 +10,15 @@ import { cn } from "@/lib/cn";
 import { useCart } from "./cart-context";
 import { ItemSheet } from "./item-sheet";
 
-export function MenuBrowser({ slug, menu }: { slug: string; menu: Menu }) {
+export function MenuBrowser({
+  slug,
+  menu,
+  brand,
+}: {
+  slug: string;
+  menu: Menu;
+  brand: { primary: string; accent: string };
+}) {
   const t = useTranslations("storefront");
   const locale = useLocale() as "en" | "ar";
   const { count, subtotalCents } = useCart();
@@ -99,7 +107,12 @@ export function MenuBrowser({ slug, menu }: { slug: string; menu: Menu }) {
       ))}
 
       {active && (
-        <ItemSheet item={active} groups={groupsFor(active)} onClose={() => setActive(null)} />
+        <ItemSheet
+          item={active}
+          groups={groupsFor(active)}
+          brand={brand}
+          onClose={() => setActive(null)}
+        />
       )}
 
       {/* floating cart bar */}

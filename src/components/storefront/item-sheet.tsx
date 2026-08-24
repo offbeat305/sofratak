@@ -12,10 +12,11 @@ import { cn } from "@/lib/cn";
 type Props = {
   item: MenuItem;
   groups: ModifierGroup[];
+  brand: { primary: string; accent: string };
   onClose: () => void;
 };
 
-export function ItemSheet({ item, groups, onClose }: Props) {
+export function ItemSheet({ item, groups, brand, onClose }: Props) {
   const t = useTranslations("storefront");
   const locale = useLocale() as "en" | "ar";
   const { addLine } = useCart();
@@ -90,6 +91,15 @@ export function ItemSheet({ item, groups, onClose }: Props) {
       role="dialog"
       aria-modal="true"
       aria-label={item.name[locale]}
+      // The portal escapes the storefront wrapper that defines the brand
+      // vars, so redeclare them here — without this, the Add button's
+      // bg-[var(--sf-primary)] resolves to nothing and renders invisible.
+      style={
+        {
+          "--sf-primary": brand.primary,
+          "--sf-accent": brand.accent,
+        } as React.CSSProperties
+      }
     >
       <div
         className="animate-fade-in absolute inset-0 bg-charcoal/50"

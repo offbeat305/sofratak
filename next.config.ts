@@ -4,6 +4,11 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
+  // Verification builds run with NEXT_DIST_DIR=.next-build so `next build`
+  // never clobbers the .next a live dev server is serving from (that
+  // collision corrupts the dev server: "Cannot find module './NNNN.js'").
+  // Unset in dev and on Vercel → default ".next".
+  ...(process.env.NEXT_DIST_DIR && { distDir: process.env.NEXT_DIST_DIR }),
   images: {
     // demo menu images are our own static SVGs
     dangerouslyAllowSVG: true,

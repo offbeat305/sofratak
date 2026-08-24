@@ -26,7 +26,7 @@ const HEADERS = {
   Prefer: "resolution=merge-duplicates",
 };
 
-const VALID_CITIES = new Set(["tampa", "dearborn"]);
+const VALID_CITIES = new Set(["tampa", "dearborn", "miami"]);
 const VALID_CUISINES = new Set([
   "lebanese", "palestinian", "yemeni", "iraqi", "egyptian", "syrian", "jordanian", "mediterranean",
 ]);

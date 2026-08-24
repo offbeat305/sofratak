@@ -37,6 +37,22 @@ export const EAT_METROS: EatMetro[] = [
     zoom: 12,
     timezone: "America/Detroit",
   },
+  {
+    // Slug is "miami" (not "south-florida"): it's the search anchor
+    // diners actually type, same pattern as tampa→Tampa Bay and
+    // dearborn→Metro Detroit. The metro spans Miami-Dade, Broward,
+    // and Palm Beach counties.
+    slug: "miami",
+    name: { en: "Miami & South Florida", ar: "ميامي وجنوب فلوريدا" },
+    blurb: {
+      en: "From Miami to West Palm — the Arab and halal kitchens of South Florida's tri-county coast.",
+      ar: "من ميامي إلى ويست بالم — مطابخ العرب والحلال على ساحل جنوب فلوريدا.",
+    },
+    // Centered on the tri-county corridor (Miami-Dade → Palm Beach)
+    center: { lat: 26.1, lng: -80.25 },
+    zoom: 9,
+    timezone: "America/New_York",
+  },
 ];
 
 export function getMetro(slug: string): EatMetro | undefined {

@@ -1,5 +1,20 @@
 # Sofratak — Progress Log
 
+## 2026-08-24 — Third directory metro: Miami & South Florida
+
+New metro at **/eat/miami** covering Miami-Dade, Broward, and Palm
+Beach. Slug decision (Zizo delegated): "miami", not "south-florida" —
+it's the term diners actually search ("halal restaurants miami"), and
+it matches the existing anchor-city pattern (tampa → all Tampa Bay,
+dearborn → Metro Detroit). The display name carries the full scope:
+"Miami & South Florida" / "ميامي وجنوب فلوريدا". Map centers on the
+tri-county corridor (zoom 9). Everything else (routes, sitemap, static
+params, filters) derives from the metro config — one config entry + the
+seed script's city allowlist were the whole change. Verified: EN + AR
+pages 200, landing card renders, sitemap entries present, isolated
+build clean. Seed rows (city column: "miami") to follow from the other
+Claude; the empty state shows "Listings coming soon" until then.
+
 ## 2026-08-24 — Sofratak Directory v1 (/eat) + launch-prep items
 
 Per Zizo's priorities: (1) launch blockers, (2) directory, (3) delivery

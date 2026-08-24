@@ -1,6 +1,6 @@
 city,name,slug,address,phone,cuisines,halal,lat,lng
 # Drop Zizo's Tampa Bay + Dearborn/Detroit lead lists here, one restaurant per row, then run: npx tsx scripts/seed-directory.ts
-# - city: tampa | dearborn (metro slugs from src/content/eat-metros.ts)
+# - city: tampa | dearborn | miami (metro slugs from src/content/eat-metros.ts; miami = all of Miami-Dade/Broward/Palm Beach)
 # - slug: optional — generated from the name if blank
 # - cuisines: |-separated from: lebanese|palestinian|yemeni|iraqi|egyptian|syrian|jordanian|mediterranean
 # - halal: reported | unknown  (NEVER "verified" here — that's only for claimed Sofratak restaurants)

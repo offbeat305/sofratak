@@ -123,11 +123,17 @@ async function main() {
 
     let lat = latRaw ? parseFloat(latRaw) : NaN;
     let lng = lngRaw ? parseFloat(lngRaw) : NaN;
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-      const geo = address ? await geocode(address) : null;
+    // Only geocode street-level addresses (≥3 comma parts, e.g.
+    // "12710 W Warren Ave, Dearborn, MI"). City-only rows would all pin
+    // to the same city-centroid point — a wrong pin is worse than none.
+    const streetLevel = address && address.split(",").length >= 3;
+    if ((!Number.isFinite(lat) || !Number.isFinite(lng)) && streetLevel) {
+      const geo = await geocode(address);
       await sleep(1100); // Nominatim policy: max 1 req/sec
       if (geo) { lat = geo.lat; lng = geo.lng; }
-      else console.warn(`  no geocode for "${name}" — will list without a map pin`);
+      else console.warn(`  ⚠ geocode FAILED for "${name}" (${address})`);
+    } else if (!Number.isFinite(lat) && !streetLevel) {
+      console.warn(`  ○ no street address for "${name}" — listing without a map pin`);
     }
 
     await upsert([

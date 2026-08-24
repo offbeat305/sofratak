@@ -411,6 +411,14 @@ export class SupabaseStore implements DataStore {
     if (error) throw new Error(`setStripeAccount failed: ${error.message}`);
   }
 
+  async setCoverImage(restaurantId: string, url: string | null): Promise<void> {
+    const { error } = await this.client
+      .from("restaurants")
+      .update({ cover_url: url })
+      .eq("id", restaurantId);
+    if (error) throw new Error(`setCoverImage failed: ${error.message}`);
+  }
+
   // ── Phase 7: billing ────────────────────────────────────────────────
 
   async setBillingInfo(

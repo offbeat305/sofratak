@@ -106,6 +106,30 @@ export async function uploadMenuImageAction(slug: string, formData: FormData) {
   return uploadMenuImage(membership.restaurant.id, file);
 }
 
+/** Uploads AND saves the storefront banner in one step. */
+export async function uploadCoverImageAction(slug: string, formData: FormData) {
+  const membership = await getMembership(slug);
+  if (!membership) return { ok: false as const, error: "Unauthorized" };
+  const file = formData.get("file");
+  if (!(file instanceof File)) return { ok: false as const, error: "Pick an image first" };
+  const { uploadCoverImage } = await import("@/lib/storage/menu-images");
+  const result = await uploadCoverImage(membership.restaurant.id, file);
+  if (!result.ok) return result;
+  await getStore().setCoverImage(membership.restaurant.id, result.url);
+  revalidatePath(`/[locale]/dashboard/${slug}`, "layout");
+  revalidatePath(`/[locale]/s/${slug}`, "layout");
+  return result;
+}
+
+export async function removeCoverImageAction(slug: string) {
+  const membership = await getMembership(slug);
+  if (!membership) return { ok: false as const, error: "Unauthorized" };
+  await getStore().setCoverImage(membership.restaurant.id, null);
+  revalidatePath(`/[locale]/dashboard/${slug}`, "layout");
+  revalidatePath(`/[locale]/s/${slug}`, "layout");
+  return { ok: true as const };
+}
+
 export async function toggleSoldOutAction(slug: string, itemId: string, soldOut: boolean) {
   if (!(await getMembership(slug))) return UNAUTHORIZED;
   const store = getStore();

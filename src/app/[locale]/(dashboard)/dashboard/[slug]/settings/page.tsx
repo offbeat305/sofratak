@@ -6,6 +6,7 @@ import { getStore } from "@/lib/db/store";
 import { syncConnectStatus } from "@/lib/payments/connect";
 import { SettingsForm } from "@/components/dashboard/settings-form";
 import { PayoutsCard } from "@/components/dashboard/payouts-card";
+import { BannerCard } from "@/components/dashboard/banner-card";
 
 export default async function SettingsPage({
   params,
@@ -34,6 +35,9 @@ export default async function SettingsPage({
       <h1 className="text-xl font-bold text-olive">{t("settings")}</h1>
       <div className="max-w-xl">
         <PayoutsCard slug={slug} status={payoutStatus} />
+      </div>
+      <div className="max-w-xl">
+        <BannerCard slug={slug} coverUrl={restaurant.coverUrl} />
       </div>
       <Link
         href={`/dashboard/${slug}/settings/billing`}

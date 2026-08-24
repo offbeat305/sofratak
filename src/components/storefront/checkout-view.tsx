@@ -45,7 +45,14 @@ export function CheckoutView({
   const initialFulfillment: Fulfillment = restaurant.ordering.pickup
     ? "pickup"
     : "delivery";
-  const [fulfillment, setFulfillment] = useState<Fulfillment>(initialFulfillment);
+  // The choice was (usually) already made on the menu page — read it from
+  // the cart context, clamped to what the restaurant offers.
+  const fulfillment: Fulfillment =
+    cart.fulfillment === "delivery" && !restaurant.ordering.delivery
+      ? "pickup"
+      : cart.fulfillment === "pickup" && !restaurant.ordering.pickup
+        ? "delivery"
+        : cart.fulfillment;
   const [when, setWhen] = useState<"asap" | "scheduled">("asap");
   const [scheduledFor, setScheduledFor] = useState<string>("");
   const [name, setName] = useState("");
@@ -63,11 +70,14 @@ export function CheckoutView({
     setTipChoiceRaw(value);
   };
   const selectFulfillment = (value: Fulfillment) => {
-    setFulfillment(value);
-    if (!tipTouched.current) {
-      setTipChoiceRaw(value === "delivery" ? 0.15 : 0);
-    }
+    cart.setFulfillment(value);
   };
+  // Follows both a tap here and the choice hydrating in from the menu page.
+  useEffect(() => {
+    if (!tipTouched.current) {
+      setTipChoiceRaw(fulfillment === "delivery" ? 0.15 : 0);
+    }
+  }, [fulfillment]);
   const [customTip, setCustomTip] = useState("");
   const [offerCode, setOfferCode] = useState("");
   const [loyalty, setLoyalty] = useState<LoyaltyStatus | null>(null);

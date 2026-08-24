@@ -2,17 +2,17 @@ import "server-only";
 import { createClient } from "@supabase/supabase-js";
 
 /**
- * Menu item photos (Supabase Storage, bucket `menu-images`, public read,
- * service-role writes only). One feature serves both sides: restaurant
- * owners upload from the dashboard menu editor, and Sofratak admins reach
- * the same editor via /admin impersonation.
+ * Restaurant image uploads (Supabase Storage, public read, service-role
+ * writes only). Two buckets, same rules: `menu-images` for item photos,
+ * `restaurant-images` for the storefront banner. One feature serves both
+ * sides: owners upload from the dashboard, Sofratak admins reach the
+ * same UI via /admin impersonation.
  *
  * Bucket-level guards (4MB, image/jpeg|png|webp) are configured on the
- * bucket itself; the checks here fail fast with friendly errors instead
- * of a storage 400.
+ * buckets themselves; the checks here fail fast with friendly errors
+ * instead of a storage 400.
  */
 
-const BUCKET = "menu-images";
 const MAX_BYTES = 4 * 1024 * 1024;
 const EXT_BY_MIME: Record<string, string> = {
   "image/jpeg": "jpg",
@@ -22,7 +22,8 @@ const EXT_BY_MIME: Record<string, string> = {
 
 export type UploadResult = { ok: true; url: string } | { ok: false; error: string };
 
-export async function uploadMenuImage(
+async function uploadImage(
+  bucket: "menu-images" | "restaurant-images",
   restaurantId: string,
   file: File,
 ): Promise<UploadResult> {
@@ -38,15 +39,23 @@ export async function uploadMenuImage(
   const client = createClient(url, key, { auth: { persistSession: false } });
   const path = `${restaurantId}/${crypto.randomUUID()}.${ext}`;
   const { error } = await client.storage
-    .from(BUCKET)
+    .from(bucket)
     .upload(path, Buffer.from(await file.arrayBuffer()), {
       contentType: file.type,
       cacheControl: "31536000", // content-addressed by uuid — cache hard
     });
   if (error) {
-    console.error("[menu-images] upload failed:", error.message);
+    console.error(`[${bucket}] upload failed:`, error.message);
     return { ok: false, error: "Upload failed — try again" };
   }
 
-  return { ok: true, url: client.storage.from(BUCKET).getPublicUrl(path).data.publicUrl };
+  return { ok: true, url: client.storage.from(bucket).getPublicUrl(path).data.publicUrl };
+}
+
+export function uploadMenuImage(restaurantId: string, file: File): Promise<UploadResult> {
+  return uploadImage("menu-images", restaurantId, file);
+}
+
+export function uploadCoverImage(restaurantId: string, file: File): Promise<UploadResult> {
+  return uploadImage("restaurant-images", restaurantId, file);
 }

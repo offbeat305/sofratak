@@ -56,6 +56,8 @@ export interface DataStore {
     accountId: string,
     chargesEnabled: boolean,
   ): Promise<void>;
+  /** Storefront banner (Phase 8+). null = remove. */
+  setCoverImage(restaurantId: string, url: string | null): Promise<void>;
 
   // ── Phase 7: billing ────────────────────────────────────────────────
   setBillingInfo(

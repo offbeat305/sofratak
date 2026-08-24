@@ -21,12 +21,17 @@ const nextConfig: NextConfig = {
     // demo menu images are our own static SVGs
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    // uploaded menu photos live in Supabase Storage (menu-images bucket)
+    // uploaded images live in Supabase Storage (menu photos + banners)
     remotePatterns: [
       {
         protocol: "https",
         hostname: "*.supabase.co",
         pathname: "/storage/v1/object/public/menu-images/**",
+      },
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+        pathname: "/storage/v1/object/public/restaurant-images/**",
       },
     ],
   },

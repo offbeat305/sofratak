@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import type { Menu, MenuItem } from "@/lib/db/types";
+import type { Menu, MenuItem, Restaurant } from "@/lib/db/types";
 import { formatCents } from "@/lib/money";
 import { cn } from "@/lib/cn";
 import { useCart } from "./cart-context";
@@ -14,15 +14,25 @@ export function MenuBrowser({
   slug,
   menu,
   brand,
+  ordering,
 }: {
   slug: string;
   menu: Menu;
   brand: { primary: string; accent: string };
+  ordering: Restaurant["ordering"];
 }) {
   const t = useTranslations("storefront");
   const locale = useLocale() as "en" | "ar";
-  const { count, subtotalCents } = useCart();
+  const { count, subtotalCents, fulfillment, setFulfillment } = useCart();
   const [active, setActive] = useState<MenuItem | null>(null);
+
+  // Clamp the persisted choice to what this restaurant actually offers
+  // (e.g. a delivery-only restaurant, or delivery turned off since the
+  // diner's last visit).
+  useEffect(() => {
+    if (fulfillment === "delivery" && !ordering.delivery) setFulfillment("pickup");
+    if (fulfillment === "pickup" && !ordering.pickup) setFulfillment("delivery");
+  }, [fulfillment, ordering.pickup, ordering.delivery, setFulfillment]);
 
   const categories = useMemo(
     () => [...menu.categories].sort((a, b) => a.sort - b.sort),
@@ -43,6 +53,44 @@ export function MenuBrowser({
 
   return (
     <div className="pb-24">
+      {/* pickup / delivery — chosen up front so delivery fee + minimum are
+          no surprise at checkout (checkout can still change it) */}
+      {ordering.pickup && ordering.delivery && (
+        <div className="mb-4">
+          <div
+            role="group"
+            aria-label={t("fulfillmentTitle")}
+            className="inline-flex rounded-full border border-charcoal/15 bg-white p-1"
+          >
+            {(["pickup", "delivery"] as const).map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setFulfillment(option)}
+                aria-pressed={fulfillment === option}
+                className={cn(
+                  "rounded-full px-5 py-2 text-sm font-bold transition-colors",
+                  fulfillment === option
+                    ? "bg-[var(--sf-primary)] text-white"
+                    : "text-charcoal hover:text-[var(--sf-primary)]",
+                )}
+              >
+                {t(option)}
+              </button>
+            ))}
+          </div>
+          {fulfillment === "delivery" &&
+            (ordering.deliveryFeeCents > 0 || ordering.deliveryMinimumCents > 0) && (
+              <p className="mt-2 text-sm text-stone">
+                {t("deliveryUpfrontNote", {
+                  fee: formatCents(ordering.deliveryFeeCents, locale),
+                  min: formatCents(ordering.deliveryMinimumCents, locale),
+                })}
+              </p>
+            )}
+        </div>
+      )}
+
       {/* category chips */}
       <nav
         aria-label={t("menu")}

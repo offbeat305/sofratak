@@ -123,7 +123,12 @@ export default async function StorefrontMenuPage({ params }: { params: Params })
       </section>
 
       <div className="pt-4">
-        <MenuBrowser slug={slug} menu={menu} brand={restaurant.brand} />
+        <MenuBrowser
+          slug={slug}
+          menu={menu}
+          brand={restaurant.brand}
+          ordering={restaurant.ordering}
+        />
       </div>
       <FunnelBeacon slug={slug} step="view" />
     </>

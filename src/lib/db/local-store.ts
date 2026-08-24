@@ -206,6 +206,10 @@ export class LocalStore implements DataStore {
     throw new Error("Stripe Connect requires the Supabase backend");
   }
 
+  async setCoverImage(): Promise<void> {
+    throw new Error("Banner uploads require the Supabase backend");
+  }
+
   async setBillingInfo(): Promise<void> {
     throw new Error("Billing requires the Supabase backend");
   }

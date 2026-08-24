@@ -32,6 +32,14 @@ type CartContextValue = {
   updateQty: (key: string, qty: number) => void;
   removeLine: (key: string) => void;
   clear: () => void;
+  /**
+   * Diner's pickup/delivery choice, made up front on the menu page and
+   * carried into checkout (which can still change it). Persisted per
+   * restaurant. Availability is enforced where it's consumed — the
+   * toggle UI and checkout both know what the restaurant offers.
+   */
+  fulfillment: "pickup" | "delivery";
+  setFulfillment: (value: "pickup" | "delivery") => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -52,18 +60,36 @@ export function CartProvider({
   children: React.ReactNode;
 }) {
   const storageKey = `sofratak-cart-${slug}`;
+  const fulfillmentKey = `sofratak-fulfillment-${slug}`;
   const [lines, setLines] = useState<CartLine[]>([]);
+  const [fulfillment, setFulfillmentState] = useState<"pickup" | "delivery">("pickup");
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     try {
       const raw = window.localStorage.getItem(storageKey);
       if (raw) setLines(JSON.parse(raw) as CartLine[]);
+      const savedFulfillment = window.localStorage.getItem(fulfillmentKey);
+      if (savedFulfillment === "delivery" || savedFulfillment === "pickup") {
+        setFulfillmentState(savedFulfillment);
+      }
     } catch {
       // corrupted cart — start fresh
     }
     setHydrated(true);
-  }, [storageKey]);
+  }, [storageKey, fulfillmentKey]);
+
+  const setFulfillment = useCallback(
+    (value: "pickup" | "delivery") => {
+      setFulfillmentState(value);
+      try {
+        window.localStorage.setItem(fulfillmentKey, value);
+      } catch {
+        // storage blocked — choice still works in memory
+      }
+    },
+    [fulfillmentKey],
+  );
 
   useEffect(() => {
     if (!hydrated) return;
@@ -108,8 +134,18 @@ export function CartProvider({
   const value = useMemo<CartContextValue>(() => {
     const count = lines.reduce((n, l) => n + l.qty, 0);
     const subtotalCents = lines.reduce((n, l) => n + l.unitPriceCents * l.qty, 0);
-    return { lines, count, subtotalCents, addLine, updateQty, removeLine, clear };
-  }, [lines, addLine, updateQty, removeLine, clear]);
+    return {
+      lines,
+      count,
+      subtotalCents,
+      addLine,
+      updateQty,
+      removeLine,
+      clear,
+      fulfillment,
+      setFulfillment,
+    };
+  }, [lines, addLine, updateQty, removeLine, clear, fulfillment, setFulfillment]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

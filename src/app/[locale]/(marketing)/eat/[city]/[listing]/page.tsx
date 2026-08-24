@@ -179,6 +179,19 @@ export default async function EatListingPage({
       {!view.verified && (
         <footer className="mt-10 border-t border-olive/10 pt-4 text-xs text-stone">
           <p>{t("unclaimedDisclaimer")}</p>
+          {listing.source === "osm" && (
+            <p className="mt-2">
+              {t("osmAttribution")}{" "}
+              <a
+                href="https://www.openstreetmap.org/copyright"
+                target="_blank"
+                rel="noreferrer"
+                className="underline underline-offset-2 hover:text-olive"
+              >
+                © OpenStreetMap contributors
+              </a>
+            </p>
+          )}
           <details className="mt-3">
             <summary className="cursor-pointer font-semibold hover:text-olive">
               {t("takedownLink")}

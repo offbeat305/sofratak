@@ -6,6 +6,50 @@ import { allowRequest } from "@/lib/rate-limit";
 const PHONE_RE = /^[+()\-.\s\d]{7,20}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+export type SuggestInput = {
+  restaurantName: string;
+  city: string;
+  address: string;
+  /** submitter contact — optional; suggestions are welcome anonymously */
+  phone: string;
+  note: string;
+  locale: "en" | "ar";
+  /** honeypot — real users never fill this */
+  website?: string;
+};
+
+/**
+ * Community "Add a restaurant" suggestions — the long-term coverage
+ * engine. Writes a lead (kind 'suggestion') for MANUAL review; a
+ * suggestion never auto-publishes a listing.
+ */
+export async function suggestRestaurantAction(
+  input: SuggestInput,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (!(await allowRequest("directory-suggest", 5))) {
+    return { ok: false, error: "rate" };
+  }
+  if (input.website) return { ok: true }; // honeypot — pretend success
+
+  const restaurantName = input.restaurantName.trim().slice(0, 120);
+  if (!restaurantName) return { ok: false, error: "name" };
+  const phone = input.phone.trim();
+  if (phone && !PHONE_RE.test(phone)) return { ok: false, error: "phone" };
+
+  await captureLead({
+    kind: "suggestion",
+    name: restaurantName,
+    phone,
+    restaurant: restaurantName,
+    city: input.city.trim().slice(0, 80) || null,
+    message: [input.address.trim().slice(0, 200), input.note.trim().slice(0, 300)]
+      .filter(Boolean)
+      .join(" — ") || null,
+    locale: input.locale === "ar" ? "ar" : "en",
+  });
+  return { ok: true };
+}
+
 export type ClaimInput = {
   listingId: string;
   listingName: string;

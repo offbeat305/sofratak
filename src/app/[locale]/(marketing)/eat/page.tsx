@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { MapPin } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { EAT_METROS } from "@/content/eat-metros";
+import { SuggestForm } from "@/components/eat/suggest-form";
 import { localeAlternates } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -51,7 +52,11 @@ export default async function EatLandingPage({
         ))}
       </div>
 
-      <p className="mt-10 text-sm text-stone">{t("ownerNote")}</p>
+      <div className="mt-10">
+        <SuggestForm />
+      </div>
+
+      <p className="mt-6 text-sm text-stone">{t("ownerNote")}</p>
     </div>
   );
 }

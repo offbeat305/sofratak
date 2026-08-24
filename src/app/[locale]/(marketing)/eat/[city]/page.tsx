@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { EAT_METROS, getMetro } from "@/content/eat-metros";
 import { composeMetroListings } from "@/lib/eat/compose";
 import { CityView } from "@/components/eat/city-view";
+import { SuggestForm } from "@/components/eat/suggest-form";
 import { localeAlternates } from "@/lib/seo";
 
 // Listings change rarely, but "Open now" shouldn't go too stale.
@@ -55,6 +56,21 @@ export default async function EatCityPage({
       <div className="mt-6">
         <CityView city={city} listings={listings} center={metro.center} zoom={metro.zoom} />
       </div>
+      <div className="mt-8">
+        <SuggestForm defaultCity={city} />
+      </div>
+      {/* ODbL attribution: some listing data comes from OpenStreetMap */}
+      <p className="mt-4 text-xs text-stone">
+        {t("osmAttribution")}{" "}
+        <a
+          href="https://www.openstreetmap.org/copyright"
+          target="_blank"
+          rel="noreferrer"
+          className="underline underline-offset-2 hover:text-olive"
+        >
+          © OpenStreetMap contributors
+        </a>
+      </p>
     </div>
   );
 }

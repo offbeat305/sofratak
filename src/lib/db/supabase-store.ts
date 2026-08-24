@@ -139,6 +139,7 @@ function rowToDirectoryListing(row: any): DirectoryListing {
     cuisines: row.cuisines ?? [],
     halalStatus: row.halal_status,
     googlePlaceId: row.google_place_id ?? null,
+    osmId: row.osm_id ?? null,
     claimedRestaurantId: row.claimed_restaurant_id ?? null,
     source: row.source,
   };

@@ -329,8 +329,10 @@ export type DirectoryListing = {
   cuisines: string[];
   halalStatus: DirectoryHalalStatus;
   googlePlaceId: string | null;
+  /** OSM element id ("node/123") for source='osm' rows — re-import dedupe key */
+  osmId: string | null;
   claimedRestaurantId: string | null;
-  source: "seed" | "places" | "manual";
+  source: "seed" | "places" | "manual" | "osm";
 };
 
 export type AutomationKind =

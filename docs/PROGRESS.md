@@ -1,5 +1,48 @@
 # Sofratak — Progress Log
 
+## 2026-08-24 (cont.) — Directory comprehensive coverage: OSM layer + community form
+
+Per Zizo's three-layer directive. Also ran the seed again first: the
+other Claude's 14 Miami rows are now live (1 geocode failure: Delights
+of Beirut — good address, OSM just doesn't resolve it; needs manual
+lat/lng or a corrected address).
+
+### Layer 1 · OSM bulk import (needs migration 0011 to run for real)
+`scripts/import-osm-directory.ts`: Overpass query per metro
+(restaurant/fast_food/cafe × cuisine regex + diet:halal=yes|only +
+name regex), OSM→our cuisine mapping, halal tags → 'reported' (never
+'verified'), conservative dedupe (osm_id first, then normalized-name
+match against existing listings — curated seeds always win), slug
+collision handling, "(Coming Soon)" junk filtered, `--dry-run` mode.
+ODbL attribution ("© OpenStreetMap contributors") added on city pages
+and OSM-sourced detail pages — legally required and now present.
+
+**Dry run against live Overpass**: 112 would import — Tampa +5,
+Dearborn +84, Miami +23, with 28 correctly deduped against existing
+listings (Petra, Shatila, Bucharest Grill ×4, Sheeba…). Expectation
+check per the directive: OSM small-family-restaurant coverage IS patchy
+(Tampa's 5 vs Dearborn's 84 says it all) — the three layers together
+are the path to "all", and the form carries it long-term. Note for
+Zizo: the halal-diet layer honestly pulls in halal-tagged non-Arab
+chains (Subway, Little Caesars in Dearborn) — they serve halal diners
+and stay unless you prune them; takedown/manual delete works per row.
+
+### Layer 2 · "Add a restaurant" community form
+On /eat and every city page (collapsed behind a button). Honeypot +
+rate-limited → leads kind 'suggestion' for MANUAL review — never
+auto-publishes. Verified live end-to-end: submission succeeded and the
+"never a lost lead" fallback proved itself — with 0011 unapplied the
+constraint rejected the insert and the lead landed in
+.data/leads-backup.jsonl + email notification. After 0011 they flow to
+the leads table like everything else.
+
+### Layer 3 · Curated seeds — unchanged, and they outrank
+Seeds keep winning dedupe conflicts; OSM fills gaps around them.
+
+### Migration 0011 (hand to Zizo)
+'osm' source + unique osm_id column + leads 'suggestion' kind. After
+applying: `npx tsx scripts/import-osm-directory.ts` imports the 112.
+
 ## 2026-08-24 — Third directory metro: Miami & South Florida
 
 New metro at **/eat/miami** covering Miami-Dade, Broward, and Palm

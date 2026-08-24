@@ -25,7 +25,7 @@ export default async function MarketingPage({
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-olive">{t("marketing")}</h1>
+      <h1 className="text-xl font-bold text-olive">{t("marketing.tab")}</h1>
       <div className="grid max-w-3xl gap-4">
         <CampaignsCard slug={slug} campaigns={campaigns} />
         <OfferCodesCard slug={slug} offerCodes={offerCodes} />

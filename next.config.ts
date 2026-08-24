@@ -9,6 +9,14 @@ const nextConfig: NextConfig = {
   // collision corrupts the dev server: "Cannot find module './NNNN.js'").
   // Unset in dev and on Vercel → default ".next".
   ...(process.env.NEXT_DIST_DIR && { distDir: process.env.NEXT_DIST_DIR }),
+  experimental: {
+    serverActions: {
+      // Menu photo uploads go through a server action; the default 1MB
+      // cap rejects real phone photos with a 413 before our own 4MB
+      // check ever runs. 5MB = 4MB app limit + multipart overhead.
+      bodySizeLimit: "5mb",
+    },
+  },
   images: {
     // demo menu images are our own static SVGs
     dangerouslyAllowSVG: true,

@@ -452,7 +452,6 @@
     "today": "Today",
     "orders": "Orders",
     "customers": "Customers",
-    "marketing": "Marketing",
     "funnelTitle": "Order funnel — last 7 days",
     "funnelSub": "How many visitors make it from browsing to a paid order.",
     "funnelViews": "Storefront visits",
@@ -559,6 +558,7 @@
     "impersonatingAs": "Support session — signed in as {email}.",
     "stopImpersonating": "Stop",
     "marketing": {
+      "tab": "Marketing",
       "campaignsTitle": "Send a campaign",
       "campaignsSub": "Reaches customers who've opted in — pulled from your customer book automatically.",
       "channelSms": "Text",

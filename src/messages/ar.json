@@ -452,7 +452,6 @@
     "today": "اليوم",
     "orders": "الطلبات",
     "customers": "العملاء",
-    "marketing": "التسويق",
     "funnelTitle": "مسار الطلبات — آخر ٧ أيام",
     "funnelSub": "كم زائرًا يصل من التصفح إلى طلب مدفوع.",
     "funnelViews": "زيارات المتجر",
@@ -559,6 +558,7 @@
     "impersonatingAs": "جلسة دعم — مسجل الدخول باسم {email}.",
     "stopImpersonating": "إنهاء",
     "marketing": {
+      "tab": "التسويق",
       "campaignsTitle": "إرسال حملة",
       "campaignsSub": "تصل للعملاء اللي وافقوا على التلقي — تُسحب تلقائيًا من دفتر عملائك.",
       "channelSms": "رسالة نصية",

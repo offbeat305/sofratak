@@ -1,5 +1,68 @@
 # Sofratak — Progress Log
 
+## 2026-08-24 — Sofratak Directory v1 (/eat) + launch-prep items
+
+Per Zizo's priorities: (1) launch blockers, (2) directory, (3) delivery
+API applications.
+
+### 1 · Launch (2-week window)
+No code-side blockers remain. LAUNCH.md gained a lead-time warning —
+Twilio A2P 10DLC, Stripe live activation, and DNS all have multi-day
+external timelines and should start FIRST — plus a discounted-order
+step in the smoke test.
+
+### 3 · Delivery APIs (done first — it's a hand-off)
+`docs/delivery-api-applications.md`: current application entry points
+for DoorDash Drive (note: their production access is currently
+restricted — registering interest early matters) and Uber Direct
+(merchant signup, marketplace listing NOT required), what to have
+ready, and the canonical use-case description. Account creation is
+Zizo's task; the doc makes each ~10 minutes.
+
+### 2 · Directory built per docs/directory-spec.md
+- **Migration 0010**: `directory_listings` (deliberately public-read —
+  it IS the public product; writes service-role only) + `leads.kind`
+  gains 'claim'. Halal three-state enforced twice: the seed script
+  refuses 'verified' on seeds, and the render path downgrades
+  'verified' to 'reported' on any unclaimed row regardless of data.
+- **Routes**: /eat (metro picker), /eat/[city] (search + cuisine/halal/
+  open-now/order-online filters + Leaflet/OSM map with brass verified
+  pins vs olive outline pins, list/map toggle on mobile),
+  /eat/[city]/[slug] (detail: LocalBusiness JSON-LD, hours, claimed →
+  banner photo + brass Order Now → storefront; unclaimed → claim form,
+  required disclaimer, takedown link with same-day promise).
+- **Claim flow**: honeypot + rate-limited server action → leads
+  (kind 'claim', takedown flag in data) + standard email notification.
+- **Seeding**: `scripts/seed-directory.ts` + `data/directory-seed.csv`
+  template. Geocoding uses OpenStreetMap Nominatim (free, 1 req/sec) —
+  seed coordinates are OSM-sourced, keeping us entirely outside Google
+  Places caching restrictions. Beit Zizo seeds as the claimed/Verified
+  demo listing.
+- **SEO**: static generation (city pages ISR 300s), JSON-LD, sitemap
+  entries, footer link.
+- **BLOCKER — spec assumption wrong**: the spec says the ~80-restaurant
+  Tampa/Dearborn lead spreadsheets are "already in the repo/docs".
+  They are NOT anywhere on this machine (searched repo, Downloads,
+  Desktop, Documents). Refused to fabricate listings. The CSV template
+  + import pipeline are ready; Zizo drops the real lists into
+  `data/directory-seed.csv` and runs (or asks for) the seed.
+
+### Verified
+tsc/eslint/build clean; /eat, /eat/tampa, /ar/eat/dearborn all 200;
+map renders OSM tiles with brand styling; 390px mobile layout correct
+(list default, map toggle, no horizontal overflow). Pending 0010:
+seeding, claim-flow E2E, Beit Zizo verified rendering, JSON-LD Rich
+Results check on a real listing.
+
+### Needs Zizo
+1. Apply `supabase/migrations/0010_directory.sql`, then say so — the
+   Beit Zizo listing gets seeded and the claim flow verified E2E.
+2. Drop the Tampa + Dearborn lead lists into `data/directory-seed.csv`
+   (format documented in the file header).
+3. Submit the DoorDash Drive + Uber Direct applications
+   (docs/delivery-api-applications.md).
+4. Start the LAUNCH.md long-lead items (A2P, Stripe live, DNS) now.
+
 ## 2026-08-23 (cont.) — CRITICAL FIX: discounts never reached Stripe
 
 Found by the Cowork session during post-0008 verification (great catch):

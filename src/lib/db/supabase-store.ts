@@ -9,6 +9,7 @@ import type {
   Campaign,
   CustomerProfile,
   DayHours,
+  DirectoryListing,
   FunnelCounts,
   FunnelStep,
   LoyaltyAccount,
@@ -122,6 +123,25 @@ function rowToOfferCode(row: any): OfferCode {
 
 function rowToLoyaltyAccount(row: any): LoyaltyAccount {
   return { id: row.id, restaurantId: row.restaurant_id, phone: row.phone, points: row.points };
+}
+
+function rowToDirectoryListing(row: any): DirectoryListing {
+  return {
+    id: row.id,
+    city: row.city,
+    slug: row.slug,
+    name: row.name,
+    address: row.address,
+    lat: row.lat ?? null,
+    lng: row.lng ?? null,
+    phone: row.phone ?? null,
+    hours: row.hours ?? null,
+    cuisines: row.cuisines ?? [],
+    halalStatus: row.halal_status,
+    googlePlaceId: row.google_place_id ?? null,
+    claimedRestaurantId: row.claimed_restaurant_id ?? null,
+    source: row.source,
+  };
 }
 
 function rowToAuditEntry(row: any): AdminAuditEntry {
@@ -1021,6 +1041,27 @@ export class SupabaseStore implements DataStore {
       })),
     );
     if (itemError) throw new Error(`resetDemoRestaurant items failed: ${itemError.message}`);
+  }
+
+  // ── Directory (/eat) ───────────────────────────────────────────────────
+
+  async listDirectory(city: string): Promise<DirectoryListing[]> {
+    const { data } = await this.client
+      .from("directory_listings")
+      .select("*")
+      .eq("city", city)
+      .order("name");
+    return (data ?? []).map(rowToDirectoryListing);
+  }
+
+  async getDirectoryListing(city: string, slug: string): Promise<DirectoryListing | null> {
+    const { data } = await this.client
+      .from("directory_listings")
+      .select("*")
+      .eq("city", city)
+      .eq("slug", slug)
+      .maybeSingle();
+    return data ? rowToDirectoryListing(data) : null;
   }
 
   // ── Phase 8C: order funnel ─────────────────────────────────────────────

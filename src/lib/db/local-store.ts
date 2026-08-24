@@ -6,6 +6,7 @@ import type {
   AdminAuditEntry,
   Campaign,
   CustomerProfile,
+  DirectoryListing,
   FunnelCounts,
   LoyaltyAccount,
   MarketingOptIn,
@@ -333,6 +334,14 @@ export class LocalStore implements DataStore {
 
   async recordStorefrontEvent(): Promise<void> {
     // Funnel analytics is a Supabase-only feature; dev traffic isn't data.
+  }
+
+  async listDirectory(): Promise<DirectoryListing[]> {
+    return [];
+  }
+
+  async getDirectoryListing(): Promise<DirectoryListing | null> {
+    return null;
   }
 
   async getFunnelCounts(): Promise<FunnelCounts> {

@@ -4,6 +4,17 @@ Step-by-step from this repo to a live production platform. Work top to
 bottom; each section says what you do vs. what's already handled in code.
 Keep `.env.local` values out of chat/screenshots while doing this.
 
+**2-week timeline note (added Aug 24):** three items have multi-day lead
+times outside our control — start them FIRST, in parallel:
+1. Twilio **A2P 10DLC registration** (§5) — carrier vetting commonly
+   takes 1–3 weeks. Without it, SMS delivery is unreliable.
+2. **Stripe live-mode activation** (§4) — business verification can take
+   days.
+3. **DNS propagation + domain verification** (§3) — usually hours, occasionally longer.
+DoorDash Drive / Uber Direct API applications (see
+`docs/delivery-api-applications.md`) also have weeks-long approval but
+are post-launch integrations — submit now, they don't gate launch.
+
 ## 1 · Supabase (production readiness)
 
 - [ ] Apply any unapplied migrations in order (`supabase/migrations/`) —
@@ -132,7 +143,9 @@ Keep `.env.local` values out of chat/screenshots while doing this.
 
 1. `https://www.sofratak.com` loads, EN + AR.
 2. `https://beitzizo.sofratak.com` → place a real $ test order (then
-   refund it from the dashboard).
+   refund it from the dashboard). Place it WITH an offer code — the
+   discount path once carried a silent money bug (session total must
+   equal the order total).
 3. Kitchen screen rings; order status page updates; diner SMS arrives.
 4. Dashboard: Today tiles, funnel card, CSV exports.
 5. `/grader`: grade a real restaurant, email unlock → lead row.

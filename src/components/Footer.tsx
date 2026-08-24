@@ -19,6 +19,7 @@ export async function Footer() {
   const instagram = process.env.NEXT_PUBLIC_INSTAGRAM_URL;
 
   const productLinks = [
+    { href: "/eat", label: t("site.eat.title") },
     { href: "/pricing", label: t("site.nav.pricing") },
     { href: "/calculator", label: t("site.nav.estimator") },
     { href: "/how-it-works", label: t("site.nav.howItWorks") },

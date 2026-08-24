@@ -5,6 +5,7 @@ import type {
   Campaign,
   CustomerProfile,
   DayHours,
+  DirectoryListing,
   FunnelCounts,
   FunnelStep,
   LoyaltyAccount,
@@ -88,6 +89,10 @@ export interface DataStore {
    * never callable against a real restaurant.
    */
   resetDemoRestaurant(): Promise<void>;
+
+  // ── Directory (/eat) ──────────────────────────────────────────────────
+  listDirectory(city: string): Promise<DirectoryListing[]>;
+  getDirectoryListing(city: string, slug: string): Promise<DirectoryListing | null>;
 
   // ── Phase 8C: order funnel ────────────────────────────────────────────
   recordStorefrontEvent(restaurantId: string, sessionHash: string, step: FunnelStep): Promise<void>;

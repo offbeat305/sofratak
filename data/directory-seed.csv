@@ -1,0 +1,9 @@
+city,name,slug,address,phone,cuisines,halal,lat,lng
+# Drop Zizo's Tampa Bay + Dearborn/Detroit lead lists here, one restaurant per row, then run: npx tsx scripts/seed-directory.ts
+# - city: tampa | dearborn (metro slugs from src/content/eat-metros.ts)
+# - slug: optional — generated from the name if blank
+# - cuisines: |-separated from: lebanese|palestinian|yemeni|iraqi|egyptian|syrian|jordanian|mediterranean
+# - halal: reported | unknown  (NEVER "verified" here — that's only for claimed Sofratak restaurants)
+# - lat/lng: optional — geocoded automatically via OpenStreetMap when blank
+# Example (delete this line):
+# tampa,Example Shawarma House,,123 W Kennedy Blvd Tampa FL 33609,(813) 555-0000,lebanese|mediterranean,reported,,

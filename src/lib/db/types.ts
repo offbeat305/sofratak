@@ -311,6 +311,28 @@ export type FunnelCounts = {
   checkouts: number;
 };
 
+// ── Directory (docs/directory-spec.md) ────────────────────────────────
+
+export type DirectoryHalalStatus = "verified" | "reported" | "unknown";
+
+export type DirectoryListing = {
+  id: string;
+  /** metro slug — see src/content/eat-cities.ts */
+  city: string;
+  slug: string;
+  name: string;
+  address: string;
+  lat: number | null;
+  lng: number | null;
+  phone: string | null;
+  hours: DayHours[] | null;
+  cuisines: string[];
+  halalStatus: DirectoryHalalStatus;
+  googlePlaceId: string | null;
+  claimedRestaurantId: string | null;
+  source: "seed" | "places" | "manual";
+};
+
 export type AutomationKind =
   | "win_back"
   | "welcome"

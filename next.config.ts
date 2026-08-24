@@ -8,6 +8,14 @@ const nextConfig: NextConfig = {
     // demo menu images are our own static SVGs
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // uploaded menu photos live in Supabase Storage (menu-images bucket)
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.supabase.co",
+        pathname: "/storage/v1/object/public/menu-images/**",
+      },
+    ],
   },
   async headers() {
     return [

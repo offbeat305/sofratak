@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { Pencil, Plus } from "lucide-react";
+import { Camera, Pencil, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
 import type { Menu, MenuItem } from "@/lib/db/types";
 import { formatCents } from "@/lib/money";
@@ -12,6 +13,7 @@ import {
   deleteMenuItemAction,
   saveMenuItemAction,
   toggleSoldOutAction,
+  uploadMenuImageAction,
   type MenuItemInput,
 } from "@/app/[locale]/(dashboard)/dashboard/[slug]/actions";
 
@@ -133,7 +135,9 @@ function ItemEditor({
   const locale = useLocale();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState<MenuItemInput>({
     id: item?.id ?? null,
     categoryId,
@@ -141,7 +145,29 @@ function ItemEditor({
     description: item?.description ?? { en: "", ar: "" },
     price: item ? (item.priceCents / 100).toFixed(2) : "",
     soldOut: item?.soldOut ?? false,
+    // /demo/ placeholders count as "no photo" in the editor
+    imageUrl: item?.imageUrl && !item.imageUrl.startsWith("/demo/") ? item.imageUrl : null,
   });
+
+  const pickPhoto = () => fileInput.current?.click();
+
+  const uploadPhoto = (file: File | undefined) => {
+    if (!file) return;
+    setError(null);
+    setUploading(true);
+    startTransition(async () => {
+      const formData = new FormData();
+      formData.append("file", file);
+      const result = await uploadMenuImageAction(slug, formData);
+      setUploading(false);
+      if (result.ok) {
+        setForm((f) => ({ ...f, imageUrl: result.url }));
+      } else {
+        setError(result.error);
+      }
+      if (fileInput.current) fileInput.current.value = "";
+    });
+  };
 
   const save = () => {
     setError(null);
@@ -199,6 +225,54 @@ function ItemEditor({
       }
     >
       <div className="flex flex-col gap-3">
+        <div>
+          <span className={labelCls}>{t("photo")}</span>
+          <input
+            ref={fileInput}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={(e) => uploadPhoto(e.target.files?.[0])}
+            className="hidden"
+            aria-hidden
+          />
+          <div className="mt-1 flex items-center gap-3">
+            {form.imageUrl ? (
+              <Image
+                src={form.imageUrl}
+                alt=""
+                width={64}
+                height={64}
+                unoptimized
+                className="size-16 rounded-field border border-olive/10 object-cover"
+              />
+            ) : (
+              <div className="flex size-16 items-center justify-center rounded-field border border-dashed border-olive/25 text-stone">
+                <Camera className="size-5" aria-hidden />
+              </div>
+            )}
+            <div className="flex flex-col items-start gap-1">
+              <button
+                type="button"
+                onClick={pickPhoto}
+                disabled={uploading}
+                className="rounded-btn border border-olive/20 px-3 py-1.5 text-sm font-bold text-olive hover:bg-olive/5 disabled:opacity-50"
+              >
+                {uploading ? t("photoUploading") : form.imageUrl ? t("photoChange") : t("photoAdd")}
+              </button>
+              {form.imageUrl && !uploading && (
+                <button
+                  type="button"
+                  onClick={() => setForm((f) => ({ ...f, imageUrl: null }))}
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-stone hover:text-error"
+                >
+                  <Trash2 className="size-3.5" aria-hidden />
+                  {t("photoRemove")}
+                </button>
+              )}
+            </div>
+          </div>
+          <p className="mt-1 text-xs text-stone">{t("photoNote")}</p>
+        </div>
         <label>
           <span className={labelCls}>{t("nameEn")}</span>
           <input

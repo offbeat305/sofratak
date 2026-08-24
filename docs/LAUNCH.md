@@ -13,10 +13,15 @@ Keep `.env.local` values out of chat/screenshots while doing this.
       (the redemption path uses the service role, so it should be
       unaffected — this verifies it). Baseline before 0008 is recorded in
       PROGRESS.md (order Z156, code PHASE8TEST).
+- [ ] Storage: the `menu-images` bucket (public read, 4MB,
+      jpeg/png/webp) already exists in the current project. For a fresh
+      project, create it with the same settings (Dashboard → Storage, or
+      POST /storage/v1/bucket) — menu photo uploads depend on it.
 - [ ] Enable backups: Supabase Dashboard → Database → Backups. Daily
       backups come with the Pro plan; enable **PITR** (point-in-time
       recovery) for a real restore window. This is the primary backup
-      story — no app-side backup job exists.
+      story — no app-side backup job exists. (Storage bucket contents
+      are separate from DB backups — menu photos aren't in PITR.)
 - [ ] Auth hardening: Dashboard → Auth → enable leaked-password
       protection; review email templates (they'll be diner/owner-facing).
 - [ ] Confirm the super-admin account exists in prod:

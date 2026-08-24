@@ -28,6 +28,8 @@ export type MenuItemInput = {
   /** dollars string from the form, e.g. "9.49" */
   price: string;
   soldOut: boolean;
+  /** desired final photo URL; null = no photo (falls back to the category placeholder) */
+  imageUrl: string | null;
 };
 
 export async function setPausedAction(slug: string, paused: boolean) {
@@ -65,6 +67,17 @@ export async function saveMenuItemAction(slug: string, input: MenuItemInput) {
   const existing = input.id ? menu.items.find((i) => i.id === input.id) : null;
   if (input.id && !existing) return { ok: false as const, error: "Item not found" };
 
+  // Photo URL must be one of ours: an upload in THIS restaurant's storage
+  // folder or a bundled placeholder — never an arbitrary external URL.
+  let imageUrl = input.imageUrl;
+  if (imageUrl !== null) {
+    const uploadPrefix = `${process.env.SUPABASE_URL}/storage/v1/object/public/menu-images/${restaurant.id}/`;
+    const ok = imageUrl.startsWith("/demo/") || (process.env.SUPABASE_URL && imageUrl.startsWith(uploadPrefix));
+    if (!ok) return { ok: false as const, error: "Invalid photo" };
+  } else {
+    imageUrl = `/demo/${category.id}.svg`;
+  }
+
   await store.upsertMenuItem(restaurant.id, {
     id: existing?.id ?? `itm-${crypto.randomUUID().slice(0, 8)}`,
     categoryId: category.id,
@@ -74,13 +87,23 @@ export async function saveMenuItemAction(slug: string, input: MenuItemInput) {
       ar: input.description.ar.trim().slice(0, 300),
     },
     priceCents,
-    imageUrl: existing?.imageUrl ?? `/demo/${category.id}.svg`,
+    imageUrl,
     soldOut: input.soldOut,
     modifierGroupIds: existing?.modifierGroupIds ?? [],
     sort: existing?.sort ?? Math.max(0, ...menu.items.map((i) => i.sort)) + 1,
   });
   revalidatePath(`/[locale]/dashboard/${slug}`, "layout");
   return { ok: true as const };
+}
+
+/** Uploads a menu item photo; the returned URL goes into MenuItemInput.imageUrl. */
+export async function uploadMenuImageAction(slug: string, formData: FormData) {
+  const membership = await getMembership(slug);
+  if (!membership) return { ok: false as const, error: "Unauthorized" };
+  const file = formData.get("file");
+  if (!(file instanceof File)) return { ok: false as const, error: "Pick an image first" };
+  const { uploadMenuImage } = await import("@/lib/storage/menu-images");
+  return uploadMenuImage(membership.restaurant.id, file);
 }
 
 export async function toggleSoldOutAction(slug: string, itemId: string, soldOut: boolean) {

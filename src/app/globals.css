@@ -403,32 +403,6 @@ h4 {
   background-size: 22px 22px;
 }
 
-/* Section blends — soften hard band edges (80-120px). Standalone
-   overlay divs (NOT pseudo-elements — .olive-luminous owns ::before/
-   ::after on the same sections): drop
-   `<div aria-hidden className="blend-ivory" />` as the first child of
-   the section BELOW, named for the color it blends FROM. Section needs
-   `relative`. */
-.blend-ivory,
-.blend-sand,
-.blend-olive {
-  position: absolute;
-  inset-inline: 0;
-  top: 0;
-  height: 100px;
-  pointer-events: none;
-  z-index: 1;
-}
-.blend-ivory {
-  background: linear-gradient(to bottom, var(--color-ivory), transparent);
-}
-.blend-sand {
-  background: linear-gradient(to bottom, #f1e7d2, transparent);
-}
-.blend-olive {
-  background: linear-gradient(to bottom, var(--color-olive), transparent);
-}
-
 /* Brass glow pulse fired once when a revealed number lands. */
 @keyframes glow-land {
   0%,

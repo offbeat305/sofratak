@@ -13,11 +13,9 @@ the capture surface, not the page).
   `gradient-text-brass`, `texture-dots`, `blend-ivory/sand/olive`
   section blends, `glow-land(-now/-auto)` number pulse. All
   reduced-motion-gated.
-  **Gotcha fixed**: blends started as `::before` utilities and
-  collided with `olive-luminous::before` on the same section — CSS
-  merges same-pseudo rules, which painted an 800px ivory wash over
-  dark bands. Blends are standalone overlay divs now
-  (`<div aria-hidden className="blend-ivory" />`).
+  **Update (Zizo)**: the gradient section blends were REMOVED same
+  day — "make it sharp like a modern app". Band edges are hard again;
+  everything else in the glow system stays.
 - **Hero**: dusk gradient (olive → #1E332A), luminance blobs,
   gradient-text "Keep it instead." (the one gradient text), glass
   trust chips, calculator card = the single glowing object (halo +

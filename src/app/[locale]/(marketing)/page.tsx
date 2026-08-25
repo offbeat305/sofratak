@@ -160,7 +160,6 @@ export default async function HomePage({
       {/* 3 · Where your $30 goes — glass panel on lit dark olive
              (design-pass-3 §3) */}
       <section className="olive-luminous relative bg-olive">
-        <div aria-hidden className="blend-ivory" />
         <div className="relative z-[2] mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <SectionHeader title={t("dollar.title")} sub={t("dollar.sub")} dark />
           <Reveal delay={80} className="mx-auto mt-10 max-w-2xl">
@@ -174,7 +173,6 @@ export default async function HomePage({
 
       {/* 4 · What you get (ivory + texture) */}
       <section className="texture-dots relative bg-ivory">
-        <div aria-hidden className="blend-olive" />
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <SectionHeader title={t("features.title")} />
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -203,7 +201,6 @@ export default async function HomePage({
 
       {/* 5 · Product tour (lit olive; watermark parallaxes behind devices) */}
       <section className="olive-luminous relative bg-olive">
-        <div aria-hidden className="blend-ivory" />
         <ArchWatermark />
         <div className="relative mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <SectionHeader title={t("tour.title")} sub={t("tour.sub")} dark />
@@ -215,7 +212,6 @@ export default async function HomePage({
 
       {/* 6 · LIVE demo — the real product, embedded (ivory + texture) */}
       <section className="texture-dots relative bg-ivory">
-        <div aria-hidden className="blend-olive" />
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <Reveal>
             <LiveDemo />
@@ -319,7 +315,6 @@ export default async function HomePage({
 
       {/* 11 · Data promise (lit olive) */}
       <section className="olive-luminous relative bg-olive text-ivory">
-        <div aria-hidden className="blend-ivory" />
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <Reveal>
             <h2 className="font-display text-4xl leading-tight font-bold sm:text-[44px]">
@@ -335,7 +330,6 @@ export default async function HomePage({
 
       {/* 12 · FAQ (ivory + texture) */}
       <section className="texture-dots relative bg-ivory">
-        <div aria-hidden className="blend-olive" />
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <SectionHeader title={t("faq.title")} />
           <div className="mt-10">

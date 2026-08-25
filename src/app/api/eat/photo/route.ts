@@ -11,7 +11,9 @@ const PHOTO_NAME_RE = /^places\/[A-Za-z0-9_-]+\/photos\/[A-Za-z0-9_-]+$/;
  * and stores nothing; browser-side HTTP caching is normal live display).
  */
 export async function GET(request: NextRequest) {
-  if (!(await allowRequest("eat-photo", 60))) {
+  // 150/min: collage (5) + visible result rows + nearby rail all stream
+  // through here now — one engaged user legitimately pulls dozens/min
+  if (!(await allowRequest("eat-photo", 150))) {
     return NextResponse.json({ error: "rate limited" }, { status: 429 });
   }
   const key = process.env.GOOGLE_PLACES_API_KEY;

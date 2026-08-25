@@ -160,7 +160,7 @@ export function HeroCalculator() {
   return (
     <div
       ref={cardRef}
-      className="rounded-[28px] bg-ivory p-6 shadow-[0_30px_70px_rgba(24,38,31,0.45)] transition-transform duration-150 will-change-transform sm:p-8"
+      className="rounded-[20px] bg-ivory p-6 shadow-[0_22px_54px_rgba(24,38,31,0.42)] transition-transform duration-150 will-change-transform sm:p-8"
     >
       <h2 className="font-display text-[26px] leading-snug font-bold text-olive">
         {t("title")}

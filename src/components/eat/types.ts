@@ -13,6 +13,8 @@ export type EatListingView = {
   verified: boolean;
   /** null = hours unknown; no open/closed chip shown */
   openNow: boolean | null;
+  /** "HH:MM" today's service window closes — "Open until 10 PM" line */
+  openUntil: string | null;
   /** locale-free storefront path for verified listings, e.g. "/s/beitzizo" */
   orderPath: string | null;
   /** verified listings only (their storefront banner) */

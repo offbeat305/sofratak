@@ -1,5 +1,61 @@
 # Sofratak — Progress Log
 
+## 2026-08-25 (cont. 2) — Design pass 2: Yelp-grade /eat + site sharpening
+
+Full implementation of docs/design-pass-2.md. All verified live
+(desktop split view, 390px mobile, AR RTL).
+
+**A1 — metro pages**: desktop 60/40 split with sticky map; dense
+numbered Yelp-style rows (120px photo, live brass-star rating + count,
+cuisine line, "Open until X" from listing hours, one-line Google
+editorial summary, Order Now / Claim CTAs); row hover ⇄ pin pulse
+both directions (pin click scrolls + flashes the row — with a jump
+fallback because some engines silently drop smooth scrolling); pins
+are numbered divIcons (olive, brass = claimed) matching row numbers;
+sticky filter bar + sort (Recommended / Rating / Distance w/
+geolocation / A–Z — Recommended is intentionally stable-ordered:
+sorting by lazily-loaded live ratings would reshuffle rows under the
+reader; only the explicit Rating sort does that). Mobile: list-first,
+floating Map pill → full-screen map + snap card carousel (swipe ⇄ pan,
+z-70 to clear the navbar).
+
+**A2 — detail pages**: photo-collage hero (big + 2×2, Yelp pattern)
+with olive scrim overlay (name/cuisine/live rating), "See all photos"
+lightbox (keyboard nav, Google attribution); two-column body — about
+(custom_blurb > editorialSummary), amenity pills (open-until / call /
+directions), quiet halal row, hours accordion (today bolded, falls
+back to live Google hours), map thumbnail → directions; sticky action
+card (claimed: brass Order Now + phone + directions; unclaimed: claim
+pitch anchoring to the form — every unclaimed page is a claim landing
+page); nearby rail (6 closest, haversine); breadcrumb +
+BreadcrumbList JSON-LD.
+
+**A3**: every missing/failed photo state renders the designed
+placeholder (olive arch motif + initial) — including img onError
+(photo-proxy rate limit) fallbacks. All async loads skeleton-shimmer.
+
+**B — site-wide**: card radius 24→20px + `card-crisp` (tight
+olive-tinted shadow, 1px inner ivory line); heading letter-spacing
+-0.01em; `press` (0.98 scale) + chip-pop micro-interactions; skeleton
+shimmer system; Carto Positron light map tiles (modernizes the whole
+map, ODbL+CARTO attribution kept); live stats strip (real published
+counts, CountUp) on /eat landing + homepage now-serving strip; Grader
+gets a result-skeleton while grading (estimator already had the
+odometer); homepage hero ambient 30s gradient drift; 150ms marketing
+page-transition fade (template.tsx). Everything reduced-motion-gated
+in globals.css.
+
+**Enrichment plumbing**: shared `useListingEnrichment` hook
+(IntersectionObserver, one Places call per listing, feeds rows/hero/
+rail); replaced places-enrichment.tsx + card-photo.tsx. Photo-proxy
+rate limit 60→150/min (collage + rows + rail all stream through it).
+
+**DoD gap**: the side-by-side vs yelp.com screenshot — Yelp's bot
+wall blocked all capture attempts from this IP (network-flagged);
+`scripts/design-pass-2-shot.mjs` is ready and the capture will be
+committed as docs/design-pass-2-comparison.png once the block cools
+down. Our side is captured and looks the part.
+
 ## 2026-08-25 (cont.) — FINAL data drop: 4-county PDF rebuild seeded
 
 CSV fully rebuilt from Zizo's verified county PDFs (426 rows after my

@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { BadgeCheck, MapPin, Phone } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { getMetro } from "@/content/eat-metros";
 import { getStore } from "@/lib/db/store";
-import { composeListingView } from "@/lib/eat/compose";
+import { composeListingView, composeMetroListings } from "@/lib/eat/compose";
 import { ClaimForm } from "@/components/eat/claim-form";
-import { PlacesEnrichment } from "@/components/eat/places-enrichment";
+import { ListingProfile } from "@/components/eat/listing-profile";
+import { NearbyRail } from "@/components/eat/nearby-rail";
 import { localeAlternates, SITE_URL } from "@/lib/seo";
 import type { EatListingView } from "@/components/eat/types";
 
@@ -46,17 +45,38 @@ function listingJsonLd(view: EatListingView, city: string) {
     ...(view.phone && { telephone: view.phone }),
     ...(view.cuisines.length > 0 && { servesCuisine: view.cuisines }),
     url: `${SITE_URL}/en/eat/${city}/${view.slug}`,
-    ...(view.verified && view.orderPath && {
-      acceptsReservations: false,
-      potentialAction: {
-        "@type": "OrderAction",
-        target: `${SITE_URL}/en${view.orderPath}`,
-      },
-    }),
+    ...(view.verified &&
+      view.orderPath && {
+        acceptsReservations: false,
+        potentialAction: {
+          "@type": "OrderAction",
+          target: `${SITE_URL}/en${view.orderPath}`,
+        },
+      }),
   };
 }
 
-const DAY_KEYS = [0, 1, 2, 3, 4, 5, 6] as const;
+function breadcrumbJsonLd(rootLabel: string, metroLabel: string, view: EatListingView, city: string) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: rootLabel, item: `${SITE_URL}/en/eat` },
+      { "@type": "ListItem", position: 2, name: metroLabel, item: `${SITE_URL}/en/eat/${city}` },
+      { "@type": "ListItem", position: 3, name: view.name },
+    ],
+  };
+}
+
+function haversineMi(a: { lat: number; lng: number }, b: { lat: number; lng: number }) {
+  const R = 3958.8;
+  const dLat = ((b.lat - a.lat) * Math.PI) / 180;
+  const dLng = ((b.lng - a.lng) * Math.PI) / 180;
+  const s =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((a.lat * Math.PI) / 180) * Math.cos((b.lat * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(s));
+}
 
 export default async function EatListingPage({
   params,
@@ -77,95 +97,67 @@ export default async function EatListingPage({
   if (!listing || !listing.published) notFound();
   const view = await composeListingView(listing, metro);
   const blurb =
-    loc === "ar"
-      ? listing.customBlurbAr || listing.customBlurb
-      : listing.customBlurb;
+    loc === "ar" ? listing.customBlurbAr || listing.customBlurb : listing.customBlurb;
   const hours = view.verified
-    ? (await store.getRestaurantById(listing.claimedRestaurantId!))?.hours ?? null
+    ? ((await store.getRestaurantById(listing.claimedRestaurantId!))?.hours ?? null)
     : listing.hours;
 
+  // 6 closest same-metro listings for the nearby rail (haversine when
+  // both sides have pins, alphabetical tail otherwise).
+  const all = (await composeMetroListings(metro)).filter((l) => l.id !== view.id);
+  const nearby = (
+    view.lat !== null && view.lng !== null
+      ? all
+          .map((l) => ({
+            l,
+            d:
+              l.lat !== null && l.lng !== null
+                ? haversineMi({ lat: view.lat!, lng: view.lng! }, { lat: l.lat, lng: l.lng })
+                : Infinity,
+          }))
+          .sort((a, b) => a.d - b.d)
+          .map((x) => x.l)
+      : all
+  ).slice(0, 6);
+
   return (
-    <div className="mx-auto max-w-2xl px-4 pt-24 pb-14 sm:px-6">
+    <div className="mx-auto max-w-5xl px-4 pt-24 pb-14 sm:px-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(listingJsonLd(view, city)) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbJsonLd(t("breadcrumbRoot"), metro.name[loc], view, city)),
+        }}
+      />
 
-      <Link href={`/eat/${city}`} className="text-sm font-semibold text-stone hover:text-olive">
-        ← {t("backToCity", { city: metro.name[loc] })}
-      </Link>
-
-      {view.verified && view.photoUrl && (
-        <div className="relative mt-4 h-44 overflow-hidden rounded-card sm:h-56">
-          <Image src={view.photoUrl} alt="" fill unoptimized className="object-cover" />
-        </div>
-      )}
-
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        <h1 className="font-display text-3xl font-bold text-olive">{view.name}</h1>
-        {view.verified && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-brass/12 px-2.5 py-1 text-xs font-bold text-brass-deep">
-            <BadgeCheck className="size-4" aria-hidden />
-            {t("verified")}
-          </span>
-        )}
-      </div>
-
-      {view.cuisines.length > 0 && (
-        <p className="mt-1 text-stone">{view.cuisines.map((c) => t(`cuisines.${c}`)).join(" · ")}</p>
-      )}
-
-      {blurb && <p className="mt-3 text-[15px] leading-relaxed text-charcoal">{blurb}</p>}
-
-      <div className="mt-4 flex flex-col gap-2 text-[15px] text-charcoal">
-        {/* quiet halal info row (Zizo: no badges — culture-first brand);
-            "verified" only survives compose on claimed listings */}
-        {view.halalStatus !== "unknown" && (
-          <p className="text-sm text-stone">
-            {view.halalStatus === "verified" ? t("halalRowOwner") : t("halalRowReported")}
-          </p>
-        )}
-        {view.address && (
-          <a
-            href={`https://maps.google.com/?q=${encodeURIComponent(`${view.name} ${view.address}`)}`}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 hover:text-olive"
-          >
-            <MapPin className="size-4 shrink-0 text-stone" aria-hidden />
-            {view.address}
-          </a>
-        )}
-        {view.phone && (
-          <a href={`tel:${view.phone}`} dir="ltr" className="inline-flex items-center gap-2 hover:text-olive">
-            <Phone className="size-4 shrink-0 text-stone" aria-hidden />
-            {view.phone}
-          </a>
-        )}
-      </div>
-
-      {!view.verified && (
-        <PlacesEnrichment
-          city={city}
-          slug={listingSlug}
-          name={view.name}
-          showHours={!hours || hours.length === 0}
-          // area-level stored address (same heuristic as the seed script's
-          // no-pin rule) → let Google's live formattedAddress fill in
-          showAddress={view.address.split(",").length < 3}
-          showSummary={!blurb}
-        />
-      )}
-
-      {view.verified && view.orderPath ? (
-        <Link
-          href={view.orderPath}
-          className="btn-shine mt-6 inline-flex h-13 items-center rounded-btn bg-brass px-8 text-lg font-bold text-ivory transition-transform duration-150 hover:scale-[1.02] motion-reduce:hover:scale-100"
-        >
-          {t("orderNow")}
+      {/* breadcrumb */}
+      <nav className="mb-4 flex flex-wrap items-center gap-1.5 text-sm text-stone" aria-label="Breadcrumb">
+        <Link href="/eat" className="font-semibold hover:text-olive">
+          {t("breadcrumbRoot")}
         </Link>
-      ) : (
-        <section className="mt-8 rounded-card border border-olive/10 bg-white p-5 sm:p-6">
+        <span aria-hidden>›</span>
+        <Link href={`/eat/${city}`} className="font-semibold hover:text-olive">
+          {metro.name[loc]}
+        </Link>
+        <span aria-hidden>›</span>
+        <span className="text-charcoal">{view.name}</span>
+      </nav>
+
+      <ListingProfile
+        city={city}
+        view={view}
+        hours={hours}
+        blurb={blurb ?? null}
+        days={days}
+        showLiveAddress={view.address.split(",").length < 3}
+      />
+
+      {/* claim funnel (unclaimed only) — the sidebar card anchors here */}
+      {!view.verified && (
+        <section id="claim" className="card-crisp mt-10 scroll-mt-24 rounded-card bg-white p-5 sm:p-6">
           <h2 className="font-display text-xl font-bold text-olive">{t("claimTitle")}</h2>
           <p className="mt-1 text-sm text-stone">{t("claimSub")}</p>
           <div className="mt-4">
@@ -174,24 +166,7 @@ export default async function EatListingPage({
         </section>
       )}
 
-      {hours && hours.length > 0 && (
-        <section className="mt-8">
-          <h2 className="text-sm font-bold tracking-wide text-stone uppercase">{t("hoursTitle")}</h2>
-          <ul className="mt-2 flex flex-col gap-1 text-sm text-charcoal">
-            {DAY_KEYS.map((day) => {
-              const h = hours.find((x) => x.day === day);
-              return (
-                <li key={day} className="flex justify-between gap-4">
-                  <span>{days[day]}</span>
-                  <span dir="ltr" className="tabular-nums">
-                    {h ? `${h.open}–${h.close}` : t("closedDay")}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      )}
+      <NearbyRail city={city} listings={nearby} />
 
       {!view.verified && (
         <footer className="mt-10 border-t border-olive/10 pt-4 text-xs text-stone">

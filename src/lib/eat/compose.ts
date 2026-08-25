@@ -1,6 +1,6 @@
 import "server-only";
 import { getStore } from "@/lib/db/store";
-import { isOpenNow } from "./open-now";
+import { closesAt, isOpenNow } from "./open-now";
 import type { EatMetro } from "@/content/eat-metros";
 import type { DirectoryListing } from "@/lib/db/types";
 import type { EatListingView } from "@/components/eat/types";
@@ -28,6 +28,7 @@ export async function composeListingView(
     halalStatus: listing.halalStatus === "verified" ? "reported" : listing.halalStatus,
     verified: false,
     openNow: isOpenNow(listing.hours, metro.timezone),
+    openUntil: closesAt(listing.hours, metro.timezone),
     orderPath: null,
     photoUrl: null,
     hasLivePhotos: !listing.claimedRestaurantId && !!listing.googlePlaceId,
@@ -44,6 +45,7 @@ export async function composeListingView(
     halalStatus: listing.halalStatus,
     verified: true,
     openNow: isOpenNow(restaurant.hours, restaurant.timezone),
+    openUntil: closesAt(restaurant.hours, restaurant.timezone),
     orderPath: `/s/${restaurant.slug}`,
     photoUrl: restaurant.coverUrl,
     hasLivePhotos: false,

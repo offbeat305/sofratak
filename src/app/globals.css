@@ -18,10 +18,10 @@
   --color-positive: #1b7a4a;
   --color-error: #d92d20;
 
-  /* Radii */
+  /* Radii — design-pass-2: crisp beats soft (card 24→20px) */
   --radius-btn: 0.875rem; /* 14px — buttons */
   --radius-field: 0.875rem; /* 14px — inputs/selects */
-  --radius-card: 1.5rem; /* 24px — cards */
+  --radius-card: 1.25rem; /* 20px — cards */
   --radius-modal: 1.5rem; /* 24px — modals */
 }
 
@@ -41,6 +41,14 @@ body {
   background-color: var(--color-ivory);
   color: var(--color-charcoal);
   font-family: var(--font-sans);
+}
+
+/* design-pass-2 type discipline: crisper headings, not new fonts */
+h1,
+h2,
+h3,
+h4 {
+  letter-spacing: -0.01em;
 }
 
 /* ── Motion: subtle rise/fade, disabled for reduced motion ─────────── */
@@ -174,6 +182,159 @@ body {
 }
 .sf-slider:active::-moz-range-thumb {
   box-shadow: 0 0 0 8px rgba(169, 121, 43, 0.25);
+}
+
+/* ── Design-pass-2 (docs/design-pass-2.md) ──────────────────────────── */
+
+/* Crisp card: tighter olive-tinted shadow + 1px inner ivory line. */
+.card-crisp {
+  box-shadow:
+    inset 0 0 0 1px rgba(247, 242, 232, 0.9),
+    0 1px 2px rgba(37, 59, 48, 0.06),
+    0 4px 12px rgba(37, 59, 48, 0.08);
+}
+
+/* Skeleton shimmer for every async load — never raw pop-in. */
+@keyframes skeleton-sweep {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+.skeleton {
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--color-olive) 7%, var(--color-ivory)) 40%,
+    color-mix(in srgb, var(--color-olive) 3%, white) 50%,
+    color-mix(in srgb, var(--color-olive) 7%, var(--color-ivory)) 60%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-sweep 1.4s ease-in-out infinite;
+}
+
+/* Button press: 0.98 scale, ≤250ms. */
+.press {
+  transition: transform 120ms ease-out;
+}
+.press:active {
+  transform: scale(0.98);
+}
+
+/* Chip toggle pulse — quick scale settle, no bounce. */
+@keyframes chip-pop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.chip-pop {
+  animation: chip-pop 180ms ease-out;
+}
+
+/* Map pins (Leaflet divIcon) — numbered olive circles, brass = claimed. */
+.sf-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--color-olive);
+  color: var(--color-ivory);
+  border: 2px solid var(--color-ivory);
+  box-shadow: 0 1px 4px rgba(31, 31, 31, 0.35);
+  font:
+    700 12px/1 var(--font-sans);
+  transition:
+    transform 150ms ease-out,
+    background-color 150ms ease-out;
+}
+.sf-pin-claimed {
+  background: var(--color-brass);
+  width: 30px;
+  height: 30px;
+  font-size: 13px;
+}
+.sf-pin-active {
+  background: var(--color-brass);
+  transform: scale(1.35);
+  z-index: 1000;
+  animation: pin-pulse 900ms ease-out infinite;
+}
+@keyframes pin-pulse {
+  0% {
+    box-shadow:
+      0 1px 4px rgba(31, 31, 31, 0.35),
+      0 0 0 0 rgba(169, 121, 43, 0.45);
+  }
+  100% {
+    box-shadow:
+      0 1px 4px rgba(31, 31, 31, 0.35),
+      0 0 0 14px rgba(169, 121, 43, 0);
+  }
+}
+
+/* Result-row flash when its pin is clicked. */
+@keyframes row-flash {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  35% {
+    background-color: color-mix(in srgb, var(--color-brass) 14%, transparent);
+  }
+}
+.row-flash {
+  animation: row-flash 900ms ease-out 1;
+}
+
+/* Homepage hero ambient gradient drift (30s loop, barely perceptible). */
+@keyframes ambient-drift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.hero-ambient {
+  background-image: linear-gradient(
+    115deg,
+    var(--color-olive) 0%,
+    var(--color-olive-deep) 38%,
+    #2c4a3a 55%,
+    var(--color-olive) 100%
+  );
+  background-size: 220% 220%;
+  animation: ambient-drift 30s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton,
+  .chip-pop,
+  .sf-pin-active,
+  .row-flash,
+  .hero-ambient {
+    animation: none;
+  }
+  .press,
+  .press:active {
+    transform: none;
+    transition: none;
+  }
+  .sf-pin {
+    transition: none;
+  }
 }
 
 /* EN→AR storefront flip in the product tour (design-pass §5). */

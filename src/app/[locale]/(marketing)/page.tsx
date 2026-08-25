@@ -5,6 +5,7 @@ import { BadgeCheck } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { FOUNDER_STORY } from "@/content/founder-story";
 import { CITIES } from "@/content/cities";
+import { EatStatsStrip } from "@/components/eat/eat-stats-strip";
 import { localeAlternates } from "@/lib/seo";
 import { ArchDivider } from "@/components/marketing/arch-divider";
 import { ArchWatermark } from "@/components/marketing/arch-watermark";
@@ -83,8 +84,8 @@ export default async function HomePage({
 
   return (
     <>
-      {/* 1 · Hero — the calculator IS the hero (olive) */}
-      <section className="relative min-h-[88vh] bg-olive text-ivory">
+      {/* 1 · Hero — the calculator IS the hero (olive + ambient drift) */}
+      <section className="hero-ambient relative min-h-[88vh] bg-olive text-ivory">
         <ArchWatermark />
         {/* mobile order: headline → calculator (above the fold, per the
             done-when) → supporting copy; desktop: text column + card */}
@@ -146,6 +147,12 @@ export default async function HomePage({
               {city.name[loc]}
             </Link>
           ))}
+          {/* live directory stats (design-pass-2 B) */}
+          <span className="ms-auto">
+            <Link href="/eat" className="hover:underline">
+              <EatStatsStrip />
+            </Link>
+          </span>
         </div>
       </section>
 

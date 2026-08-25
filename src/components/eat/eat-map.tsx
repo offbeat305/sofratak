@@ -1,79 +1,113 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Map as LeafletMap } from "leaflet";
+import type { Map as LeafletMap, Marker } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { EatListingView } from "./types";
 
 /**
- * Directory map — Leaflet + OSM tiles (free tier, no key). Sofratak
- * brand pins per the spec: verified = larger filled brass, unclaimed =
- * small olive outline. Loaded only on the client (dynamic import in the
- * city view).
+ * Directory map (design-pass-2 A1/B): Carto Positron light tiles —
+ * clean and desaturated so the olive/brass pins carry the brand.
+ * Numbered divIcon pins match the numbered result rows; claimed rows
+ * get the larger brass pin. Hovering a row pulses its pin
+ * (`hoveredId`), clicking a pin scrolls to + flashes its row
+ * (`onPinClick`). Free tier, no key.
  */
 export default function EatMap({
   listings,
   center,
   zoom,
-  selectedId,
-  onSelect,
+  hoveredId,
+  flyToId,
+  onPinClick,
 }: {
+  /** in display order — pin numbers are index+1 */
   listings: EatListingView[];
   center: { lat: number; lng: number };
   zoom: number;
-  selectedId: string | null;
-  onSelect: (id: string) => void;
+  hoveredId: string | null;
+  /** mobile carousel drives the map here; null on desktop (no jumpiness) */
+  flyToId: string | null;
+  onPinClick: (id: string) => void;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<LeafletMap | null>(null);
+  const markersRef = useRef(new Map<string, Marker>());
+  const onPinClickRef = useRef(onPinClick);
+  onPinClickRef.current = onPinClick;
 
+  // (Re)build markers when the display order changes — numbers must
+  // track the sorted/filtered list.
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const L = (await import("leaflet")).default;
-      if (cancelled || !containerRef.current || mapRef.current) return;
+      if (cancelled || !containerRef.current) return;
 
-      const map = L.map(containerRef.current, { scrollWheelZoom: true }).setView(
-        [center.lat, center.lng],
-        zoom,
-      );
-      mapRef.current = map;
-      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 19,
-      }).addTo(map);
-
-      for (const listing of listings) {
-        if (listing.lat === null || listing.lng === null) continue;
-        const marker = L.circleMarker([listing.lat, listing.lng], {
-          radius: listing.verified ? 11 : 6,
-          color: listing.verified ? "#a9792b" : "#2f4a3c",
-          weight: 2,
-          fillColor: listing.verified ? "#a9792b" : "#f7f2e8",
-          fillOpacity: listing.verified ? 0.9 : 0.6,
-        }).addTo(map);
-        marker.bindTooltip(listing.name, { direction: "top", offset: [0, -6] });
-        marker.on("click", () => onSelect(listing.id));
+      if (!mapRef.current) {
+        mapRef.current = L.map(containerRef.current, { scrollWheelZoom: true }).setView(
+          [center.lat, center.lng],
+          zoom,
+        );
+        L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          maxZoom: 20,
+          subdomains: "abcd",
+        }).addTo(mapRef.current);
       }
+
+      for (const m of markersRef.current.values()) m.remove();
+      markersRef.current.clear();
+
+      listings.forEach((listing, i) => {
+        if (listing.lat === null || listing.lng === null) return;
+        const marker = L.marker([listing.lat, listing.lng], {
+          icon: L.divIcon({
+            className: "",
+            html: `<div class="sf-pin${listing.verified ? " sf-pin-claimed" : ""}" data-listing="${listing.id}">${i + 1}</div>`,
+            iconSize: listing.verified ? [30, 30] : [26, 26],
+            iconAnchor: listing.verified ? [15, 15] : [13, 13],
+          }),
+          // claimed pins stack above the olive ones, active handled via CSS
+          zIndexOffset: listing.verified ? 500 : 0,
+        }).addTo(mapRef.current!);
+        marker.bindTooltip(listing.name, { direction: "top", offset: [0, -12] });
+        marker.on("click", () => onPinClickRef.current(listing.id));
+        markersRef.current.set(listing.id, marker);
+      });
     })();
     return () => {
       cancelled = true;
+    };
+    // center/zoom are static per metro page
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listings]);
+
+  useEffect(
+    () => () => {
       mapRef.current?.remove();
       mapRef.current = null;
-    };
-    // The listing set for a city page is stable per render — rebuilding the
-    // map on selection changes would be wasteful.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    },
+    [],
+  );
 
-  // Fly to the selected listing when the list drives the map.
+  // Row hover ↔ pin pulse (both directions handled by the parent state).
   useEffect(() => {
-    if (!selectedId || !mapRef.current) return;
-    const listing = listings.find((l) => l.id === selectedId);
-    if (listing?.lat != null && listing.lng != null) {
-      mapRef.current.setView([listing.lat, listing.lng], 15, { animate: true });
+    for (const [id, marker] of markersRef.current) {
+      const el = marker.getElement()?.querySelector(".sf-pin");
+      if (!el) continue;
+      el.classList.toggle("sf-pin-active", id === hoveredId);
     }
-  }, [selectedId, listings]);
+  }, [hoveredId, listings]);
+
+  useEffect(() => {
+    if (!flyToId || !mapRef.current) return;
+    const listing = listings.find((l) => l.id === flyToId);
+    if (listing?.lat != null && listing.lng != null) {
+      mapRef.current.panTo([listing.lat, listing.lng], { animate: true });
+    }
+  }, [flyToId, listings]);
 
   return <div ref={containerRef} className="h-full w-full" aria-hidden />;
 }

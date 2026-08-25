@@ -141,10 +141,19 @@ export function GraderTool() {
         <p className="mt-2 text-sm text-stone">{t("searchHint")}</p>
 
         {stage === "grading" && (
-          <p className="mt-6 flex items-center gap-2 font-semibold text-olive" role="status">
-            <span className="size-4 animate-spin rounded-full border-2 border-olive/30 border-t-olive" aria-hidden />
-            {t("grading", { name: query })}
-          </p>
+          <div className="mt-6" role="status">
+            <p className="flex items-center gap-2 font-semibold text-olive">
+              <span className="size-4 animate-spin rounded-full border-2 border-olive/30 border-t-olive" aria-hidden />
+              {t("grading", { name: query })}
+            </p>
+            {/* skeleton preview of the incoming result (design-pass-2 B) */}
+            <div className="mt-4 flex flex-col gap-3" aria-hidden>
+              <div className="skeleton h-24 rounded-card" />
+              <div className="skeleton h-4 w-2/3 rounded" />
+              <div className="skeleton h-14 rounded-card" />
+              <div className="skeleton h-14 rounded-card" />
+            </div>
+          </div>
         )}
         {error && (
           <p role="alert" className="mt-4 text-sm font-semibold text-error">

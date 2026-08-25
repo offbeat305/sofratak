@@ -126,8 +126,12 @@ async function overpass(city: string): Promise<OsmElement[]> {
   nwr["amenity"~"^(restaurant|fast_food|cafe)$"]["cuisine"~"${CUISINE_RE}",i](${bbox});
   nwr["amenity"~"^(restaurant|fast_food|cafe)$"]["diet:halal"~"^(yes|only)$"](${bbox});
   nwr["amenity"~"^(restaurant|fast_food|cafe)$"]["name"~"${NAME_RE}",i](${bbox});
+  nwr["amenity"~"^(restaurant|fast_food|cafe)$"]["cuisine"~"mediterranean",i](${bbox});
 );
 out center tags;`;
+  // The 4th clause exists FOR the review queue: many Arab spots self-label
+  // "mediterranean" (Zizo). Hits that match ONLY that clause import
+  // unpublished for manual approval — see the `ambiguous` rule below.
   const res = await fetch("https://overpass-api.de/api/interpreter", {
     method: "POST",
     headers: {

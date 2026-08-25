@@ -1,5 +1,56 @@
 # Sofratak — Progress Log
 
+## 2026-08-24 (cont.) — Directory upgrades 1-5 + /stories editorial section
+
+Zizo's numbered list. #3 (OSM import) and #4 (suggest form) were
+already built the previous turn — what was new there is the REVIEW
+QUEUE refinement, done below.
+
+- **#5** Seed rerun: 18 Miami rows live (107 seeds + Beit Zizo).
+- **#2** Place-ID backfill: `scripts/backfill-place-ids.ts` — Places
+  Text Search with an IDs-only field mask (free SKU; IDs are the one
+  storable Places datum). Ran: **108/108 matched**. Note: the fictional
+  demo restaurant also "matched" a real place — harmless because
+  enrichment (below) never runs on claimed listings.
+- **#1** Live Places enrichment on UNCLAIMED listing pages: photos/
+  rating/hours fetched at view time via server action (client-mounted so
+  ISR never bakes Places content into cached HTML), 5-min in-memory
+  burst TTL, `cache: no-store` everywhere, photos streamed through
+  `/api/eat/photo` (key stays server-side) and rendered with plain
+  `<img>` — next/image's optimizer would persist copies, a ToS
+  violation. "Powered by Google" + photo author attribution shown.
+  Reuses the Grader's daily cap. Verified live on Abu Naji: real 4.7★ /
+  1,111 reviews, live hours, 3 photos.
+- **#3 refinement — review queue**: OSM hits whose RAW cuisine tag is
+  only the ambiguous "mediterranean" (no halal tag, no Arab name match)
+  import unpublished; clearly-Arab raw tags (shawarma, falafel,
+  lebanese…) publish directly. `/admin/directory` gives one-click
+  Publish/Reject (audit-logged). Migration 0011 amended (STILL
+  UNAPPLIED — apply the current version) with the `published` column;
+  everything existing stays published.
+- **#4**: already live from the previous turn — no changes.
+
+### /stories — editorial section (slug decision noted per Zizo)
+Chose **/stories** over /blog: matches the brand's existing
+founder-story voice and reads premium; path segment is SEO-neutral.
+Markdown files in `content/stories/` (tiny frontmatter parser +
+`marked`), editorial article template per branding.md (Cormorant-class
+display headline, measured 17px body, brass links), Article JSON-LD,
+per-article typographic OG image via next/og (WhatsApp-first, no
+photos → no scraping risk), sitemap + footer link, EN-first per the
+Arabic review rule (pages exist in both locales; article body renders
+EN LTR).
+
+First article shipped: "Where to find Arab & halal food in Tampa Bay" —
+neighborhood guide built ONLY from our own directory data, all 10
+listing links verified against real slugs, ends in add-a-restaurant +
+claim CTAs. This is the Zay-OS-style SEO flywheel: stories → directory
+→ claims.
+
+### Still with Zizo (unchanged, clocks ticking)
+Apply amended 0011 → I run the OSM import (~112, ambiguous ones to
+review queue). Twilio A2P / Stripe live / DNS / domain registrar. The
+delivery API applications.
 ## 2026-08-24 (cont.) — Directory comprehensive coverage: OSM layer + community form
 
 Per Zizo's three-layer directive. Also ran the seed again first: the

@@ -1,10 +1,11 @@
 import type { MetadataRoute } from "next";
 import { CITIES } from "@/content/cities";
 import { EAT_METROS } from "@/content/eat-metros";
+import { listStories } from "@/lib/stories";
 
 const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.sofratak.com";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPaths = [
     "",
     "/pricing",
@@ -17,8 +18,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
   const cityPaths = CITIES.map((city) => `/cities/${city.slug}`);
   const eatPaths = ["/eat", ...EAT_METROS.map((m) => `/eat/${m.slug}`)];
+  const storyPaths = ["/stories", ...(await listStories()).map((s) => `/stories/${s.slug}`)];
 
-  return [...staticPaths, ...cityPaths, ...eatPaths].flatMap((path) =>
+  return [...staticPaths, ...cityPaths, ...eatPaths, ...storyPaths].flatMap((path) =>
     (["en", "ar"] as const).map((locale) => ({
       url: `${BASE}/${locale}${path}`,
       changeFrequency: "weekly" as const,

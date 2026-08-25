@@ -20,6 +20,7 @@ export async function Footer() {
 
   const productLinks = [
     { href: "/eat", label: t("site.eat.title") },
+    { href: "/stories", label: t("site.stories.title") },
     { href: "/pricing", label: t("site.nav.pricing") },
     { href: "/calculator", label: t("site.nav.estimator") },
     { href: "/how-it-works", label: t("site.nav.howItWorks") },

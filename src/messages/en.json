@@ -332,6 +332,12 @@
       "success": "Got it — we'll reach out within one business day.",
       "whatsappNote": "Faster on WhatsApp? Message us directly:"
     },
+    "stories": {
+      "title": "Stories",
+      "sub": "Guides, neighborhoods, and the people behind the food — from the Sofratak community.",
+      "readStory": "Read the story",
+      "empty": "First stories coming soon."
+    },
     "eat": {
       "title": "Find Arab & halal food near you",
       "sub": "Every Arab and Middle Eastern restaurant in our cities — order online from verified restaurants, discover the rest.",

@@ -924,6 +924,79 @@
       "reviewRequestDisabledNote": "أضف رابط تقييم جوجل في الإعدادات لتفعيل هذا.",
       "birthdayLabel": "رسائل أعياد الميلاد",
       "birthdayNote": "تُرسل فقط للعملاء اللي شاركوا تاريخ ميلادهم."
+    },
+    "requests": {
+      "tab": "الطلبات",
+      "headline": "قل لنا ماذا تحتاج. ننجزه خلال ٢٤ ساعة.",
+      "sub": "أي شيء — موقعك، قائمتك، لوحتك، تسويقك. لا يوجد طلب صغير.",
+      "promiseShort": "يُنجز خلال ٢٤ ساعة",
+      "newRequest": "طلب جديد",
+      "empty": "لا طلبات بعد — اضغط \"طلب جديد\" وقل لنا أي شيء.",
+      "step1Title": "عن ماذا الطلب؟",
+      "step2Title": "أرنا المكان.",
+      "step2StorefrontHint": "أشر عليه كأنك تشير على قائمة الطعام — اضغط الجزء الذي يحتاج عملًا.",
+      "step2MenuHint": "اضغط الصنف أو الأصناف — اختر ما تشاء.",
+      "step3Title": "ماذا تحتاج؟",
+      "skipStep": "لست متأكدًا — تجاوز",
+      "menuSearch": "ابحث في قائمتك…",
+      "noItems": "لا نتائج.",
+      "continueWith": "{count, plural, =0 {متابعة} one {متابعة بصنف واحد} two {متابعة بصنفين} few {متابعة بـ# أصناف} other {متابعة بـ# صنفًا}}",
+      "categories": {
+        "storefront": "موقعي",
+        "menu": "قائمتي",
+        "dashboard": "لوحتي",
+        "orders": "الطلبات والتوصيل",
+        "marketing": "التسويق والعروض",
+        "idea": "فكرة",
+        "other": "شيء آخر"
+      },
+      "sections": {
+        "hero": "البانر العلوي",
+        "menuSection": "قسم القائمة",
+        "photos": "الصور",
+        "hours": "ساعات العمل",
+        "footer": "التذييل"
+      },
+      "areas": {
+        "today": "اليوم",
+        "orders": "الطلبات",
+        "menuManager": "إدارة القائمة",
+        "marketing": "التسويق",
+        "settings": "الإعدادات",
+        "reports": "التقارير"
+      },
+      "kinds": {
+        "fix": "أصلحوا شيئًا معطلًا",
+        "change": "غيّروه / حدّثوه",
+        "add": "أضيفوا شيئًا جديدًا",
+        "teach": "علّموني كيف",
+        "other": "شيء آخر"
+      },
+      "notePlaceholder": "اكتب بكلماتك — عربي أو إنجليزي",
+      "recordVoice": "سجّل ملاحظة صوتية",
+      "stopRecording": "أوقف التسجيل",
+      "reRecord": "احذف وأعد التسجيل",
+      "micDenied": "تعذّر الوصول إلى الميكروفون — تحقق من أذونات المتصفح.",
+      "attachPhoto": "أرفق صورة أو لقطة شاشة",
+      "send": "أرسل الطلب",
+      "sending": "جارٍ الإرسال…",
+      "sentTitle": "وصلنا. نحن عليه.",
+      "sentBody": "يُنجز خلال ٢٤ ساعة. سنراسلك عندما يصبح جاهزًا.",
+      "done": "تم",
+      "back": "رجوع",
+      "close": "إغلاق",
+      "status": {
+        "received": "استلمناه",
+        "in_progress": "قيد العمل",
+        "waiting": "بانتظارك",
+        "done": "تم"
+      },
+      "completedIn": "أُنجز خلال {hours} ساعة",
+      "ourReply": "من صفرتك",
+      "yourReply": "ردّك",
+      "replyPlaceholder": "رد واحد — ونتولى الباقي",
+      "sendReply": "أرسل الرد",
+      "viewPhoto": "عرض الصورة المرفقة"
     }
   },
   "admin": {
@@ -986,7 +1059,21 @@
     "directoryReviewSub": "استيرادات OSM الموسومة \"متوسطي\" فقط — اعتمد العربية منها فعلًا وارفض الباقي.",
     "directoryReviewEmpty": "لا شيء بانتظار المراجعة.",
     "directoryApprove": "نشر",
-    "directoryReject": "رفض"
+    "directoryReject": "رفض",
+    "requestsTitle": "الطلبات",
+    "requestsFilter": {
+      "open": "مفتوحة",
+      "flagged": "تخص التسعير",
+      "all": "الكل"
+    },
+    "requestsEmpty": "قائمة الانتظار فارغة. وعد الـ٢٤ ساعة بخير.",
+    "requestsInsight": "فكرة",
+    "requestsPricingFlag": "تسعير — قرار زيزو",
+    "requestsOwnerReply": "رد المالك",
+    "requestsOurReply": "ردنا",
+    "requestsReplyPlaceholder": "رد على المالك (يصله برسالة نصية وفي لوحته)…",
+    "requestsSendReply": "أرسل الرد",
+    "requestsPhoto": "الصورة المرفقة"
   },
   "kitchen": {
     "title": "المطبخ · {name}",

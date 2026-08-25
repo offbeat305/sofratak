@@ -340,6 +340,35 @@ export type DirectoryListing = {
   customBlurbAr: string | null;
 };
 
+/** Concierge request (docs/concierge-requests-spec.md) */
+export type ServiceRequestCategory =
+  | "storefront" | "menu" | "dashboard" | "orders" | "marketing" | "idea" | "other";
+export type ServiceRequestKind = "fix" | "change" | "add" | "teach" | "other";
+export type ServiceRequestStatus = "received" | "in_progress" | "waiting" | "done";
+
+export type ServiceRequest = {
+  id: string;
+  restaurantId: string;
+  category: ServiceRequestCategory;
+  /** where they pointed: {section:'hero'} | {menuItemIds:[...]} | {area:'orders'} */
+  target: Record<string, unknown>;
+  kind: ServiceRequestKind;
+  note: string | null;
+  noteLocale: string;
+  voiceUrl: string | null;
+  photoUrl: string | null;
+  status: ServiceRequestStatus;
+  /** our completion/question message */
+  reply: string | null;
+  /** the owner's one follow-up */
+  ownerReply: string | null;
+  /** CLAUDE.md: pricing/fee/checkout requests need Zizo's explicit call */
+  pricingFlag: boolean;
+  createdAt: string;
+  updatedAt: string;
+  completedAt: string | null;
+};
+
 export type AutomationKind =
   | "win_back"
   | "welcome"

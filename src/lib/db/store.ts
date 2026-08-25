@@ -1,5 +1,6 @@
 import "server-only";
 import type {
+  ServiceRequest,
   AdminAuditEntry,
   AutomationKind,
   Campaign,
@@ -97,6 +98,19 @@ export interface DataStore {
   listDirectoryReviewQueue(): Promise<DirectoryListing[]>;
   setDirectoryPublished(id: string, published: boolean): Promise<void>;
   deleteDirectoryListing(id: string): Promise<void>;
+  // ── Concierge requests (docs/concierge-requests-spec.md) ─────────────
+  createServiceRequest(
+    input: Omit<ServiceRequest, "id" | "status" | "reply" | "ownerReply" | "createdAt" | "updatedAt" | "completedAt">,
+  ): Promise<ServiceRequest>;
+  listServiceRequests(restaurantId: string): Promise<ServiceRequest[]>;
+  /** Admin queue — every restaurant, open first. */
+  listAllServiceRequests(): Promise<ServiceRequest[]>;
+  getServiceRequest(id: string): Promise<ServiceRequest | null>;
+  updateServiceRequest(
+    id: string,
+    patch: Partial<Pick<ServiceRequest, "status" | "reply" | "ownerReply" | "completedAt">>,
+  ): Promise<void>;
+
   /** The listing a restaurant has claimed, if any (dashboard description editing). */
   getDirectoryListingByRestaurant(restaurantId: string): Promise<DirectoryListing | null>;
   /** Owner/curated description — null clears back to Google's live summary. */

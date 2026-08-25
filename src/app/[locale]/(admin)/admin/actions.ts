@@ -177,3 +177,54 @@ export async function commitMenuImportAction(slug: string, categories: ParsedMen
   revalidatePath(`/[locale]/dashboard/${slug}`, "layout");
   return { ok: true as const, itemCount };
 }
+
+// ── Concierge requests queue (docs/concierge-requests-spec.md §4) ──────
+
+/**
+ * One-click status change + optional reply. A reply (or completion)
+ * texts the restaurant via the existing SMS adapter and shows up in
+ * their dashboard immediately. Audit-logged like every admin action.
+ */
+export async function updateServiceRequestAction(
+  id: string,
+  patch: { status?: "received" | "in_progress" | "waiting" | "done"; reply?: string },
+) {
+  const admin = await getSuperAdmin();
+  if (!admin) return FORBIDDEN;
+  const store = getStore();
+  const request = await store.getServiceRequest(id);
+  if (!request) return { ok: false as const, error: "Not found" };
+
+  const reply = patch.reply?.trim().slice(0, 1000);
+  const status = patch.status ?? request.status;
+  await store.updateServiceRequest(id, {
+    status,
+    ...(reply ? { reply } : {}),
+    ...(status === "done" && request.status !== "done"
+      ? { completedAt: new Date().toISOString() }
+      : {}),
+  });
+
+  await store.recordAuditLog({
+    ...(await auditActor(admin)),
+    action: "request.update",
+    targetRestaurantId: request.restaurantId,
+    details: { requestId: id, status, replied: Boolean(reply) },
+  });
+
+  // SMS the owner when we reply or finish — the 24h promise, kept loudly
+  if (reply || (status === "done" && request.status !== "done")) {
+    const restaurant = await store.getRestaurantById(request.restaurantId);
+    if (restaurant?.phone) {
+      const { getSmsChannel } = await import("@/lib/sms");
+      const body =
+        status === "done"
+          ? `Sofratak: your request is done and live. ${reply ?? ""}`.trim()
+          : `Sofratak: update on your request — ${reply}`;
+      await getSmsChannel().send({ to: restaurant.phone, body });
+    }
+  }
+
+  revalidatePath("/[locale]/admin/requests", "page");
+  return { ok: true as const };
+}

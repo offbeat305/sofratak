@@ -4,6 +4,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { beitZizo, beitZizoMenu } from "./seed/beit-zizo";
 import type { DataStore } from "./store";
 import type {
+  ServiceRequest,
   AdminAuditEntry,
   AutomationKind,
   Campaign,
@@ -145,6 +146,27 @@ function rowToDirectoryListing(row: any): DirectoryListing {
     published: row.published ?? true, // column exists after 0011
     customBlurb: row.custom_blurb ?? null, // columns exist after 0012
     customBlurbAr: row.custom_blurb_ar ?? null,
+  };
+}
+
+function rowToServiceRequest(row: any): ServiceRequest {
+  return {
+    id: row.id,
+    restaurantId: row.restaurant_id,
+    category: row.category,
+    target: row.target ?? {},
+    kind: row.kind,
+    note: row.note ?? null,
+    noteLocale: row.note_locale ?? "en",
+    voiceUrl: row.voice_url ?? null,
+    photoUrl: row.photo_url ?? null,
+    status: row.status,
+    reply: row.reply ?? null,
+    ownerReply: row.owner_reply ?? null,
+    pricingFlag: row.pricing_flag ?? false,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+    completedAt: row.completed_at ?? null,
   };
 }
 
@@ -1106,6 +1128,73 @@ export class SupabaseStore implements DataStore {
       .update({ custom_blurb: blurb, custom_blurb_ar: blurbAr })
       .eq("id", id);
     if (error) throw new Error(`setDirectoryBlurb failed: ${error.message}`);
+  }
+
+  // ── Concierge requests (docs/concierge-requests-spec.md) ──────────────
+
+  async createServiceRequest(
+    input: Omit<ServiceRequest, "id" | "status" | "reply" | "ownerReply" | "createdAt" | "updatedAt" | "completedAt">,
+  ): Promise<ServiceRequest> {
+    const { data, error } = await this.client
+      .from("service_requests")
+      .insert({
+        restaurant_id: input.restaurantId,
+        category: input.category,
+        target: input.target,
+        kind: input.kind,
+        note: input.note,
+        note_locale: input.noteLocale,
+        voice_url: input.voiceUrl,
+        photo_url: input.photoUrl,
+        pricing_flag: input.pricingFlag,
+      })
+      .select("*")
+      .single();
+    if (error) throw new Error(`createServiceRequest failed: ${error.message}`);
+    return rowToServiceRequest(data);
+  }
+
+  async listServiceRequests(restaurantId: string): Promise<ServiceRequest[]> {
+    const { data } = await this.client
+      .from("service_requests")
+      .select("*")
+      .eq("restaurant_id", restaurantId)
+      .order("created_at", { ascending: false });
+    return (data ?? []).map(rowToServiceRequest);
+  }
+
+  async listAllServiceRequests(): Promise<ServiceRequest[]> {
+    const { data } = await this.client
+      .from("service_requests")
+      .select("*")
+      .order("created_at", { ascending: false });
+    const rows = (data ?? []).map(rowToServiceRequest);
+    // open requests first (oldest open on top — that's the SLA clock)
+    const open = rows.filter((r) => r.status !== "done").reverse();
+    const done = rows.filter((r) => r.status === "done");
+    return [...open, ...done];
+  }
+
+  async getServiceRequest(id: string): Promise<ServiceRequest | null> {
+    const { data } = await this.client
+      .from("service_requests")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    return data ? rowToServiceRequest(data) : null;
+  }
+
+  async updateServiceRequest(
+    id: string,
+    patch: Partial<Pick<ServiceRequest, "status" | "reply" | "ownerReply" | "completedAt">>,
+  ): Promise<void> {
+    const row: Record<string, unknown> = { updated_at: new Date().toISOString() };
+    if (patch.status !== undefined) row.status = patch.status;
+    if (patch.reply !== undefined) row.reply = patch.reply;
+    if (patch.ownerReply !== undefined) row.owner_reply = patch.ownerReply;
+    if (patch.completedAt !== undefined) row.completed_at = patch.completedAt;
+    const { error } = await this.client.from("service_requests").update(row).eq("id", id);
+    if (error) throw new Error(`updateServiceRequest failed: ${error.message}`);
   }
 
   // ── Phase 8C: order funnel ─────────────────────────────────────────────

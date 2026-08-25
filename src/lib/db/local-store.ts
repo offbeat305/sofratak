@@ -3,6 +3,7 @@ import { promises as fs } from "fs";
 import path from "path";
 import type { DataStore } from "./store";
 import type {
+  ServiceRequest,
   AdminAuditEntry,
   Campaign,
   CustomerProfile,
@@ -354,6 +355,26 @@ export class LocalStore implements DataStore {
 
   async deleteDirectoryListing(): Promise<void> {
     throw new Error("Directory requires the Supabase backend");
+  }
+
+  async createServiceRequest(): Promise<ServiceRequest> {
+    throw new Error("Concierge requests require the Supabase backend");
+  }
+
+  async listServiceRequests(): Promise<ServiceRequest[]> {
+    return [];
+  }
+
+  async listAllServiceRequests(): Promise<ServiceRequest[]> {
+    return [];
+  }
+
+  async getServiceRequest(): Promise<ServiceRequest | null> {
+    return null;
+  }
+
+  async updateServiceRequest(): Promise<void> {
+    throw new Error("Concierge requests require the Supabase backend");
   }
 
   async getDirectoryListingByRestaurant(): Promise<DirectoryListing | null> {

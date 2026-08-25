@@ -277,3 +277,118 @@ export async function saveDirectoryBlurbAction(
   revalidatePath(`/[locale]/eat/${listing.city}/${listing.slug}`, "page");
   return { ok: true as const };
 }
+
+// ── Concierge requests (docs/concierge-requests-spec.md) ───────────────
+
+const PRICING_RE =
+  /pric(e|ing)|fee|checkout|commission|surcharge|سعر|أسعار|تسعير|رسوم|عمولة|الدفع/i;
+
+const REQUEST_CATEGORIES = new Set([
+  "storefront", "menu", "dashboard", "orders", "marketing", "idea", "other",
+]);
+const REQUEST_KINDS = new Set(["fix", "change", "add", "teach", "other"]);
+
+export type CreateServiceRequestResult =
+  | { ok: true; id: string }
+  | { ok: false; error: string };
+
+/**
+ * FormData: category, kind, target (JSON), note, noteLocale, voice?,
+ * photo? (Files). Media goes to the private request-media bucket;
+ * pricing/fee/checkout language auto-flags for Zizo per CLAUDE.md.
+ */
+export async function createServiceRequestAction(
+  slug: string,
+  form: FormData,
+): Promise<CreateServiceRequestResult> {
+  const membership = await getMembership(slug);
+  if (!membership) return UNAUTHORIZED;
+  const restaurant = membership.restaurant;
+
+  const category = String(form.get("category") ?? "");
+  const kind = String(form.get("kind") ?? "");
+  if (!REQUEST_CATEGORIES.has(category) || !REQUEST_KINDS.has(kind)) {
+    return { ok: false, error: "Invalid request" };
+  }
+  let target: Record<string, unknown> = {};
+  try {
+    target = JSON.parse(String(form.get("target") ?? "{}"));
+  } catch {
+    target = {};
+  }
+  const note = String(form.get("note") ?? "").trim().slice(0, 2000) || null;
+  const noteLocale = String(form.get("noteLocale") ?? "en") === "ar" ? "ar" : "en";
+
+  const { uploadRequestMedia } = await import("@/lib/storage/request-media");
+  let voiceUrl: string | null = null;
+  let photoUrl: string | null = null;
+  const voice = form.get("voice");
+  if (voice instanceof File && voice.size > 0) {
+    const up = await uploadRequestMedia(restaurant.id, voice, "voice");
+    if (!up.ok) return { ok: false, error: up.error };
+    voiceUrl = up.path;
+  }
+  const photo = form.get("photo");
+  if (photo instanceof File && photo.size > 0) {
+    const up = await uploadRequestMedia(restaurant.id, photo, "photo");
+    if (!up.ok) return { ok: false, error: up.error };
+    photoUrl = up.path;
+  }
+
+  const pricingFlag = PRICING_RE.test(note ?? "");
+  const request = await getStore().createServiceRequest({
+    restaurantId: restaurant.id,
+    category: category as never,
+    target,
+    kind: kind as never,
+    note,
+    noteLocale,
+    voiceUrl,
+    photoUrl,
+    pricingFlag,
+  });
+
+  // heads-up to Zizo on every new request (console fallback in dev)
+  const { getEmailChannel } = await import("@/lib/email");
+  await getEmailChannel().send({
+    subject: `[Sofratak request] ${restaurant.name.en} — ${category}/${kind}${pricingFlag ? " ⚠ PRICING" : ""}`,
+    text: [
+      `Restaurant: ${restaurant.name.en} (${slug})`,
+      `Category: ${category} · Kind: ${kind}`,
+      `Target: ${JSON.stringify(target)}`,
+      note ? `Note (${noteLocale}): ${note}` : "No note",
+      voiceUrl ? "Has voice note" : "",
+      photoUrl ? "Has photo" : "",
+      pricingFlag ? "⚠ Touches pricing/fees — needs Zizo's explicit call (CLAUDE.md)" : "",
+      `Admin queue: /admin/requests`,
+    ].filter(Boolean).join("\n"),
+  });
+
+  revalidatePath(`/[locale]/dashboard/${slug}/requests`, "page");
+  return { ok: true, id: request.id };
+}
+
+/** The owner's one follow-up per request (thread-lite, not a chat). */
+export async function replyServiceRequestAction(
+  slug: string,
+  id: string,
+  text: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const membership = await getMembership(slug);
+  if (!membership) return UNAUTHORIZED;
+  const store = getStore();
+  const request = await store.getServiceRequest(id);
+  if (!request || request.restaurantId !== membership.restaurant.id) {
+    return { ok: false, error: "Not found" };
+  }
+  if (request.ownerReply) return { ok: false, error: "Already replied" };
+  const trimmed = text.trim().slice(0, 1000);
+  if (!trimmed) return { ok: false, error: "Empty reply" };
+  await store.updateServiceRequest(id, {
+    ownerReply: trimmed,
+    // answering a question puts it back in our court
+    status: request.status === "waiting" ? "in_progress" : request.status,
+  });
+  revalidatePath(`/[locale]/dashboard/${slug}/requests`, "page");
+  return { ok: true };
+}

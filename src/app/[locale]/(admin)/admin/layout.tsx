@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Building2, MapPin, Plus } from "lucide-react";
+import { Building2, ConciergeBell, MapPin, Plus } from "lucide-react";
 import { Link, redirect } from "@/i18n/navigation";
 import { getSuperAdmin } from "@/lib/auth/server";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
@@ -53,6 +53,12 @@ export default async function AdminLayout({
             className="flex items-center gap-2 rounded-btn px-3 py-2 text-sm font-semibold text-stone hover:bg-olive/5 hover:text-olive"
           >
             <Plus className="size-4" aria-hidden /> {t("newTenant")}
+          </Link>
+          <Link
+            href="/admin/requests"
+            className="flex items-center gap-2 rounded-btn px-3 py-2 text-sm font-semibold text-stone hover:bg-olive/5 hover:text-olive"
+          >
+            <ConciergeBell className="size-4" aria-hidden /> {t("requestsTitle")}
           </Link>
           <Link
             href="/admin/directory"

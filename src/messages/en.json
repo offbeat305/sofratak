@@ -924,6 +924,79 @@
       "reviewRequestDisabledNote": "Add your Google review link in Settings to turn this on.",
       "birthdayLabel": "Birthday messages",
       "birthdayNote": "Only sent to customers who shared their birthday."
+    },
+    "requests": {
+      "tab": "Requests",
+      "headline": "Tell us what you need. We handle it within 24 hours.",
+      "sub": "Anything — your site, your menu, your dashboard, marketing. No request is too small.",
+      "promiseShort": "Done within 24 hours",
+      "newRequest": "New request",
+      "empty": "No requests yet — tap New request and tell us anything.",
+      "step1Title": "What's it about?",
+      "step2Title": "Show us where.",
+      "step2StorefrontHint": "Point at it like you'd point at a menu — tap the part that needs work.",
+      "step2MenuHint": "Tap the item or items — pick as many as you need.",
+      "step3Title": "What do you need?",
+      "skipStep": "Not sure — skip",
+      "menuSearch": "Search your menu…",
+      "noItems": "No items match.",
+      "continueWith": "{count, plural, =0 {Continue} one {Continue with # item} other {Continue with # items}}",
+      "categories": {
+        "storefront": "My storefront",
+        "menu": "My menu",
+        "dashboard": "My dashboard",
+        "orders": "Orders & delivery",
+        "marketing": "Marketing & promos",
+        "idea": "An idea",
+        "other": "Something else"
+      },
+      "sections": {
+        "hero": "Top banner",
+        "menuSection": "Menu section",
+        "photos": "Photos",
+        "hours": "Hours",
+        "footer": "Footer"
+      },
+      "areas": {
+        "today": "Today",
+        "orders": "Orders",
+        "menuManager": "Menu manager",
+        "marketing": "Marketing",
+        "settings": "Settings",
+        "reports": "Reports"
+      },
+      "kinds": {
+        "fix": "Fix something broken",
+        "change": "Change / update it",
+        "add": "Add something new",
+        "teach": "Teach me how",
+        "other": "Other"
+      },
+      "notePlaceholder": "Tell us in your own words — English or Arabic",
+      "recordVoice": "Record a voice note",
+      "stopRecording": "Stop recording",
+      "reRecord": "Delete and re-record",
+      "micDenied": "We couldn't access your microphone — check your browser permissions.",
+      "attachPhoto": "Attach a photo or screenshot",
+      "send": "Send request",
+      "sending": "Sending…",
+      "sentTitle": "Got it. We're on it.",
+      "sentBody": "Done within 24 hours. We'll text you when it's live.",
+      "done": "Done",
+      "back": "Back",
+      "close": "Close",
+      "status": {
+        "received": "Received",
+        "in_progress": "In progress",
+        "waiting": "Waiting on you",
+        "done": "Done"
+      },
+      "completedIn": "Completed in {hours}h",
+      "ourReply": "From Sofratak",
+      "yourReply": "Your reply",
+      "replyPlaceholder": "Reply once — we'll take it from there",
+      "sendReply": "Send reply",
+      "viewPhoto": "View attached photo"
     }
   },
   "admin": {
@@ -986,7 +1059,21 @@
     "directoryReviewSub": "OSM imports tagged only \"mediterranean\" — approve the ones that are actually Arab, reject the rest.",
     "directoryReviewEmpty": "Nothing waiting for review.",
     "directoryApprove": "Publish",
-    "directoryReject": "Reject"
+    "directoryReject": "Reject",
+    "requestsTitle": "Requests",
+    "requestsFilter": {
+      "open": "Open",
+      "flagged": "Pricing-flagged",
+      "all": "All"
+    },
+    "requestsEmpty": "Queue is clear. The 24-hour promise lives another day.",
+    "requestsInsight": "Insight",
+    "requestsPricingFlag": "Pricing — Zizo's call",
+    "requestsOwnerReply": "Owner replied",
+    "requestsOurReply": "Our reply",
+    "requestsReplyPlaceholder": "Reply to the owner (texts them + shows in their dashboard)…",
+    "requestsSendReply": "Send reply",
+    "requestsPhoto": "Attached photo"
   },
   "kitchen": {
     "title": "Kitchen · {name}",

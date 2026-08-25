@@ -3,6 +3,7 @@
 import {
   BookOpen,
   CalendarCheck,
+  ConciergeBell,
   Megaphone,
   ReceiptText,
   Settings,
@@ -17,6 +18,7 @@ const ICONS = {
   customers: Users,
   menu: BookOpen,
   marketing: Megaphone,
+  requests: ConciergeBell,
   settings: Settings,
 } as const;
 
@@ -24,6 +26,8 @@ type Tab = {
   href: string;
   label: string;
   icon: keyof typeof ICONS;
+  /** brass dot — a request has an update (concierge spec §1) */
+  badge?: boolean;
 };
 
 export function DashNav({
@@ -52,7 +56,12 @@ export function DashNav({
               )}
               aria-current={active ? "page" : undefined}
             >
-              <Icon className="size-5" aria-hidden />
+              <span className="relative">
+                <Icon className="size-5" aria-hidden />
+                {tab.badge && (
+                  <span className="absolute -top-0.5 -end-0.5 size-2 rounded-full bg-brass" aria-hidden />
+                )}
+              </span>
               {tab.label}
             </Link>
           );
@@ -76,7 +85,12 @@ export function DashNav({
             )}
             aria-current={active ? "page" : undefined}
           >
-            <Icon className="size-4" aria-hidden />
+            <span className="relative">
+              <Icon className="size-4" aria-hidden />
+              {tab.badge && (
+                <span className="absolute -top-0.5 -end-0.5 size-2 rounded-full bg-brass" aria-hidden />
+              )}
+            </span>
             {tab.label}
           </Link>
         );

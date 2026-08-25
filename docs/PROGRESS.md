@@ -1,5 +1,51 @@
 # Sofratak — Progress Log
 
+## 2026-08-25 (cont. 5) — Concierge Requests ("done within 24 hours")
+
+Full build of docs/concierge-requests-spec.md.
+
+**⚠️ APPLY MIGRATION 0013** (`0013_service_requests.sql` — table + RLS
++ private `request-media` storage bucket). Until applied: the Requests
+tab renders empty, submitting errors, admin queue is empty — all
+graceful, nothing crashes.
+
+- **Owner side**: "Requests" tab in the dashboard nav (ConciergeBell
+  icon, brass dot when a request is waiting-on-you or completed <48h).
+  3-tap wizard: category cards → point at the thing — their REAL
+  storefront in a scaled iframe with 5 tappable hotspot regions
+  (hero/menu/photos/hours/footer, brass-ring select), their real menu
+  items with search + multi-select, or dashboard-area cards; every
+  step has "Not sure — skip" → fix/change/add/teach chips + optional
+  note (EN/AR), 60s voice note (MediaRecorder → private bucket,
+  playback + re-record), photo attach (4MB). Checkmark confirmation
+  with the 24h promise. Requests tracked like order cards: status
+  pills (Received/In progress/Waiting on you/Done), signed-URL voice
+  playback, our reply, ONE owner follow-up per request (answering a
+  "waiting" question flips it back to in_progress), Done cards show
+  "Completed in Nh".
+- **Admin side**: /admin/requests queue — SLA countdown badge (green
+  <12h → brass <20h → clay overdue), filters (Open / Pricing-flagged /
+  All), 💡 Insight tag on marketing/idea requests, voice player,
+  one-click status buttons + reply box. Reply or Done → SMS to the
+  restaurant via the existing adapter + dashboard update. All changes
+  audit-logged (`request.update`).
+- **Auto-flag per CLAUDE.md**: notes matching pricing/fee/checkout
+  language (EN + AR regex) set `pricing_flag` → clay badge + ⚠ in the
+  email — Zizo's explicit call required.
+- **Notifications**: email to LEADS_EMAIL on every new request; daily
+  digest cron `/api/cron/requests-digest` (vercel.json, 13:00 UTC =
+  9am ET) — overdue requests first, then all open.
+- **Media**: private `request-media` bucket, service-role writes,
+  1-hour signed URLs minted server-side for playback — no public read.
+- **Isolation**: RLS policies in 0013 (members ↔ own restaurant,
+  super_admin all) + app-level checks in every action (membership +
+  restaurantId match). ⚠️ Zizo: after applying 0013, verify from a
+  second account that restaurant A can't read B's requests.
+- Full EN/AR (dash.requests.* + admin.requests*), RTL-safe components
+  (logical props, rtl icon flips). Arabic queued for the review batch.
+- Not yet live-verified as a flow (needs 0013 + a logged-in session):
+  the 3-tap wizard incl. mic on a real phone is Zizo's smoke test.
+
 ## 2026-08-25 (cont. 4) — Design pass 4: grader rebuilt as the demo closer
 
 Full implementation of docs/design-pass-4-grader.md, verified end-to-end

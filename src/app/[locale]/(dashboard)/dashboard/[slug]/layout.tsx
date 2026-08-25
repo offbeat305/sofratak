@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LayoutGrid, MonitorCheck } from "lucide-react";
 import { Link, redirect } from "@/i18n/navigation";
 import { getMembership } from "@/lib/auth/server";
+import { getStore } from "@/lib/db/store";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { Wordmark } from "@/components/Wordmark";
 import { PauseButton } from "@/components/dashboard/pause-button";
@@ -30,12 +31,24 @@ export default async function DashboardLayout({
   }
   const { restaurant, impersonating } = membership!;
 
+  // Requests tab badge: something needs their eyes (a question waiting)
+  // or finished recently (proof of the 24h promise)
+  const serviceRequests = await getStore().listServiceRequests(restaurant.id);
+  const requestsBadge = serviceRequests.some(
+    (r) =>
+      r.status === "waiting" ||
+      (r.status === "done" &&
+        r.completedAt !== null &&
+        Date.now() - new Date(r.completedAt).getTime() < 48 * 3_600_000),
+  );
+
   const tabs = [
     { href: `/dashboard/${slug}`, label: t("today"), icon: "today" },
     { href: `/dashboard/${slug}/orders`, label: t("orders"), icon: "orders" },
     { href: `/dashboard/${slug}/menu`, label: t("menu"), icon: "menu" },
     { href: `/dashboard/${slug}/customers`, label: t("customers"), icon: "customers" },
     { href: `/dashboard/${slug}/marketing`, label: t("marketing.tab"), icon: "marketing" },
+    { href: `/dashboard/${slug}/requests`, label: t("requests.tab"), icon: "requests", badge: requestsBadge },
     { href: `/dashboard/${slug}/settings`, label: t("settings"), icon: "settings" },
   ] as const;
 

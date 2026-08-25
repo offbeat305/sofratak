@@ -84,8 +84,8 @@ export default async function HomePage({
 
   return (
     <>
-      {/* 1 · Hero — the calculator IS the hero (olive + ambient drift) */}
-      <section className="hero-ambient relative min-h-[88vh] bg-olive text-ivory">
+      {/* 1 · Hero — the calculator IS the hero (dusk gradient + luminance) */}
+      <section className="hero-ambient olive-luminous relative min-h-[88vh] bg-olive text-ivory">
         <ArchWatermark />
         {/* mobile order: headline → calculator (above the fold, per the
             done-when) → supporting copy; desktop: text column + card */}
@@ -96,7 +96,8 @@ export default async function HomePage({
             </p>
             <h1 className="font-display mt-3 text-[clamp(34px,6vw,68px)] leading-[1.05] font-bold">
               {t("hero.headline")}{" "}
-              <span className="text-brass brightness-150">{t("hero.keep")}</span>
+              {/* the one gradient text on the whole page (design-pass-3 §2) */}
+              <span className="gradient-text-brass">{t("hero.keep")}</span>
             </h1>
           </div>
           <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1">
@@ -113,7 +114,7 @@ export default async function HomePage({
               {chips.map((chip) => (
                 <span
                   key={chip}
-                  className="rounded-full border border-ivory/35 px-3.5 py-1.5 text-xs font-semibold text-ivory/75"
+                  className="glass-pill rounded-full px-3.5 py-1.5 text-xs font-semibold text-ivory/85"
                 >
                   {chip}
                 </span>
@@ -156,19 +157,24 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* 3 · Where your $30 goes (sand band) */}
-      <section className="bg-sand/25">
-        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
-          <SectionHeader title={t("dollar.title")} sub={t("dollar.sub")} />
+      {/* 3 · Where your $30 goes — glass panel on lit dark olive
+             (design-pass-3 §3) */}
+      <section className="olive-luminous relative bg-olive">
+        <div aria-hidden className="blend-ivory" />
+        <div className="relative z-[2] mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+          <SectionHeader title={t("dollar.title")} sub={t("dollar.sub")} dark />
           <Reveal delay={80} className="mx-auto mt-10 max-w-2xl">
-            <DollarComparison />
+            <div className="edge-light rounded-card bg-ivory/90 p-6 backdrop-blur-md sm:p-8">
+              <DollarComparison />
+            </div>
           </Reveal>
-          <p className="mt-6 text-center text-xs text-stone">{t("disclaimer")}</p>
+          <p className="mt-6 text-center text-xs text-ivory/60">{t("disclaimer")}</p>
         </div>
       </section>
 
-      {/* 4 · What you get (ivory) */}
-      <section className="bg-ivory">
+      {/* 4 · What you get (ivory + texture) */}
+      <section className="texture-dots relative bg-ivory">
+        <div aria-hidden className="blend-olive" />
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <SectionHeader title={t("features.title")} />
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -195,18 +201,21 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* 5 · Product tour (olive) */}
-      <section className="bg-olive">
-        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
+      {/* 5 · Product tour (lit olive; watermark parallaxes behind devices) */}
+      <section className="olive-luminous relative bg-olive">
+        <div aria-hidden className="blend-ivory" />
+        <ArchWatermark />
+        <div className="relative mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <SectionHeader title={t("tour.title")} sub={t("tour.sub")} dark />
         </div>
-        <Reveal className="pb-16 md:pb-24">
+        <Reveal className="relative pb-16 md:pb-24">
           <ProductTour />
         </Reveal>
       </section>
 
-      {/* 6 · LIVE demo — the real product, embedded (ivory) */}
-      <section className="bg-ivory">
+      {/* 6 · LIVE demo — the real product, embedded (ivory + texture) */}
+      <section className="texture-dots relative bg-ivory">
+        <div aria-hidden className="blend-olive" />
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <Reveal>
             <LiveDemo />
@@ -216,7 +225,7 @@ export default async function HomePage({
 
       {/* 7 · Who it's for + founder block (one sand band — keeps the
              no-adjacent-same-color rhythm; founder-story reuse map) */}
-      <section className="bg-sand/25">
+      <section className="texture-dots bg-sand/25">
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <Reveal>
             <p className="text-xs font-bold tracking-[0.18em] text-stone uppercase">
@@ -265,8 +274,8 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* 8 · How it works (ivory) */}
-      <section className="bg-ivory">
+      {/* 8 · How it works (ivory + texture) */}
+      <section className="texture-dots bg-ivory">
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <SectionHeader title={t("how.title")} sub={t("how.note")} />
           <ol className="mt-10 grid gap-6 sm:grid-cols-3">
@@ -285,8 +294,8 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* 9 · The apps vs your own site (sand) */}
-      <section className="bg-sand/25">
+      {/* 9 · The apps vs your own site (sand + texture) */}
+      <section className="texture-dots bg-sand/25">
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <SectionHeader title={t("compare.title")} sub={t("compare.sub")} />
           <div className="mt-10">
@@ -295,8 +304,8 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* 10 · Pricing teaser (ivory) */}
-      <section className="bg-ivory">
+      {/* 10 · Pricing teaser (ivory + texture) */}
+      <section className="texture-dots bg-ivory">
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <SectionHeader
             title={t("pricing.title")}
@@ -308,8 +317,9 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* 9 · Data promise (olive) */}
-      <section className="bg-olive text-ivory">
+      {/* 11 · Data promise (lit olive) */}
+      <section className="olive-luminous relative bg-olive text-ivory">
+        <div aria-hidden className="blend-ivory" />
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <Reveal>
             <h2 className="font-display text-4xl leading-tight font-bold sm:text-[44px]">
@@ -323,8 +333,9 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* 12 · FAQ (ivory, FAQPage schema) */}
-      <section className="bg-ivory">
+      {/* 12 · FAQ (ivory + texture) */}
+      <section className="texture-dots relative bg-ivory">
+        <div aria-hidden className="blend-olive" />
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <SectionHeader title={t("faq.title")} />
           <div className="mt-10">
@@ -333,9 +344,14 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* 13 · Final CTA (olive → deep gradient + watermark) */}
-      <section className="relative bg-gradient-to-b from-olive to-olive-deep text-ivory">
+      {/* 13 · Final CTA — darkest band, cinematic close (design-pass-3 §3) */}
+      <section className="relative bg-gradient-to-b from-olive-deep to-[#1E332A] text-ivory">
         <ArchWatermark parallax={false} />
+        {/* ivory radial glow behind the CTA cluster */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute top-1/2 left-1/2 h-[560px] w-[860px] max-w-full -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(247,242,232,0.07)_0%,transparent_65%)]"
+        />
         <div className="relative mx-auto max-w-[1200px] px-4 py-16 text-center sm:px-6 md:py-24">
           <Reveal>
             <h2 className="font-display text-4xl font-bold sm:text-[44px]">
@@ -344,7 +360,7 @@ export default async function HomePage({
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/calculator"
-                className="btn-shine inline-flex h-13 items-center rounded-btn bg-brass px-7 text-lg font-bold text-olive transition-transform duration-150 hover:scale-[1.03] motion-reduce:hover:scale-100"
+                className="btn-shine glow-brass glow-hover inline-flex h-13 items-center rounded-btn bg-brass px-7 text-lg font-bold text-olive transition-transform duration-150 hover:scale-[1.03] motion-reduce:hover:scale-100"
               >
                 {t("finalCta.estimator")}
               </Link>

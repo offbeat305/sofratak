@@ -31,7 +31,7 @@ export default async function HowItWorksPage({
   const steps = t.raw("how.steps") as Array<{ title: string; body: string }>;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 pt-28 pb-14 sm:px-6">
+    <div className="texture-dots mx-auto max-w-3xl px-4 pt-28 pb-14 sm:px-6">
       <h1 className="text-center font-display text-3xl font-bold text-olive sm:text-4xl">
         {t("how.title")}
       </h1>

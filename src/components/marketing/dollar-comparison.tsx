@@ -71,7 +71,13 @@ export function DollarComparison() {
       <div>
         <div className="flex items-baseline justify-between gap-3">
           <p className="font-bold text-charcoal">{t("rowApps")}</p>
-          <p className="text-xl font-extrabold text-charcoal tabular-nums" dir="ltr">
+          <p
+            className={cn(
+              "text-xl font-extrabold text-charcoal tabular-nums",
+              phase === "done" && "glow-land-now",
+            )}
+            dir="ltr"
+          >
             {phase === "idle" ? "—" : t("keeps", { amount: fmt(appsKeep) })}
           </p>
         </div>
@@ -100,7 +106,13 @@ export function DollarComparison() {
       <div>
         <div className="flex items-baseline justify-between gap-3">
           <p className="font-bold text-charcoal">{t("rowSofratak")}</p>
-          <p className="text-xl font-extrabold text-positive tabular-nums" dir="ltr">
+          <p
+            className={cn(
+              "text-xl font-extrabold text-positive tabular-nums",
+              phase === "done" && "glow-land-now",
+            )}
+            dir="ltr"
+          >
             {phase === "idle" ? "—" : t("keeps", { amount: "$30.00" })}
           </p>
         </div>

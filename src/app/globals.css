@@ -89,10 +89,11 @@ h4 {
 
 /* ── Design-pass motion system (docs/design-pass.md §6) ─────────────── */
 
-/* Scroll-reveal: fade-up 24px, 500ms, once; stagger via --reveal-delay. */
+/* Scroll-reveal: fade-up 24px + slight scale (design-pass-3), 500ms,
+   once; stagger via --reveal-delay. */
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(24px) scale(0.98);
   transition:
     opacity 0.5s ease-out,
     transform 0.5s ease-out;
@@ -295,6 +296,171 @@ h4 {
   animation: row-flash 900ms ease-out 1;
 }
 
+/* ── Design-pass-3 glow system (docs/design-pass-3-homepage-glow.md §1) ──
+   The four primitives — brass halo, olive luminance, edge light, glass —
+   are utilities so every marketing page reuses one system. Restraint
+   rules: soft large radii only, one glowing focal per viewport, glow
+   counts toward the ≤8% brass budget. */
+
+/* Brass halo — THE signature. Soft, large radius, never a neon rim. */
+.glow-brass {
+  box-shadow: 0 0 60px rgba(169, 121, 43, 0.3);
+}
+.glow-brass-strong {
+  box-shadow: 0 0 80px rgba(169, 121, 43, 0.4);
+}
+.glow-hover {
+  transition: box-shadow 150ms ease;
+}
+.glow-hover:hover {
+  box-shadow: 0 0 80px rgba(169, 121, 43, 0.4);
+}
+
+/* Edge light — 1px top-edge gradient border, "lit from above". */
+.edge-light {
+  position: relative;
+}
+.edge-light::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline: 8%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(169, 121, 43, 0.45) 30%,
+    rgba(169, 121, 43, 0.45) 70%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* Glass — translucent olive + blur for the scrolled navbar/floaters. */
+.glass-olive {
+  background: color-mix(in srgb, var(--color-olive) 72%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+/* Glass pill on dark grounds (hero trust chips). */
+.glass-pill {
+  background: rgba(247, 242, 232, 0.1);
+  border: 1px solid rgba(247, 242, 232, 0.25);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+/* Olive luminance — two big ivory radials drifting very slowly so dark
+   sections feel lit from within. Ambient loops explicitly allowed. */
+.olive-luminous {
+  position: relative;
+  overflow: hidden;
+}
+.olive-luminous::before,
+.olive-luminous::after {
+  content: "";
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  border-radius: 999px;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(247, 242, 232, 0.05) 0%, transparent 65%);
+}
+.olive-luminous::before {
+  top: -280px;
+  inset-inline-start: -180px;
+  animation: lum-drift-a 70s ease-in-out infinite alternate;
+}
+.olive-luminous::after {
+  bottom: -320px;
+  inset-inline-end: -220px;
+  width: 900px;
+  height: 900px;
+  animation: lum-drift-b 90s ease-in-out infinite alternate;
+}
+@keyframes lum-drift-a {
+  to {
+    transform: translate3d(120px, 60px, 0);
+  }
+}
+@keyframes lum-drift-b {
+  to {
+    transform: translate3d(-140px, -80px, 0);
+  }
+}
+
+/* One gradient text on the whole page — the hero "Keep it instead." */
+.gradient-text-brass {
+  background: linear-gradient(100deg, #d9a94e 0%, var(--color-sand) 60%, #d9a94e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Light-section texture — barely-visible olive dot grid, never flat. */
+.texture-dots {
+  background-image: radial-gradient(rgba(47, 74, 60, 0.055) 1px, transparent 1.5px);
+  background-size: 22px 22px;
+}
+
+/* Section blends — soften hard band edges (80-120px). Standalone
+   overlay divs (NOT pseudo-elements — .olive-luminous owns ::before/
+   ::after on the same sections): drop
+   `<div aria-hidden className="blend-ivory" />` as the first child of
+   the section BELOW, named for the color it blends FROM. Section needs
+   `relative`. */
+.blend-ivory,
+.blend-sand,
+.blend-olive {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 100px;
+  pointer-events: none;
+  z-index: 1;
+}
+.blend-ivory {
+  background: linear-gradient(to bottom, var(--color-ivory), transparent);
+}
+.blend-sand {
+  background: linear-gradient(to bottom, #f1e7d2, transparent);
+}
+.blend-olive {
+  background: linear-gradient(to bottom, var(--color-olive), transparent);
+}
+
+/* Brass glow pulse fired once when a revealed number lands. */
+@keyframes glow-land {
+  0%,
+  100% {
+    text-shadow: none;
+  }
+  50% {
+    text-shadow: 0 0 24px rgba(169, 121, 43, 0.75);
+  }
+}
+.revealed .glow-land,
+.glow-land-auto {
+  animation: glow-land 900ms ease-out 850ms 1;
+}
+.glow-land-now {
+  animation: glow-land 900ms ease-out 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .olive-luminous::before,
+  .olive-luminous::after,
+  .revealed .glow-land,
+  .glow-land-auto,
+  .glow-land-now {
+    animation: none;
+  }
+  .glow-hover,
+  .glow-hover:hover {
+    transition: none;
+  }
+}
+
 /* Homepage hero ambient gradient drift (30s loop, barely perceptible). */
 @keyframes ambient-drift {
   0% {
@@ -308,14 +474,19 @@ h4 {
   }
 }
 .hero-ambient {
-  background-image: linear-gradient(
-    115deg,
-    var(--color-olive) 0%,
-    var(--color-olive-deep) 38%,
-    #2c4a3a 55%,
-    var(--color-olive) 100%
-  );
-  background-size: 220% 220%;
+  /* design-pass-3: dusk lighting — olive falling to near-black-olive */
+  background-image:
+    linear-gradient(to bottom, transparent 40%, #1e332a 100%),
+    linear-gradient(
+      115deg,
+      var(--color-olive) 0%,
+      var(--color-olive-deep) 38%,
+      #2c4a3a 55%,
+      var(--color-olive) 100%
+    );
+  background-size:
+    100% 100%,
+    220% 220%;
   animation: ambient-drift 30s ease-in-out infinite;
 }
 

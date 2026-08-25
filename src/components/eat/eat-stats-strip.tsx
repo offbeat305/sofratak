@@ -22,7 +22,7 @@ export async function EatStatsStrip({ className = "" }: { className?: string }) 
   return (
     <p className={`flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-semibold text-stone ${className}`}>
       <span className="text-charcoal">
-        <CountUp value={total} className="font-bold text-brass" /> {t("statsRestaurants")}
+        <CountUp value={total} className="glow-land-auto font-bold text-brass" /> {t("statsRestaurants")}
       </span>
       <span aria-hidden>·</span>
       <span>{t("statsStates", { count: 3 })}</span>

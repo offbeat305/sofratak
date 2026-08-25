@@ -29,7 +29,7 @@ export default async function PricingPage({
   const t = await getTranslations("site.pricing");
 
   return (
-    <div className="mx-auto max-w-[1200px] px-4 pt-28 pb-14 sm:px-6">
+    <div className="texture-dots mx-auto max-w-[1200px] px-4 pt-28 pb-14 sm:px-6">
       <h1 className="font-display text-4xl leading-tight font-bold text-olive sm:text-[44px]">
         {t("title")}
       </h1>

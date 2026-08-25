@@ -29,9 +29,11 @@ export async function TierCards() {
               <div
                 className={cn(
                   "hover-lift relative flex h-full flex-col rounded-card p-6 sm:p-8",
+                  // design-pass-3 §3: Growth gets halo + edge light, the
+                  // others stay matte (glow fades in on their hover only)
                   growth
-                    ? "bg-olive text-ivory shadow-[0_24px_60px_rgba(31,50,40,0.35)] lg:scale-[1.06]"
-                    : "border border-olive/10 bg-white shadow-[0_1px_3px_rgba(31,31,31,0.05)]",
+                    ? "edge-light bg-olive text-ivory shadow-[0_24px_60px_rgba(31,50,40,0.35),0_0_60px_rgba(169,121,43,0.30)] lg:scale-[1.06]"
+                    : "glow-hover border border-olive/10 bg-white shadow-[0_1px_3px_rgba(31,31,31,0.05)]",
                 )}
               >
                 {growth && (

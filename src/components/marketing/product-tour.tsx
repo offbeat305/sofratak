@@ -125,27 +125,37 @@ export function ProductTour() {
             key={slide.src}
             className="flex w-[84vw] max-w-3xl shrink-0 snap-center flex-col items-center gap-5"
           >
-            <div
-              className={cn(
-                "overflow-hidden border-[6px] border-charcoal/85 bg-charcoal/85 shadow-[0_24px_60px_rgba(20,30,25,0.5)]",
-                slide.frame === "phone"
-                  ? "w-56 rounded-[2.2rem] sm:w-64"
-                  : "w-full rounded-2xl",
-                slide.flip && flipped && "animate-flip-in",
-              )}
-            >
-              <Image
-                src={slide.src}
-                alt={captions[i]}
-                width={slide.frame === "phone" ? 390 : 1024}
-                height={slide.frame === "phone" ? 780 : 720}
+            <div className="flex flex-col items-center">
+              <div
                 className={cn(
-                  "h-auto w-full",
-                  slide.frame === "phone" ? "rounded-[1.8rem]" : "rounded-xl",
+                  // design-pass-3 §3: edge-lit frames, brass halo on the
+                  // active slide (150ms fade via transition)
+                  "edge-light overflow-hidden border-[6px] border-charcoal/85 bg-charcoal/85 shadow-[0_24px_60px_rgba(20,30,25,0.5)] transition-[box-shadow] duration-300",
+                  slide.frame === "phone"
+                    ? "w-56 rounded-[2.2rem] sm:w-64"
+                    : "w-full rounded-2xl",
+                  active === i && "shadow-[0_24px_60px_rgba(20,30,25,0.5),0_0_70px_rgba(169,121,43,0.28)]",
+                  slide.flip && flipped && "animate-flip-in",
                 )}
+              >
+                <Image
+                  src={slide.src}
+                  alt={captions[i]}
+                  width={slide.frame === "phone" ? 390 : 1024}
+                  height={slide.frame === "phone" ? 780 : 720}
+                  className={cn(
+                    "h-auto w-full",
+                    slide.frame === "phone" ? "rounded-[1.8rem]" : "rounded-xl",
+                  )}
+                />
+              </div>
+              {/* reflective floor */}
+              <div
+                aria-hidden
+                className="mt-3 h-6 w-3/5 rounded-[100%] bg-[radial-gradient(ellipse,rgba(20,30,25,0.55)_0%,transparent_70%)] blur-md"
               />
             </div>
-            <figcaption className="font-display text-center text-xl font-bold text-ivory sm:text-2xl">
+            <figcaption className="font-display -mt-2 text-center text-xl font-bold text-ivory sm:text-2xl">
               {captions[i]}
             </figcaption>
           </figure>

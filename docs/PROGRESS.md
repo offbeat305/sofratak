@@ -1,5 +1,45 @@
 # Sofratak — Progress Log
 
+## 2026-08-25 (cont. 3) — Design pass 3: the glow pass
+
+Full implementation of docs/design-pass-3-homepage-glow.md — verified
+via Playwright full-page captures (desktop, 390px, AR RTL; the browser
+pane was hidden client-side, so pane screenshots were blank — that was
+the capture surface, not the page).
+
+- **Glow system** (globals.css, documented): `glow-brass(-strong)` /
+  `glow-hover` halos, `edge-light` top-edge gradient, `glass-olive` +
+  `glass-pill`, `olive-luminous` (two ivory radials drifting 70/90s),
+  `gradient-text-brass`, `texture-dots`, `blend-ivory/sand/olive`
+  section blends, `glow-land(-now/-auto)` number pulse. All
+  reduced-motion-gated.
+  **Gotcha fixed**: blends started as `::before` utilities and
+  collided with `olive-luminous::before` on the same section — CSS
+  merges same-pseudo rules, which painted an 800px ivory wash over
+  dark bands. Blends are standalone overlay divs now
+  (`<div aria-hidden className="blend-ivory" />`).
+- **Hero**: dusk gradient (olive → #1E332A), luminance blobs,
+  gradient-text "Keep it instead." (the one gradient text), glass
+  trust chips, calculator card = the single glowing object (halo +
+  edge light + slight glass tint, brightens on hover).
+- **Sections**: $30 band moved to lit dark olive with a frosted-glass
+  edge-lit panel, money numbers glow-pulse when the count lands;
+  product tour frames edge-lit with reflective floor shadows + brass
+  halo on the active slide + watermark parallax behind; Growth pricing
+  card halo'd (others matte, glow on hover); stats-strip count glows
+  once; final CTA is the darkest band with an ivory radial behind a
+  glowing brass CTA.
+- **Global**: glass navbar when scrolled; blended band edges; dot-grid
+  texture on every light section; reveals now fade-up + scale;
+  pricing / how-it-works / about / grader got textures + luminance so
+  the site reads as one system.
+- **DoD screenshots committed**: docs/design-pass-3-vs-linear.png
+  (ours reads warmer) + docs/design-pass-3-vs-owner.png (ours reads
+  dramatically more premium). Capture scripts:
+  scripts/design-pass-3-shot.mjs, scripts/glow-verify-shots.mjs.
+- Still pending from pass 2: the Yelp side-by-side (their bot wall
+  flagged this IP; regenerate with scripts/design-pass-2-shot.mjs).
+
 ## 2026-08-25 (cont. 2) — Design pass 2: Yelp-grade /eat + site sharpening
 
 Full implementation of docs/design-pass-2.md. All verified live

@@ -43,7 +43,7 @@ export default async function GraderPage({
   const t = await getTranslations("site.grader");
 
   return (
-    <div className="mx-auto max-w-2xl px-4 pt-28 pb-14 sm:px-6">
+    <div className="texture-dots mx-auto max-w-2xl px-4 pt-28 pb-14 sm:px-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(graderJsonLd(locale)) }}

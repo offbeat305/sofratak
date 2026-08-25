@@ -49,7 +49,8 @@ export function Navbar() {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-40 transition-[background-color,box-shadow] duration-200",
-        solid ? "bg-olive shadow-[0_2px_12px_rgba(31,31,31,0.18)]" : "bg-transparent",
+        // design-pass-3: glass instead of solid fill once scrolled
+        solid ? "glass-olive shadow-[0_2px_12px_rgba(31,31,31,0.18)]" : "bg-transparent",
       )}
     >
       <nav className="mx-auto flex h-16 max-w-[1200px] items-center justify-between gap-4 px-4 sm:px-6">

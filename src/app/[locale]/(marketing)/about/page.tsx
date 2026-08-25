@@ -112,7 +112,7 @@ export default async function AboutPage({
   return (
     <>
       {/* Hero — olive band, large portrait */}
-      <section className="bg-olive pt-16 text-ivory">
+      <section className="olive-luminous relative bg-olive pt-16 text-ivory">
         <div className="mx-auto grid max-w-[1200px] items-center gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1fr_minmax(280px,380px)] md:py-20">
           <div>
             <p className="text-xs font-semibold tracking-[0.18em] text-brass uppercase brightness-150">
@@ -229,7 +229,7 @@ export default async function AboutPage({
       </Band>
 
       {/* A Note From Ahmad — olive letter block with repeated photo */}
-      <section className="bg-olive text-ivory">
+      <section className="olive-luminous relative bg-olive text-ivory">
         <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 md:py-20">
           <Reveal>
             <div className="rounded-card bg-olive-deep p-6 shadow-[0_24px_60px_rgba(20,30,25,0.4)] sm:p-10">

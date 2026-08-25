@@ -160,7 +160,9 @@ export function HeroCalculator() {
   return (
     <div
       ref={cardRef}
-      className="rounded-[20px] bg-ivory p-6 shadow-[0_22px_54px_rgba(24,38,31,0.42)] transition-transform duration-150 will-change-transform sm:p-8"
+      // design-pass-3 §2: the single glowing object on the page — brass
+      // halo (brighter on hover), top edge light, slight glass tint
+      className="edge-light glow-hover rounded-[20px] bg-ivory/95 p-6 shadow-[0_22px_54px_rgba(24,38,31,0.42),0_0_60px_rgba(169,121,43,0.30)] backdrop-blur-sm transition-[transform,box-shadow] duration-150 will-change-transform sm:p-8"
     >
       <h2 className="font-display text-[26px] leading-snug font-bold text-olive">
         {t("title")}

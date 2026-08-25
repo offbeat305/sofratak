@@ -34,7 +34,15 @@
     "menu": "Menu",
     "halal": "Halal",
     "hours": "Hours",
-    "days": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    "days": [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ],
     "viewOrder": "View order",
     "items": "{count, plural, one {# item} other {# items}}",
     "yourOrder": "Your order",
@@ -135,9 +143,15 @@
       "headline": "The apps take 15–30% of every order.",
       "keep": "Keep it instead.",
       "sub": "Your own ordering website. Zero commission. Orders on the tablet you already run. Your customers stay yours.",
-      "chips": ["0% commission", "79¢ flat, diner-paid", "Live in ~2 weeks"]
+      "chips": [
+        "0% commission",
+        "79¢ flat, diner-paid",
+        "Live in ~2 weeks"
+      ]
     },
-    "strip": { "now": "Now serving" },
+    "strip": {
+      "now": "Now serving"
+    },
     "dollar": {
       "title": "Where your $30 order goes",
       "sub": "The same order, two very different outcomes.",
@@ -163,12 +177,36 @@
       "colApps": "Delivery apps",
       "colUs": "Your Sofratak site",
       "rows": [
-        { "label": "Commission on food", "apps": "~15–30% (estimated)", "us": "$0" },
-        { "label": "Fee per order", "apps": "Paid by you, per order", "us": "79¢ flat — paid by the diner" },
-        { "label": "Your customers' names & numbers", "apps": "Kept by the platform", "us": "Yours, exportable anytime" },
-        { "label": "Your own website & brand", "apps": "You're one listing of many", "us": "Your name, your domain" },
-        { "label": "Arabic + English ordering", "apps": "No", "us": "Built in, true RTL" },
-        { "label": "Cancel terms", "apps": "—", "us": "Month-to-month, data leaves with you" }
+        {
+          "label": "Commission on food",
+          "apps": "~15–30% (estimated)",
+          "us": "$0"
+        },
+        {
+          "label": "Fee per order",
+          "apps": "Paid by you, per order",
+          "us": "79¢ flat — paid by the diner"
+        },
+        {
+          "label": "Your customers' names & numbers",
+          "apps": "Kept by the platform",
+          "us": "Yours, exportable anytime"
+        },
+        {
+          "label": "Your own website & brand",
+          "apps": "You're one listing of many",
+          "us": "Your name, your domain"
+        },
+        {
+          "label": "Arabic + English ordering",
+          "apps": "No",
+          "us": "Built in, true RTL"
+        },
+        {
+          "label": "Cancel terms",
+          "apps": "—",
+          "us": "Month-to-month, data leaves with you"
+        }
       ]
     },
     "grid": {
@@ -177,26 +215,71 @@
       "live": "Live now",
       "soon": "Rolling out",
       "items": [
-        { "name": "Direct online ordering", "status": "live" },
-        { "name": "Kitchen screen + printable tickets", "status": "live" },
-        { "name": "Order status texts to diners", "status": "live" },
-        { "name": "Customer book with CSV export", "status": "live" },
-        { "name": "Itemized & partial refunds", "status": "live" },
-        { "name": "English + Arabic, true RTL", "status": "live" },
-        { "name": "Halal badge & branding", "status": "live" },
-        { "name": "Local SEO city pages", "status": "live" },
-        { "name": "SMS & email campaigns", "status": "soon" },
-        { "name": "Weekly owner report", "status": "soon" },
-        { "name": "Loyalty program", "status": "soon" },
-        { "name": "Catering & delivery zones", "status": "soon" }
+        {
+          "name": "Direct online ordering",
+          "status": "live"
+        },
+        {
+          "name": "Kitchen screen + printable tickets",
+          "status": "live"
+        },
+        {
+          "name": "Order status texts to diners",
+          "status": "live"
+        },
+        {
+          "name": "Customer book with CSV export",
+          "status": "live"
+        },
+        {
+          "name": "Itemized & partial refunds",
+          "status": "live"
+        },
+        {
+          "name": "English + Arabic, true RTL",
+          "status": "live"
+        },
+        {
+          "name": "Halal badge & branding",
+          "status": "live"
+        },
+        {
+          "name": "Local SEO city pages",
+          "status": "live"
+        },
+        {
+          "name": "SMS & email campaigns",
+          "status": "soon"
+        },
+        {
+          "name": "Weekly owner report",
+          "status": "soon"
+        },
+        {
+          "name": "Loyalty program",
+          "status": "soon"
+        },
+        {
+          "name": "Catering & delivery zones",
+          "status": "soon"
+        }
       ]
     },
     "faq": {
       "title": "Common questions",
       "items": [
-        { "q": "Can I keep DoorDash and Uber Eats?", "a": "Yes. Sofratak runs alongside the apps — most restaurants keep them for discovery and move regulars to direct ordering, where every order costs less." },
-        { "q": "How fast can we go live?", "a": "About two weeks from menu to first order. A photo of your paper menu is enough to start." },
-        { "q": "Does it really work in Arabic?", "a": "Fully. Diners can order in Arabic or English with true right-to-left layout — menus, checkout, and order texts included." }
+        {
+          "q": "Can I keep DoorDash and Uber Eats?",
+          "a": "Yes. Sofratak runs alongside the apps — most restaurants keep them for discovery and move regulars to direct ordering, where every order costs less."
+        },
+        {
+          "q": "How fast can we go live?",
+          "a": "About two weeks from menu to first order. A photo of your paper menu is enough to start."
+        },
+        {
+          "q": "Does it really work in Arabic?",
+          "a": "Fully. Diners can order in Arabic or English with true right-to-left layout — menus, checkout, and order texts included."
+        }
       ]
     },
     "tour": {
@@ -218,19 +301,43 @@
     "features": {
       "title": "What you get",
       "cards": [
-        { "title": "Your own ordering site", "body": "Branded, fast, English and Arabic. Your name on it, not an app's." },
-        { "title": "Orders on the tablet you already use", "body": "New orders ring on any tablet or phone. Accept, prepare, done." },
-        { "title": "Your customer list, exportable", "body": "Every diner's name and number builds your book — download it any time, in one click." },
-        { "title": "Marketing that fills slow nights", "body": "Text and email your own customers: offers, win-backs, Ramadan hours." },
-        { "title": "A weekly report you can read in one minute", "body": "Orders, revenue, best sellers, and one suggested action. Every Monday." }
+        {
+          "title": "Your own ordering site",
+          "body": "Branded, fast, English and Arabic. Your name on it, not an app's."
+        },
+        {
+          "title": "Orders on the tablet you already use",
+          "body": "New orders ring on any tablet or phone. Accept, prepare, done."
+        },
+        {
+          "title": "Your customer list, exportable",
+          "body": "Every diner's name and number builds your book — download it any time, in one click."
+        },
+        {
+          "title": "Marketing that fills slow nights",
+          "body": "Text and email your own customers: offers, win-backs, Ramadan hours."
+        },
+        {
+          "title": "A weekly report you can read in one minute",
+          "body": "Orders, revenue, best sellers, and one suggested action. Every Monday."
+        }
       ]
     },
     "how": {
       "title": "How it works",
       "steps": [
-        { "title": "Send us your menu", "body": "A photo of the paper menu is fine. English, Arabic, or both." },
-        { "title": "We build your site in about two weeks", "body": "Your branding, your items, your prices. You approve everything." },
-        { "title": "Orders flow. You keep the money.", "body": "Food revenue settles to your bank. Diners pay a small flat fee — you pay no commission." }
+        {
+          "title": "Send us your menu",
+          "body": "A photo of the paper menu is fine. English, Arabic, or both."
+        },
+        {
+          "title": "We build your site in about two weeks",
+          "body": "Your branding, your items, your prices. You approve everything."
+        },
+        {
+          "title": "Orders flow. You keep the money.",
+          "body": "Food revenue settles to your bank. Diners pay a small flat fee — you pay no commission."
+        }
       ],
       "note": "No new hardware. Your staff learns nothing new."
     },
@@ -470,7 +577,93 @@
       "ctaTitle": "Want Sofratak instead?",
       "ctaBody": "Your own branded ordering site, $0.79 flat per order, $0 commission. Book a 15-minute demo.",
       "ctaButton": "Book a demo",
-      "regrade": "Grade another restaurant"
+      "regrade": "Grade another restaurant",
+      "heroEyebrow": "Free restaurant grader",
+      "heroH1": "Is your restaurant losing orders online?",
+      "heroH1Brass": "Find out in 60 seconds.",
+      "heroSub": "Free · No card · No spam. We scan Google, your reviews, and your ordering setup.",
+      "checksTitle": "What we check",
+      "checks": [
+        {
+          "title": "Google presence",
+          "body": "Website, phone, hours — the fields diners check first."
+        },
+        {
+          "title": "Reviews & rating",
+          "body": "Where you stand against the 4.0★ diners expect."
+        },
+        {
+          "title": "Online ordering",
+          "body": "Direct ordering, paid platforms, or commission apps."
+        },
+        {
+          "title": "Who's taking your customers",
+          "body": "Marketplace links and the competition around you."
+        }
+      ],
+      "sampleTitle": "See what you'll get",
+      "sampleSub": "A real audit — score, findings, and the money math.",
+      "howTitle": "How it works",
+      "howSteps": [
+        "Type your restaurant's name.",
+        "We scan Google, your website, and your ordering setup.",
+        "Get your score and what to fix — in about 60 seconds."
+      ],
+      "faqTitle": "Common questions",
+      "faq": [
+        {
+          "q": "Is it really free?",
+          "a": "Yes — completely. No card, no trial, no catch. The grader is how restaurants meet Sofratak."
+        },
+        {
+          "q": "Do I need a card or an account?",
+          "a": "No. Type your restaurant's name and you get the score. An email is only needed if you want the full detailed report."
+        },
+        {
+          "q": "What exactly do you scan?",
+          "a": "Public data only: your Google Business Profile, your reviews and rating, your website (speed, mobile, HTTPS), and whether diners can order from you directly or only through commission apps."
+        },
+        {
+          "q": "Is my data safe?",
+          "a": "We only read public information, and your email is used to send your report — never sold, never spammed. Every message we send has an opt-out."
+        },
+        {
+          "q": "What happens after I get my score?",
+          "a": "That's up to you. The report tells you what to fix regardless of who you fix it with. If you want the ordering fix, a 15-minute demo shows how Sofratak does it commission-free."
+        }
+      ],
+      "finalCtaTitle": "60 seconds. Zero cost. Your number.",
+      "finalCtaButton": "Grade my restaurant",
+      "scanStages": [
+        "Checking your Google listing…",
+        "Reading your reviews…",
+        "Looking for online ordering…",
+        "Scanning your competition…"
+      ],
+      "verdictHigh": "Strong presence — make sure you own it, not the apps.",
+      "verdictMid": "Solid base — a few fixes would win you real orders.",
+      "verdictLow": "You're losing orders you could own — the fixes below are the map.",
+      "positives": {
+        "hasWebsite": "Website listed on your Google profile.",
+        "hasPhone": "Phone number listed.",
+        "hasHours": "Hours listed — diners can see you're open.",
+        "ratingLine": "{rating}★ across {count} reviews on Google.",
+        "httpsOk": "Site served securely (HTTPS).",
+        "mobileOk": "Site works on phones.",
+        "fastSite": "Site loads fast."
+      },
+      "recs": {
+        "googleProfile": "Complete every field on your Google profile — it's free visibility.",
+        "reviews": "Ask happy regulars for a review — steady beats bursts.",
+        "website": "A fast, mobile-first site with direct ordering fixes all of this at once.",
+        "onlineOrdering": "Own your ordering — a flat 79¢/order beats a commission every time."
+      },
+      "moneyTitle": "What the apps may be costing you",
+      "moneyCta": "See your exact number",
+      "competitionTitle": "Your competition is already listed",
+      "competitionLine": "{count} other Arab & halal restaurants within 3 miles are on the Sofratak directory.",
+      "competitionCta": "See the directory",
+      "printReport": "Print / save as PDF"
     },
     "about": {
       "title": "Why Sofratak exists",
@@ -488,11 +681,26 @@
       "communityLine": "English and Arabic, true right-to-left, halal badge included. Your diners order in the language they think in.",
       "faqTitle": "Common questions",
       "faqs": [
-        { "q": "How much does it cost?", "a": "From $249/month per location, month-to-month. No setup fee for founding restaurants. Diners pay a flat $0.79 service fee per order." },
-        { "q": "Do you take a commission on food?", "a": "No. $0 commission — food revenue and tips settle directly to your bank account through Stripe." },
-        { "q": "Do I need new hardware?", "a": "No. Orders ring on any tablet or phone with a browser, and you can print tickets from it. Your staff learns nothing new." },
-        { "q": "Who owns my customer data?", "a": "You do. Every customer and every order is exportable to CSV in one click — even if you cancel." },
-        { "q": "What if I want to cancel?", "a": "Month-to-month, cancel anytime. We email you your complete data export automatically when you do." }
+        {
+          "q": "How much does it cost?",
+          "a": "From $249/month per location, month-to-month. No setup fee for founding restaurants. Diners pay a flat $0.79 service fee per order."
+        },
+        {
+          "q": "Do you take a commission on food?",
+          "a": "No. $0 commission — food revenue and tips settle directly to your bank account through Stripe."
+        },
+        {
+          "q": "Do I need new hardware?",
+          "a": "No. Orders ring on any tablet or phone with a browser, and you can print tickets from it. Your staff learns nothing new."
+        },
+        {
+          "q": "Who owns my customer data?",
+          "a": "You do. Every customer and every order is exportable to CSV in one click — even if you cancel."
+        },
+        {
+          "q": "What if I want to cancel?",
+          "a": "Month-to-month, cancel anytime. We email you your complete data export automatically when you do."
+        }
       ],
       "estimatorCta": "See what your restaurant could save",
       "otherCities": "Other cities",

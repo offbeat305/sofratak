@@ -1,5 +1,39 @@
 # Sofratak — Progress Log
 
+## 2026-08-25 (cont. 4) — Design pass 4: grader rebuilt as the demo closer
+
+Full implementation of docs/design-pass-4-grader.md, verified end-to-end
+with a real scan (Byblos Cafe Tampa → B 82/100).
+
+- **Landing page** (`grader-experience.tsx` + rebuilt page): dusk hero
+  with the glowing search as the focal object + branded autocomplete;
+  4 glass "what we check" chips; angled blurred sample-report teaser
+  with mini ring; live stats strip; 3-step how-it-works; 5-item FAQ
+  accordion **with FAQPage JSON-LD**; dark final CTA anchoring back to
+  the search. Old grader-tool.tsx deleted.
+- **Scan moment**: staged checklist (Google → reviews → ordering →
+  competition) ticking at ≥650ms/stage while the real action runs,
+  progress bar, reduced-motion skips the theater.
+- **Report**: animated SVG ring gauge (stroke draw + count-up; brass
+  ≥80 / olive 60–79 / clay <60), verdict line by bucket; 4 category
+  cards with REAL findings (positives derived from raw signals,
+  negatives from scorer keys, ✓/✗/! icons + per-category
+  recommendation); money slide (impact range + disclaimer + CTA to
+  /calculator); **competition row from our own directory** (published
+  listings within 3mi of the place's coords, 3 blurred names — the
+  Byblos test showed "6 other Arab & halal restaurants within 3
+  miles"); unlock gate redesigned (findings blur-gated, glass + halo
+  card, same lead capture); print/save-PDF + regrade.
+- **Plumbing**: Places details FieldMask + `location` + `photos.name`;
+  PlaceDetails gains lat/lng/photoName; `GraderResult.competition`
+  (recomputed on every cache hit from our DB — never cached, stays
+  fresh as the directory grows); typographic OG card for /grader
+  (ring + grade motif, EN/AR).
+- **DoD screenshot committed**: docs/design-pass-4-vs-zayos.png —
+  their black/cyan vs our dusk glow; a generation newer holds.
+  Verified 1440 + 390px + AR RTL (Playwright captures).
+- AR strings queued for Zizo's review batch as usual.
+
 ## 2026-08-25 (cont. 3) — Design pass 3: the glow pass
 
 Full implementation of docs/design-pass-3-homepage-glow.md — verified

@@ -6,6 +6,11 @@ export type PlacePrediction = {
 export type PlaceDetails = {
   placeId: string;
   name: string;
+  /** for the directory-powered competition row */
+  lat: number | null;
+  lng: number | null;
+  /** first Google photo resource — rendered live via /api/eat/photo */
+  photoName: string | null;
   formattedAddress: string | null;
   phone: string | null;
   website: string | null;
@@ -49,9 +54,17 @@ export type GraderScore = {
   estimatedMonthlyImpactHighCents: number;
 };
 
+export type GraderCompetition = {
+  /** published directory listings within ~3 miles */
+  count: number;
+  /** up to 3 nearby names (client blurs them — FOMO, not a directory leak) */
+  names: string[];
+};
+
 export type GraderResult = {
   placeId: string;
   restaurantName: string;
   signals: GraderSignals;
   score: GraderScore;
+  competition: GraderCompetition | null;
 };

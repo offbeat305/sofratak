@@ -31,6 +31,9 @@ export async function getCachedResult(placeId: string): Promise<GraderResult | n
     restaurantName: data.restaurant_name,
     signals: data.scan,
     score: data.score,
+    // not cached on purpose — run.ts recomputes from our own directory
+    // (cheap, and it stays fresh as the directory grows)
+    competition: null,
   };
 }
 

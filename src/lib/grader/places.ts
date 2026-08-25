@@ -4,6 +4,8 @@ import { tryConsumeAutocomplete, tryConsumeDetails } from "./usage-cap";
 
 const FIELD_MASK = [
   "displayName",
+  "location",
+  "photos.name",
   "formattedAddress",
   "internationalPhoneNumber",
   "websiteUri",
@@ -86,6 +88,8 @@ export async function getPlaceDetails(
     if (!res.ok) return { ok: false, error: "request_failed" };
     const data = (await res.json()) as {
       displayName?: { text: string };
+      location?: { latitude: number; longitude: number };
+      photos?: Array<{ name: string }>;
       formattedAddress?: string;
       internationalPhoneNumber?: string;
       websiteUri?: string;
@@ -99,6 +103,9 @@ export async function getPlaceDetails(
       details: {
         placeId,
         name: data.displayName?.text ?? "",
+        lat: data.location?.latitude ?? null,
+        lng: data.location?.longitude ?? null,
+        photoName: data.photos?.[0]?.name ?? null,
         formattedAddress: data.formattedAddress ?? null,
         phone: data.internationalPhoneNumber ?? null,
         website: data.websiteUri ?? null,

@@ -28,7 +28,7 @@ const HEADERS = {
 
 const VALID_CITIES = new Set(["tampa", "dearborn", "miami"]);
 const VALID_CUISINES = new Set([
-  "lebanese", "palestinian", "yemeni", "iraqi", "egyptian", "syrian", "jordanian", "mediterranean",
+  "lebanese", "palestinian", "yemeni", "iraqi", "egyptian", "syrian", "jordanian", "moroccan", "mediterranean",
 ]);
 
 function slugify(name: string): string {

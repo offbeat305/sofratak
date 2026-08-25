@@ -142,7 +142,15 @@ export default async function EatListingPage({
       </div>
 
       {!view.verified && (
-        <PlacesEnrichment city={city} slug={listingSlug} showHours={!hours || hours.length === 0} />
+        <PlacesEnrichment
+          city={city}
+          slug={listingSlug}
+          name={view.name}
+          showHours={!hours || hours.length === 0}
+          // area-level stored address (same heuristic as the seed script's
+          // no-pin rule) → let Google's live formattedAddress fill in
+          showAddress={view.address.split(",").length < 3}
+        />
       )}
 
       {view.verified && view.orderPath ? (

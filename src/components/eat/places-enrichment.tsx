@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Star } from "lucide-react";
+import { MapPin, Star } from "lucide-react";
 import {
   getListingEnrichmentAction,
 } from "@/app/[locale]/(marketing)/eat/actions";
@@ -18,11 +18,16 @@ export function PlacesEnrichment({
   city,
   slug,
   showHours,
+  showAddress,
+  name,
 }: {
   city: string;
   slug: string;
   /** only render Google's hours when the listing itself has none */
   showHours: boolean;
+  /** only render Google's live address when the stored one is area-level */
+  showAddress: boolean;
+  name: string;
 }) {
   const t = useTranslations("site.eat");
   const [data, setData] = useState<LiveEnrichment | null>(null);
@@ -58,6 +63,18 @@ export function PlacesEnrichment({
             ))}
           </div>
         </div>
+      )}
+
+      {showAddress && data.formattedAddress && (
+        <a
+          href={`https://maps.google.com/?q=${encodeURIComponent(`${name} ${data.formattedAddress}`)}`}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-3 inline-flex items-center gap-2 text-[15px] text-charcoal hover:text-olive"
+        >
+          <MapPin className="size-4 shrink-0 text-stone" aria-hidden />
+          {data.formattedAddress}
+        </a>
       )}
 
       {data.rating !== null && (

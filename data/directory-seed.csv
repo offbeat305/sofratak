@@ -2,7 +2,7 @@ city,name,slug,address,phone,cuisines,halal,lat,lng
 # Drop Zizo's Tampa Bay + Dearborn/Detroit lead lists here, one restaurant per row, then run: npx tsx scripts/seed-directory.ts
 # - city: tampa | dearborn | miami (metro slugs from src/content/eat-metros.ts; miami = all of Miami-Dade/Broward/Palm Beach)
 # - slug: optional — generated from the name if blank
-# - cuisines: |-separated from: lebanese|palestinian|yemeni|iraqi|egyptian|syrian|jordanian|mediterranean
+# - cuisines: |-separated from: lebanese|palestinian|yemeni|iraqi|egyptian|syrian|jordanian|moroccan|mediterranean
 # - halal: reported | unknown  (NEVER "verified" here — that's only for claimed Sofratak restaurants)
 # - lat/lng: optional — geocoded automatically via OpenStreetMap when blank
 # Example (delete this line):
@@ -98,10 +98,10 @@ dearborn,Beirut Bakery,,"Livonia (metro Detroit), MI",,lebanese,unknown,,
 dearborn,Al Ameer Catering / Banquets,,"Dearborn, MI",,lebanese,unknown,,
 miami,Amal,,"3480 Main Hwy, Miami, FL 33133",,lebanese,unknown,,
 miami,Mint Beirut,,"4249 W Flagler St, Miami, FL 33126",,lebanese,unknown,,
-miami,Sahara Grill,,"10526 SW 8th St, Miami, FL 33174",,mediterranean,unknown,,
+miami,Sahara Grill,,"10526 SW 8th St, Miami, FL 33174",,mediterranean,reported,,
 miami,Lira House,,"2000 NW 2nd Ave, Miami, FL 33127",,lebanese,unknown,,
 miami,Marhaba Lebanese Cuisine,,"1533 Madruga Ave, Coral Gables, FL 33146",,lebanese,unknown,,
-miami,Delights of Beirut,,"6907 S Red Rd, Coral Gables, FL 33143",,lebanese,unknown,,
+miami,Delights of Beirut,,"6907 S Red Rd, Coral Gables, FL 33143",,lebanese,unknown,25.7073323,-80.2854156
 miami,Shishka Lebanese Grill,,"1901 N Federal Hwy, Pompano Beach, FL 33062",,lebanese,unknown,,
 miami,Sirocco Mediterranean Restaurant & Lounge,,"170 N Pointe Dr, Dania Beach, FL 33004",,lebanese|mediterranean,unknown,,
 miami,Shawarmaz Mediterranean Restaurant & Grill,,"14445 Miramar Pkwy, Miramar, FL 33027",,lebanese|mediterranean,unknown,,
@@ -114,3 +114,34 @@ miami,Shawarma Al Basha,,"440 SW 8th St, Miami, FL 33130",(786) 502-4445,lebanes
 miami,Shawarma Shack,,"11040 Pembroke Rd, Miramar, FL 33025",,lebanese|mediterranean,reported,,
 miami,Shawarma Xpress,,"9581 NW 41st St, Doral, FL 33178",,lebanese|mediterranean,reported,,
 miami,Koshari Shack,,"915 Middle River Dr, Fort Lauderdale, FL 33304",,egyptian,reported,,
+miami,Cafe Fenicia,,"Downtown, Miami, FL",,lebanese,reported,,
+miami,Beirut Doral Restaurant,,"Doral, FL",,lebanese,unknown,,
+miami,Layali Miami,,"Doral, FL",,lebanese,reported,,
+miami,Faraon,,"Doral, FL",,lebanese,unknown,,
+miami,El Arabito Grill,,"Doral, FL",,lebanese,unknown,,
+miami,Sufrat Mediterranean Grill,,"Doral, FL",,lebanese|mediterranean,unknown,,
+miami,Harvest Delights,,"Doral, FL",,lebanese|mediterranean,unknown,,
+miami,Takesh Grill,,"Medley, FL",,lebanese,reported,,
+miami,Shaddai Fine Lebanese Cuisine,,"South Miami, FL",,lebanese,reported,,
+miami,Kabobji,,"North Miami Beach, FL",,lebanese,reported,,
+miami,Pita Fresh,,"Kendall, FL",,syrian|lebanese,reported,,
+miami,Al Basha,,"Kendall, FL",,syrian|mediterranean,unknown,,
+miami,Al Basha Grill,,"Miami Beach, FL",,mediterranean,reported,,
+miami,Aladdin Mediterranean Restaurant & Supermarket,,"North Miami, FL",,lebanese|syrian,reported,,
+miami,Daily Bread Marketplace,,"Pinecrest, FL",,lebanese|syrian|jordanian,unknown,,
+miami,Original Daily Bread Marketplace,,"Coral Way, Miami, FL",,lebanese|syrian,unknown,,
+miami,The Middle East Best Food,,"Coral Way, Miami, FL",,palestinian,reported,,
+miami,Yafa Restaurant & Market,,"West Kendall, Miami, FL",,palestinian,unknown,,
+miami,Babilonia Restaurant,,"Doral, FL",,syrian,unknown,,
+miami,Yarbou Downtown,,"Downtown, Miami, FL",,syrian,unknown,,
+miami,The Wowshi Halal - Egyptian Street Food,,"Edgewater, Miami, FL",,egyptian,reported,,
+miami,Habibi Miami,,"Miami River, Miami, FL",,moroccan,unknown,,
+miami,The Moroccan Joint,,"Miami, FL",,moroccan,reported,,
+miami,Gran Shawarma,,"Doral, FL",,lebanese,unknown,,
+miami,El Ammar Kitchen,,"Wynwood, Miami, FL",,lebanese|mediterranean,unknown,,
+miami,Oriental Bakery & Grocery,,"Brickell, Miami, FL",,lebanese|syrian,reported,,
+miami,The Wrapper Miami,,"North Beach, Miami Beach, FL",,lebanese,reported,,
+miami,ICON Mediterranean,,"Wynwood, Miami, FL",,iraqi|mediterranean,reported,,
+miami,FAVA N SPICE,,"Wynwood, Miami, FL",,iraqi|mediterranean,reported,,
+miami,Felina Miami,,"Wynwood, Miami, FL",,mediterranean,unknown,,
+miami,Shawarmaz Dolphin Mall,,"Dolphin Mall, 11401 NW 12th St, Miami, FL 33172",,lebanese|mediterranean,unknown,,

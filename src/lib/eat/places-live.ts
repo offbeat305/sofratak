@@ -18,6 +18,8 @@ import { tryConsumeDetails } from "@/lib/grader/usage-cap";
 export type LiveEnrichment = {
   rating: number | null;
   userRatingCount: number | null;
+  /** live street address — shown when the stored address is area-level only */
+  formattedAddress: string | null;
   /** e.g. "Monday: 11:00 AM – 9:00 PM" lines, localized by Google */
   weekdayText: string[] | null;
   /** Places photo resource names — render via /api/eat/photo?name=… */
@@ -45,7 +47,7 @@ export async function getLiveEnrichment(placeId: string): Promise<LiveEnrichment
         headers: {
           "X-Goog-Api-Key": key,
           "X-Goog-FieldMask":
-            "rating,userRatingCount,regularOpeningHours.weekdayDescriptions,photos.name,photos.authorAttributions",
+            "rating,userRatingCount,formattedAddress,regularOpeningHours.weekdayDescriptions,photos.name,photos.authorAttributions",
         },
         cache: "no-store", // never let Next persist Places content
       },
@@ -54,6 +56,7 @@ export async function getLiveEnrichment(placeId: string): Promise<LiveEnrichment
     const data = (await res.json()) as {
       rating?: number;
       userRatingCount?: number;
+      formattedAddress?: string;
       regularOpeningHours?: { weekdayDescriptions?: string[] };
       photos?: Array<{ name: string; authorAttributions?: Array<{ displayName?: string }> }>;
     };
@@ -62,6 +65,7 @@ export async function getLiveEnrichment(placeId: string): Promise<LiveEnrichment
     const enrichment: LiveEnrichment = {
       rating: data.rating ?? null,
       userRatingCount: data.userRatingCount ?? null,
+      formattedAddress: data.formattedAddress ?? null,
       weekdayText: data.regularOpeningHours?.weekdayDescriptions ?? null,
       photoNames: photos.map((p) => p.name),
       photoAttributions: [

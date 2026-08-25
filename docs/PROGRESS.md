@@ -1,5 +1,41 @@
 # Sofratak — Progress Log
 
+## 2026-08-24 (cont. 2) — Miami-Dade batch: 49 seed rows + moroccan cuisine
+
+Zizo's 5-note batch, all verified live:
+
+- **Seed rerun**: 49 miami CSV rows → 102 miami listings (49 seed +
+  53 OSM; 74 published, 28 still in the review queue). 31 new rows,
+  4 of which merged OVER existing OSM rows on slug collision (The
+  Wrapper Miami, Kabobji, Takesh Grill, Pita Fresh) — curated data
+  wins, `osm_id` preserved. No duplicates of the earlier batch (Amal,
+  Mint Beirut, Lira House, Sahara Grill, Shawarma Al Basha — one row
+  each). Both Shawarmaz rows distinct: `shawarmaz-dolphin-mall` +
+  `shawarmaz-mediterranean-restaurant-grill`.
+- **moroccan cuisine key** added end-to-end (EAT_CUISINES, seed
+  VALID_CUISINES, OSM CUISINE_RE/CUISINE_MAP, EN "Moroccan" /
+  AR "مغربي"). No migration needed — `cuisines` is an unconstrained
+  text[]. The Moroccan Joint + Habibi Miami flipped from
+  mediterranean; filter chip verified (returns exactly those two).
+- **Sahara Grill** upgraded to halal `reported` (Zabihah Dade County
+  list, source confirmed by Zizo).
+- **Place-ID backfill rerun**: 212 matched (31 new seed rows + the
+  OSM rows that had none) — live enrichment now works directory-wide.
+  3 unmatched: The Moroccan Joint (address is just "Miami, FL" —
+  will match once we have a street address) + 2 dearborn OSM rows
+  with empty addresses (Kirchenwirt, Alnawras — Kirchenwirt looks
+  like non-Arab OSM noise; for Zizo's review queue judgement).
+- **Live address display** (Zizo's note-1 idea): `formattedAddress`
+  added to the enrichment FieldMask — listing pages whose STORED
+  address is area-level (<3 comma parts, same heuristic as the seed
+  script's no-pin rule) now show Google's live street address at view
+  time, never persisted. Verified on Beirut Doral: stored "Doral, FL"
+  + live "2475 NW 95th Ave #10, Doral, FL 33172" + 4.9★/10k reviews.
+- **Gotcha fixed**: the seed rerun's merge-upsert clobbered the manual
+  Delights of Beirut lat/lng (its "S Red Rd" address geocode-fails);
+  re-patched to 25.7073323,-80.2854156. If the CSV gets rerun again,
+  put those coords in the CSV's lat/lng columns to make it stick.
+
 ## 2026-08-24 (cont.) — Directory upgrades 1-5 + /stories editorial section
 
 Zizo's numbered list. #3 (OSM import) and #4 (suggest form) were

@@ -68,6 +68,7 @@ export const EAT_CUISINES = [
   "egyptian",
   "syrian",
   "jordanian",
+  "moroccan",
   "mediterranean",
 ] as const;
 export type EatCuisine = (typeof EAT_CUISINES)[number];

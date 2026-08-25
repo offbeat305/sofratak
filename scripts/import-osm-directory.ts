@@ -40,7 +40,7 @@ const METRO_BBOXES: Record<string, string> = {
 };
 
 const CUISINE_RE =
-  "lebanese|arab|middle_eastern|syrian|iraqi|yemeni|egyptian|jordanian|palestinian|falafel|shawarma|kebab";
+  "lebanese|arab|middle_eastern|syrian|iraqi|yemeni|egyptian|jordanian|palestinian|moroccan|falafel|shawarma|kebab";
 const NAME_RE = "shawarma|shawerma|falafel|halal|beirut|damascus|petra|aleppo|yemen";
 
 const CUISINE_MAP: Record<string, string> = {
@@ -51,6 +51,7 @@ const CUISINE_MAP: Record<string, string> = {
   egyptian: "egyptian",
   syrian: "syrian",
   jordanian: "jordanian",
+  moroccan: "moroccan",
   arab: "mediterranean",
   middle_eastern: "mediterranean",
   mediterranean: "mediterranean",

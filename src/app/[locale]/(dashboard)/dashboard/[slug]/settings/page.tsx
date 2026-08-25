@@ -19,6 +19,9 @@ export default async function SettingsPage({
 
   const restaurant = await getStore().getRestaurantBySlug(slug);
   if (!restaurant) notFound();
+  // /eat listing this restaurant has claimed, if any — enables the
+  // owner-editable directory description section below.
+  const claimedListing = await getStore().getDirectoryListingByRestaurant(restaurant.id);
 
   // Returning from Stripe onboarding lands here — pick up the new status.
   const chargesEnabled = restaurant.stripe.accountId
@@ -46,7 +49,15 @@ export default async function SettingsPage({
         <CreditCard className="size-4" aria-hidden />
         {t("billingTitle")}
       </Link>
-      <SettingsForm slug={slug} restaurant={restaurant} />
+      <SettingsForm
+        slug={slug}
+        restaurant={restaurant}
+        directoryBlurb={
+          claimedListing
+            ? { en: claimedListing.customBlurb ?? "", ar: claimedListing.customBlurbAr ?? "" }
+            : null
+        }
+      />
     </div>
   );
 }

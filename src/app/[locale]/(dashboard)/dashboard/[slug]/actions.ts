@@ -254,3 +254,26 @@ export async function saveSettingsAction(
   revalidatePath(`/[locale]/dashboard/${slug}`, "layout");
   return { ok: true as const };
 }
+
+/**
+ * Owner-editable /eat listing description (directory decision #5c) —
+ * writes custom_blurb on the listing this restaurant has claimed, which
+ * overrides Google's live editorialSummary on the public page.
+ */
+export async function saveDirectoryBlurbAction(
+  slug: string,
+  input: { en: string; ar: string },
+) {
+  if (!(await getMembership(slug))) return UNAUTHORIZED;
+  const store = getStore();
+  const restaurant = await store.getRestaurantBySlug(slug);
+  if (!restaurant) return { ok: false as const, error: "Not found" };
+  const listing = await store.getDirectoryListingByRestaurant(restaurant.id);
+  if (!listing) return { ok: false as const, error: "No claimed listing" };
+
+  const en = input.en.trim().slice(0, 500);
+  const ar = input.ar.trim().slice(0, 500);
+  await store.setDirectoryBlurb(listing.id, en || null, ar || null);
+  revalidatePath(`/[locale]/eat/${listing.city}/${listing.slug}`, "page");
+  return { ok: true as const };
+}

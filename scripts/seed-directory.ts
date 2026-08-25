@@ -28,7 +28,7 @@ const HEADERS = {
 
 const VALID_CITIES = new Set(["tampa", "dearborn", "miami"]);
 const VALID_CUISINES = new Set([
-  "lebanese", "palestinian", "yemeni", "iraqi", "egyptian", "syrian", "jordanian", "moroccan", "mediterranean",
+  "lebanese", "palestinian", "yemeni", "iraqi", "egyptian", "syrian", "jordanian", "moroccan", "american", "mediterranean",
 ]);
 
 function slugify(name: string): string {
@@ -61,7 +61,10 @@ function parseCsvLine(line: string): string[] {
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function geocode(address: string): Promise<{ lat: number; lng: number } | null> {
-  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q=${encodeURIComponent(address)}`;
+  // Nominatim can't resolve unit/suite suffixes ("Unit 15", "#25",
+  // "Ste R125") — strip them; the street address is what pins the map.
+  const query = address.replace(/\s+(?:Unit|Ste|Suite|Apt|#)\s*[\w-]+,/gi, ",");
+  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=us&q=${encodeURIComponent(query)}`;
   const res = await fetch(url, {
     headers: { "User-Agent": "SofratakDirectorySeeder/1.0 (contact: offbeat305@gmail.com)" },
   });

@@ -356,6 +356,14 @@ export class LocalStore implements DataStore {
     throw new Error("Directory requires the Supabase backend");
   }
 
+  async getDirectoryListingByRestaurant(): Promise<DirectoryListing | null> {
+    return null;
+  }
+
+  async setDirectoryBlurb(): Promise<void> {
+    throw new Error("Directory requires the Supabase backend");
+  }
+
   async getFunnelCounts(): Promise<FunnelCounts> {
     return { views: 0, carts: 0, checkouts: 0 };
   }

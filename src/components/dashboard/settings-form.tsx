@@ -5,14 +5,20 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import type { DayHours, Restaurant } from "@/lib/db/types";
 import { cn } from "@/lib/cn";
-import { saveSettingsAction } from "@/app/[locale]/(dashboard)/dashboard/[slug]/actions";
+import {
+  saveDirectoryBlurbAction,
+  saveSettingsAction,
+} from "@/app/[locale]/(dashboard)/dashboard/[slug]/actions";
 
 export function SettingsForm({
   slug,
   restaurant,
+  directoryBlurb,
 }: {
   slug: string;
   restaurant: Restaurant;
+  /** null = this restaurant hasn't claimed an /eat listing */
+  directoryBlurb: { en: string; ar: string } | null;
 }) {
   const t = useTranslations("dash");
   const tSf = useTranslations("storefront");
@@ -30,6 +36,17 @@ export function SettingsForm({
   );
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [blurb, setBlurb] = useState(directoryBlurb ?? { en: "", ar: "" });
+  const [blurbMessage, setBlurbMessage] = useState<string | null>(null);
+  const [blurbPending, startBlurbTransition] = useTransition();
+
+  const saveBlurb = () => {
+    setBlurbMessage(null);
+    startBlurbTransition(async () => {
+      const result = await saveDirectoryBlurbAction(slug, blurb);
+      setBlurbMessage(result.ok ? t("saved") : result.error);
+    });
+  };
 
   const save = () => {
     setMessage(null);
@@ -172,6 +189,52 @@ export function SettingsForm({
           ))}
         </ul>
       </section>
+
+      {directoryBlurb !== null && (
+        <section className={sectionCls}>
+          <h2 className="mb-1 font-bold text-olive">{t("eatBlurbTitle")}</h2>
+          <p className="mb-3 text-sm text-stone">{t("eatBlurbHint")}</p>
+          <div className="flex flex-col gap-3 text-sm font-semibold text-charcoal">
+            <label className="flex flex-col gap-1">
+              {t("eatBlurbEn")}
+              <textarea
+                dir="ltr"
+                rows={3}
+                maxLength={500}
+                value={blurb.en}
+                onChange={(e) => setBlurb({ ...blurb, en: e.target.value })}
+                className="rounded-field border border-olive/20 bg-white p-3 text-[15px] font-normal focus:outline-none focus-visible:ring-2 focus-visible:ring-olive/25"
+              />
+            </label>
+            <label className="flex flex-col gap-1">
+              {t("eatBlurbAr")}
+              <textarea
+                dir="rtl"
+                rows={3}
+                maxLength={500}
+                value={blurb.ar}
+                onChange={(e) => setBlurb({ ...blurb, ar: e.target.value })}
+                className="rounded-field border border-olive/20 bg-white p-3 text-[15px] font-normal focus:outline-none focus-visible:ring-2 focus-visible:ring-olive/25"
+              />
+            </label>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={saveBlurb}
+                disabled={blurbPending}
+                className="h-10 self-start rounded-btn bg-olive px-5 text-sm font-bold text-ivory disabled:opacity-50"
+              >
+                {blurbPending ? t("saving") : t("save")}
+              </button>
+              {blurbMessage && (
+                <p className="text-sm font-semibold text-positive" role="status">
+                  {blurbMessage}
+                </p>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
 
       <div className="flex items-center gap-3">
         <button

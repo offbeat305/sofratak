@@ -97,6 +97,10 @@ export interface DataStore {
   listDirectoryReviewQueue(): Promise<DirectoryListing[]>;
   setDirectoryPublished(id: string, published: boolean): Promise<void>;
   deleteDirectoryListing(id: string): Promise<void>;
+  /** The listing a restaurant has claimed, if any (dashboard description editing). */
+  getDirectoryListingByRestaurant(restaurantId: string): Promise<DirectoryListing | null>;
+  /** Owner/curated description — null clears back to Google's live summary. */
+  setDirectoryBlurb(id: string, blurb: string | null, blurbAr: string | null): Promise<void>;
 
   // ── Phase 8C: order funnel ────────────────────────────────────────────
   recordStorefrontEvent(restaurantId: string, sessionHash: string, step: FunnelStep): Promise<void>;

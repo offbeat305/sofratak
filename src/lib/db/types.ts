@@ -335,6 +335,9 @@ export type DirectoryListing = {
   source: "seed" | "places" | "manual" | "osm";
   /** false = in the review queue (ambiguous OSM imports) — hidden from /eat */
   published: boolean;
+  /** hand-written description — overrides Google's live editorialSummary */
+  customBlurb: string | null;
+  customBlurbAr: string | null;
 };
 
 export type AutomationKind =

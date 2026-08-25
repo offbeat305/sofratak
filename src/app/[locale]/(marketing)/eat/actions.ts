@@ -15,7 +15,10 @@ export async function getListingEnrichmentAction(
   city: string,
   slug: string,
 ): Promise<LiveEnrichment | null> {
-  if (!(await allowRequest("eat-enrich", 30))) return null;
+  // 120/min: metro-page cards lazy-load photos through this too — a fast
+  // scroller can legitimately fire dozens; the Places daily cap is the
+  // real spend guard, this only blunts scripted abuse.
+  if (!(await allowRequest("eat-enrich", 120))) return null;
   const listing = await getStore().getDirectoryListing(city, slug);
   if (!listing || !listing.published || listing.claimedRestaurantId || !listing.googlePlaceId) {
     return null;

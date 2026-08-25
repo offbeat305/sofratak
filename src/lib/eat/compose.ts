@@ -30,6 +30,7 @@ export async function composeListingView(
     openNow: isOpenNow(listing.hours, metro.timezone),
     orderPath: null,
     photoUrl: null,
+    hasLivePhotos: !listing.claimedRestaurantId && !!listing.googlePlaceId,
   };
 
   if (!listing.claimedRestaurantId) return base;
@@ -45,6 +46,7 @@ export async function composeListingView(
     openNow: isOpenNow(restaurant.hours, restaurant.timezone),
     orderPath: `/s/${restaurant.slug}`,
     photoUrl: restaurant.coverUrl,
+    hasLivePhotos: false,
   };
 }
 

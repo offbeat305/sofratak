@@ -17,4 +17,6 @@ export type EatListingView = {
   orderPath: string | null;
   /** verified listings only (their storefront banner) */
   photoUrl: string | null;
+  /** unclaimed + has a stored place_id → card may lazy-load a live Google photo */
+  hasLivePhotos: boolean;
 };

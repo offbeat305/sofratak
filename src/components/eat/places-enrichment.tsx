@@ -19,6 +19,7 @@ export function PlacesEnrichment({
   slug,
   showHours,
   showAddress,
+  showSummary,
   name,
 }: {
   city: string;
@@ -27,6 +28,8 @@ export function PlacesEnrichment({
   showHours: boolean;
   /** only render Google's live address when the stored one is area-level */
   showAddress: boolean;
+  /** false when a custom_blurb already describes the place */
+  showSummary: boolean;
   name: string;
 }) {
   const t = useTranslations("site.eat");
@@ -46,8 +49,12 @@ export function PlacesEnrichment({
 
   return (
     <section className="mt-6">
+      {showSummary && data.editorialSummary && (
+        <p className="mb-4 text-[15px] leading-relaxed text-charcoal">{data.editorialSummary}</p>
+      )}
+
       {data.photoNames.length > 0 && (
-        <div className="-mx-4 overflow-x-auto px-4">
+        <div className="-mx-4 snap-x snap-mandatory overflow-x-auto px-4">
           <div className="flex gap-3">
             {data.photoNames.map((name) => (
               // Live Places display: next/image would cache Google's photo
@@ -58,7 +65,7 @@ export function PlacesEnrichment({
                 src={`/api/eat/photo?name=${encodeURIComponent(name)}`}
                 alt=""
                 loading="lazy"
-                className="h-44 w-64 shrink-0 rounded-card object-cover sm:h-52"
+                className="h-44 w-64 shrink-0 snap-start rounded-card object-cover sm:h-52"
               />
             ))}
           </div>

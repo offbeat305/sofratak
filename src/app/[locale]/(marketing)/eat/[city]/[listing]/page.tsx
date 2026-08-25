@@ -76,6 +76,10 @@ export default async function EatListingPage({
   const listing = await store.getDirectoryListing(city, listingSlug);
   if (!listing || !listing.published) notFound();
   const view = await composeListingView(listing, metro);
+  const blurb =
+    loc === "ar"
+      ? listing.customBlurbAr || listing.customBlurb
+      : listing.customBlurb;
   const hours = view.verified
     ? (await store.getRestaurantById(listing.claimedRestaurantId!))?.hours ?? null
     : listing.hours;
@@ -105,23 +109,22 @@ export default async function EatListingPage({
             {t("verified")}
           </span>
         )}
-        {view.halalStatus === "verified" && (
-          <span className="rounded-full bg-positive/10 px-2.5 py-1 text-xs font-bold text-positive">
-            {t("halalVerified")}
-          </span>
-        )}
-        {view.halalStatus === "reported" && (
-          <span className="rounded-full bg-olive/8 px-2.5 py-1 text-xs font-semibold text-stone">
-            {t("halalReported")}
-          </span>
-        )}
       </div>
 
       {view.cuisines.length > 0 && (
         <p className="mt-1 text-stone">{view.cuisines.map((c) => t(`cuisines.${c}`)).join(" · ")}</p>
       )}
 
+      {blurb && <p className="mt-3 text-[15px] leading-relaxed text-charcoal">{blurb}</p>}
+
       <div className="mt-4 flex flex-col gap-2 text-[15px] text-charcoal">
+        {/* quiet halal info row (Zizo: no badges — culture-first brand);
+            "verified" only survives compose on claimed listings */}
+        {view.halalStatus !== "unknown" && (
+          <p className="text-sm text-stone">
+            {view.halalStatus === "verified" ? t("halalRowOwner") : t("halalRowReported")}
+          </p>
+        )}
         {view.address && (
           <a
             href={`https://maps.google.com/?q=${encodeURIComponent(`${view.name} ${view.address}`)}`}
@@ -150,6 +153,7 @@ export default async function EatListingPage({
           // area-level stored address (same heuristic as the seed script's
           // no-pin rule) → let Google's live formattedAddress fill in
           showAddress={view.address.split(",").length < 3}
+          showSummary={!blurb}
         />
       )}
 

@@ -20,6 +20,8 @@ export type LiveEnrichment = {
   userRatingCount: number | null;
   /** live street address — shown when the stored address is area-level only */
   formattedAddress: string | null;
+  /** Google's editorial one-liner — shown unless a custom_blurb overrides it */
+  editorialSummary: string | null;
   /** e.g. "Monday: 11:00 AM – 9:00 PM" lines, localized by Google */
   weekdayText: string[] | null;
   /** Places photo resource names — render via /api/eat/photo?name=… */
@@ -47,7 +49,7 @@ export async function getLiveEnrichment(placeId: string): Promise<LiveEnrichment
         headers: {
           "X-Goog-Api-Key": key,
           "X-Goog-FieldMask":
-            "rating,userRatingCount,formattedAddress,regularOpeningHours.weekdayDescriptions,photos.name,photos.authorAttributions",
+            "rating,userRatingCount,formattedAddress,editorialSummary,regularOpeningHours.weekdayDescriptions,photos.name,photos.authorAttributions",
         },
         cache: "no-store", // never let Next persist Places content
       },
@@ -57,15 +59,18 @@ export async function getLiveEnrichment(placeId: string): Promise<LiveEnrichment
       rating?: number;
       userRatingCount?: number;
       formattedAddress?: string;
+      editorialSummary?: { text?: string };
       regularOpeningHours?: { weekdayDescriptions?: string[] };
       photos?: Array<{ name: string; authorAttributions?: Array<{ displayName?: string }> }>;
     };
 
-    const photos = (data.photos ?? []).slice(0, 3);
+    // 3–5 swipeable photos on the detail gallery (Zizo) — never all 10
+    const photos = (data.photos ?? []).slice(0, 5);
     const enrichment: LiveEnrichment = {
       rating: data.rating ?? null,
       userRatingCount: data.userRatingCount ?? null,
       formattedAddress: data.formattedAddress ?? null,
+      editorialSummary: data.editorialSummary?.text ?? null,
       weekdayText: data.regularOpeningHours?.weekdayDescriptions ?? null,
       photoNames: photos.map((p) => p.name),
       photoAttributions: [

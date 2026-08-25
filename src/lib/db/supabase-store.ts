@@ -143,6 +143,8 @@ function rowToDirectoryListing(row: any): DirectoryListing {
     claimedRestaurantId: row.claimed_restaurant_id ?? null,
     source: row.source,
     published: row.published ?? true, // column exists after 0011
+    customBlurb: row.custom_blurb ?? null, // columns exist after 0012
+    customBlurbAr: row.custom_blurb_ar ?? null,
   };
 }
 
@@ -1087,6 +1089,23 @@ export class SupabaseStore implements DataStore {
   async deleteDirectoryListing(id: string): Promise<void> {
     const { error } = await this.client.from("directory_listings").delete().eq("id", id);
     if (error) throw new Error(`deleteDirectoryListing failed: ${error.message}`);
+  }
+
+  async getDirectoryListingByRestaurant(restaurantId: string): Promise<DirectoryListing | null> {
+    const { data } = await this.client
+      .from("directory_listings")
+      .select("*")
+      .eq("claimed_restaurant_id", restaurantId)
+      .maybeSingle();
+    return data ? rowToDirectoryListing(data) : null;
+  }
+
+  async setDirectoryBlurb(id: string, blurb: string | null, blurbAr: string | null): Promise<void> {
+    const { error } = await this.client
+      .from("directory_listings")
+      .update({ custom_blurb: blurb, custom_blurb_ar: blurbAr })
+      .eq("id", id);
+    if (error) throw new Error(`setDirectoryBlurb failed: ${error.message}`);
   }
 
   // ── Phase 8C: order funnel ─────────────────────────────────────────────

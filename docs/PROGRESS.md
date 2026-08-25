@@ -1,5 +1,50 @@
 # Sofratak — Progress Log
 
+## 2026-08-25 — Directory product decisions 1–7 (Zizo's list)
+
+**⚠️ APPLY MIGRATION 0012** (`0012_directory_blurbs.sql` — custom_blurb
+columns). Until applied, listing pages just skip blurbs, but saving a
+description from the dashboard errors.
+
+1. **Two-section metro pages**: claimed on top under "Order now",
+   everything else under "More Arab restaurants nearby" + claim-nudge
+   sub-line. Search/filters span both. Verified live on /eat/tampa.
+2. **Halal de-badged**: cards carry no halal chip; detail pages show a
+   quiet "Halal: reported" / "Halal: confirmed by owner" row (omitted
+   when unknown). Three-state data + filter chip unchanged. Added
+   `american` cuisine key (label "American", AR "أمريكي" — NOT
+   "American Halal", per Zizo) — the corrected CSV uses it.
+3. **Photos on all cards**: unclaimed cards lazy-load one live Places
+   photo via IntersectionObserver (only when scrolled into view),
+   tiny "Google" attribution overlay, plain <img> through the proxy.
+   Cap hit / no photo → card stays plain (zero-size sentinel, NOT
+   display:none — hidden elements never intersect). eat-enrich rate
+   limit 30→120/min (cards share it; the Places daily cap is the real
+   spend guard). Verified live on Abu Naji's card.
+4. **Detail gallery**: 5 photos (was 3), snap-x swipeable. Verified.
+5. **Descriptions, three layers**: (a) Google `editorialSummary`
+   rendered live (verified on Beirut Doral: "Strip-mall restaurant
+   serving shawarma…"); (b) `custom_blurb`/`custom_blurb_ar` columns
+   (migration 0012) override it when set; (c) claimed owners edit
+   theirs from dashboard Settings → "Directory description" (writes to
+   their claimed listing row via `saveDirectoryBlurbAction`).
+6. **Cleanups**: deleted `shahs-of-kabob` (Persian, out of scope —
+   also dropped from CSV) and `kirchenwirt` (OSM noise); unpublished
+   `fava-n-spice` (address conflicts with ICON at 241 NW 24th St per
+   the verified-PDF watchlist — Zizo calls before republishing; seed
+   reruns won't republish it, the upsert never touches `published`).
+   Queue-review rule of thumb for Zizo: reject Persian/Turkish/
+   Indian/Pakistani — scope is Arab + general halal concepts.
+7. **Seed rerun + backfill**: geocoder now strips unit/suite suffixes
+   (Nominatim fails on "Unit 15"/"#25"/"Ste R125"). ⚠️ The CSV grew
+   75→164 miami rows BETWEEN reruns — the other session was editing
+   it live (one-session rule, again). Final DB state:
+   **434 listings — tampa 71 (58 pub), dearborn 149 (127 pub),
+   miami 214 (185 pub); 64 in review queue; 346 pinned (80%);
+   431/434 have place IDs** (unmatched: the-moroccan-joint + 2
+   empty-address OSM dearborn rows). ~14 geocode failures left,
+   mostly "State Rd" style addresses Nominatim can't parse.
+
 ## 2026-08-24 (cont. 2) — Miami-Dade batch: 49 seed rows + moroccan cuisine
 
 Zizo's 5-note batch, all verified live:

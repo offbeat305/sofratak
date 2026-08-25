@@ -50,5 +50,6 @@ export async function composeListingView(
 
 export async function composeMetroListings(metro: EatMetro): Promise<EatListingView[]> {
   const listings = await getStore().listDirectory(metro.slug);
-  return Promise.all(listings.map((l) => composeListingView(l, metro)));
+  // Review-queue rows (ambiguous OSM imports awaiting approval) stay off /eat.
+  return Promise.all(listings.filter((l) => l.published).map((l) => composeListingView(l, metro)));
 }

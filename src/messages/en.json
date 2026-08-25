@@ -383,6 +383,8 @@
       "suggestSubmit": "Send suggestion",
       "suggestSuccess": "Thank you — we review every suggestion and add real ones fast.",
       "osmAttribution": "Some listing data from",
+      "enrichReviews": "({count, plural, one {# review} other {# reviews}} on Google)",
+      "photoBy": "Photos by",
       "cuisines": {
         "lebanese": "Lebanese",
         "palestinian": "Palestinian",
@@ -739,7 +741,12 @@
     "demoResetYes": "Yes, reset",
     "demoResetNo": "Cancel",
     "demoResetting": "Resetting…",
-    "demoResetDone": "Demo restaurant reset to a clean slate."
+    "demoResetDone": "Demo restaurant reset to a clean slate.",
+    "directoryReview": "Directory review",
+    "directoryReviewSub": "OSM imports tagged only \"mediterranean\" — approve the ones that are actually Arab, reject the rest.",
+    "directoryReviewEmpty": "Nothing waiting for review.",
+    "directoryApprove": "Publish",
+    "directoryReject": "Reject"
   },
   "kitchen": {
     "title": "Kitchen · {name}",

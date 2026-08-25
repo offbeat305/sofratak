@@ -2,6 +2,26 @@
 
 import { captureLead } from "@/lib/leads";
 import { allowRequest } from "@/lib/rate-limit";
+import { getStore } from "@/lib/db/store";
+import { getLiveEnrichment, type LiveEnrichment } from "@/lib/eat/places-live";
+
+/**
+ * Live Google enrichment for UNCLAIMED listings only — claimed listings
+ * show their own storefront data, and the demo restaurant's place_id is
+ * a false-positive match anyway. Returns null quietly on any miss; the
+ * page renders fine without it.
+ */
+export async function getListingEnrichmentAction(
+  city: string,
+  slug: string,
+): Promise<LiveEnrichment | null> {
+  if (!(await allowRequest("eat-enrich", 30))) return null;
+  const listing = await getStore().getDirectoryListing(city, slug);
+  if (!listing || !listing.published || listing.claimedRestaurantId || !listing.googlePlaceId) {
+    return null;
+  }
+  return getLiveEnrichment(listing.googlePlaceId);
+}
 
 const PHONE_RE = /^[+()\-.\s\d]{7,20}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

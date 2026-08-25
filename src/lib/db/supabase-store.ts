@@ -142,6 +142,7 @@ function rowToDirectoryListing(row: any): DirectoryListing {
     osmId: row.osm_id ?? null,
     claimedRestaurantId: row.claimed_restaurant_id ?? null,
     source: row.source,
+    published: row.published ?? true, // column exists after 0011
   };
 }
 
@@ -1063,6 +1064,29 @@ export class SupabaseStore implements DataStore {
       .eq("slug", slug)
       .maybeSingle();
     return data ? rowToDirectoryListing(data) : null;
+  }
+
+  async listDirectoryReviewQueue(): Promise<DirectoryListing[]> {
+    const { data } = await this.client
+      .from("directory_listings")
+      .select("*")
+      .eq("published", false)
+      .order("city")
+      .order("name");
+    return (data ?? []).map(rowToDirectoryListing);
+  }
+
+  async setDirectoryPublished(id: string, published: boolean): Promise<void> {
+    const { error } = await this.client
+      .from("directory_listings")
+      .update({ published })
+      .eq("id", id);
+    if (error) throw new Error(`setDirectoryPublished failed: ${error.message}`);
+  }
+
+  async deleteDirectoryListing(id: string): Promise<void> {
+    const { error } = await this.client.from("directory_listings").delete().eq("id", id);
+    if (error) throw new Error(`deleteDirectoryListing failed: ${error.message}`);
   }
 
   // ── Phase 8C: order funnel ─────────────────────────────────────────────

@@ -8,6 +8,7 @@ import { getMetro } from "@/content/eat-metros";
 import { getStore } from "@/lib/db/store";
 import { composeListingView } from "@/lib/eat/compose";
 import { ClaimForm } from "@/components/eat/claim-form";
+import { PlacesEnrichment } from "@/components/eat/places-enrichment";
 import { localeAlternates, SITE_URL } from "@/lib/seo";
 import type { EatListingView } from "@/components/eat/types";
 
@@ -73,7 +74,7 @@ export default async function EatListingPage({
 
   const store = getStore();
   const listing = await store.getDirectoryListing(city, listingSlug);
-  if (!listing) notFound();
+  if (!listing || !listing.published) notFound();
   const view = await composeListingView(listing, metro);
   const hours = view.verified
     ? (await store.getRestaurantById(listing.claimedRestaurantId!))?.hours ?? null
@@ -139,6 +140,10 @@ export default async function EatListingPage({
           </a>
         )}
       </div>
+
+      {!view.verified && (
+        <PlacesEnrichment city={city} slug={listingSlug} showHours={!hours || hours.length === 0} />
+      )}
 
       {view.verified && view.orderPath ? (
         <Link

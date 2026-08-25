@@ -14,6 +14,12 @@ alter table directory_listings add column if not exists osm_id text;
 create unique index if not exists directory_listings_osm_id
   on directory_listings (osm_id) where osm_id is not null;
 
+-- Review queue: OSM hits whose ONLY cuisine tag is the ambiguous
+-- "mediterranean" (could be Greek/Italian) import unpublished; Zizo
+-- approves which are actually Arab from /admin/directory. Everything
+-- already live stays published (default true).
+alter table directory_listings add column if not exists published boolean not null default true;
+
 -- Community suggestions land in leads for MANUAL approval — a
 -- suggestion never auto-publishes a listing.
 alter table leads drop constraint leads_kind_check;

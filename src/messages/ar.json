@@ -383,6 +383,8 @@
       "suggestSubmit": "إرسال الاقتراح",
       "suggestSuccess": "شكرًا — نراجع كل اقتراح ونضيف الحقيقي منها بسرعة.",
       "osmAttribution": "بعض بيانات الإدراج من",
+      "enrichReviews": "({count, plural, one {تقييم واحد} two {تقييمان} few {# تقييمات} other {# تقييمًا}} على جوجل)",
+      "photoBy": "الصور من",
       "cuisines": {
         "lebanese": "لبناني",
         "palestinian": "فلسطيني",
@@ -739,7 +741,12 @@
     "demoResetYes": "نعم، إعادة التعيين",
     "demoResetNo": "إلغاء",
     "demoResetting": "جارٍ إعادة التعيين…",
-    "demoResetDone": "تمت إعادة المطعم التجريبي إلى حالة نظيفة."
+    "demoResetDone": "تمت إعادة المطعم التجريبي إلى حالة نظيفة.",
+    "directoryReview": "مراجعة الدليل",
+    "directoryReviewSub": "استيرادات OSM الموسومة \"متوسطي\" فقط — اعتمد العربية منها فعلًا وارفض الباقي.",
+    "directoryReviewEmpty": "لا شيء بانتظار المراجعة.",
+    "directoryApprove": "نشر",
+    "directoryReject": "رفض"
   },
   "kitchen": {
     "title": "المطبخ · {name}",

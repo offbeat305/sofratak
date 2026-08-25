@@ -109,6 +109,23 @@ export async function resetDemoAction() {
   return { ok: true as const };
 }
 
+/** Approve or reject a directory review-queue listing (ambiguous OSM imports). */
+export async function reviewDirectoryListingAction(id: string, approve: boolean) {
+  const admin = await getSuperAdmin();
+  if (!admin) return FORBIDDEN;
+  const store = getStore();
+  if (approve) await store.setDirectoryPublished(id, true);
+  else await store.deleteDirectoryListing(id);
+  await store.recordAuditLog({
+    ...(await auditActor(admin)),
+    action: approve ? "directory.approve" : "directory.reject",
+    targetRestaurantId: null,
+    details: { listingId: id },
+  });
+  revalidatePath("/[locale]/admin/directory", "page");
+  return { ok: true as const };
+}
+
 export async function parseMenuTextAction(text: string): Promise<ParsedMenu> {
   if (!(await getSuperAdmin())) return EMPTY_PARSE;
   return getMenuImportProvider().parse({ text: text.slice(0, 20_000) });

@@ -93,6 +93,10 @@ export interface DataStore {
   // ── Directory (/eat) ──────────────────────────────────────────────────
   listDirectory(city: string): Promise<DirectoryListing[]>;
   getDirectoryListing(city: string, slug: string): Promise<DirectoryListing | null>;
+  /** Review queue: unpublished (ambiguous OSM) rows awaiting approval. */
+  listDirectoryReviewQueue(): Promise<DirectoryListing[]>;
+  setDirectoryPublished(id: string, published: boolean): Promise<void>;
+  deleteDirectoryListing(id: string): Promise<void>;
 
   // ── Phase 8C: order funnel ────────────────────────────────────────────
   recordStorefrontEvent(restaurantId: string, sessionHash: string, step: FunnelStep): Promise<void>;

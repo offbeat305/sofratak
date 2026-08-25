@@ -203,6 +203,23 @@ async function main() {
       if (existingSlugs.has(slug)) slug = `${slug}-${el.id}`.slice(0, 60);
       existingSlugs.add(slug);
 
+      // Review-queue rule (Zizo): a raw OSM cuisine of ONLY "mediterranean"
+      // is ambiguous (could be Greek/Italian) → import unpublished for
+      // manual approval. Clearly-Arab raw tags (shawarma, falafel, arab,
+      // lebanese…), a matching name, or a halal tag publish directly.
+      const rawCuisines = (tags.cuisine ?? "")
+        .toLowerCase()
+        .split(/[;,]/)
+        .map((c) => c.trim())
+        .filter(Boolean);
+      const isHalalTagged = /^(yes|only)$/.test(tags["diet:halal"] ?? "");
+      const nameMatches = new RegExp(NAME_RE, "i").test(name);
+      const ambiguous =
+        rawCuisines.length > 0 &&
+        rawCuisines.every((c) => c === "mediterranean") &&
+        !isHalalTagged &&
+        !nameMatches;
+
       rows.push({
         city,
         slug,
@@ -213,9 +230,10 @@ async function main() {
         phone: tags.phone ?? tags["contact:phone"] ?? null,
         cuisines: cuisinesFrom(tags),
         // OSM halal tags are third-party data → 'reported', never 'verified'
-        halal_status: /^(yes|only)$/.test(tags["diet:halal"] ?? "") ? "reported" : "unknown",
+        halal_status: isHalalTagged ? "reported" : "unknown",
         osm_id: osmId,
         source: "osm",
+        published: !ambiguous,
       });
     }
 
@@ -224,8 +242,13 @@ async function main() {
         `${skippedDupes.length} deduped against existing listings`,
     );
     if (skippedDupes.length) console.log(`  deduped: ${skippedDupes.join(", ")}`);
+    const toReview = rows.filter((r) => !r.published).length;
+    if (toReview) console.log(`  (${toReview} ambiguous mediterranean-only → review queue, unpublished)`);
     if (DRY_RUN) {
-      for (const r of rows) console.log(`  + ${r.name} (${r.halal_status}${(r.cuisines as string[]).length ? ", " + (r.cuisines as string[]).join("/") : ""})`);
+      for (const r of rows)
+        console.log(
+          `  ${r.published ? "+" : "?"} ${r.name} (${r.halal_status}${(r.cuisines as string[]).length ? ", " + (r.cuisines as string[]).join("/") : ""})${r.published ? "" : " [REVIEW]"}`,
+        );
     } else {
       await insertRows(rows);
     }

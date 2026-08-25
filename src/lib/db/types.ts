@@ -333,6 +333,8 @@ export type DirectoryListing = {
   osmId: string | null;
   claimedRestaurantId: string | null;
   source: "seed" | "places" | "manual" | "osm";
+  /** false = in the review queue (ambiguous OSM imports) — hidden from /eat */
+  published: boolean;
 };
 
 export type AutomationKind =

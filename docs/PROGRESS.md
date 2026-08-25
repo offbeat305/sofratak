@@ -1,5 +1,44 @@
 # Sofratak — Progress Log
 
+## 2026-08-25 (cont.) — FINAL data drop: 4-county PDF rebuild seeded
+
+CSV fully rebuilt from Zizo's verified county PDFs (426 rows after my
+dedupe trims: dearborn 173, miami 164, tampa 89 in-file). All seeded,
+0 skipped. Final DB:
+
+**588 listings — dearborn 270 (247 pub), miami 206 (182 pub),
+tampa 112 (101 pub); 58 in review queue; 529 pinned (90%);
+585/588 place IDs.**
+
+- **Geocoder**: Nominatim lacks ~13 real FL/MI addresses entirely —
+  resolved 12 via the **US Census geocoder** (public-domain, no ToS
+  issues) and pinned coords in DB + CSV. Still pinless: HaddaBurger
+  (8932 Bertha Palmer Blvd — Census misses it too) + ~46 legacy
+  area-level rows (tampa-heavy: 69% pin rate vs 92/99%).
+- **Removals**: naya-grill (virtual brand), al-najim (closed), tazza
+  (Turkish/out of scope), abu-naji (closed) deleted; mezza-mediterranean
+  + beirut-bakery-Livonia (out of metro) + paradise-biryani-pone
+  (Indian) unpublished. Are Pitas / Byte Burgers / Golden Bakery /
+  Shish Palace / Shahrazad / Al Sultan Kunafa / Sajouna: never in DB.
+- **Dupe pass** (14 merges, curated PDF naming wins, osm_id transferred
+  so re-imports stay deduped): azal-cofee, al-shallal, kabab-arbeel,
+  al-basha-grill-kebab, orion (queue), dana→darna (typo variant,
+  queue), manaeesh-cafe (old tenant at Tarboush's Ford Rd address),
+  tarboush (queue), sahara-and-grill (queue), al-natour (queue),
+  taula (queue), bayti-cafe, halal-guys→davie, plus legacy
+  sheeba-restaurant-dearborn → sheeba-east-dearborn. Kept as distinct:
+  leos-coney-island (Allen Park = 3rd location), dearborn-pizza vs
+  pizza-kitchen (different addresses), pita-pockets-kb (Key Biscayne).
+- **Publish sweep**: curated rows that upserted onto old queue rows
+  were stuck unpublished — published rosenheim, pita-fresh (miami),
+  amar-mediterranean-kitchen-bar. (fava-n-spice stays unpublished on
+  purpose — watchlist.)
+- Slug fix pre-seed: legacy "Al Ameer (Dearborn Heights)" row collided
+  with the new Ford Rd row — legacy line dropped.
+- **Unmatched place IDs (3)**: the-moroccan-joint (no street address),
+  moroccos-tacos, alnawras (empty address).
+- Backfill: 172 matched this run.
+
 ## 2026-08-25 — Directory product decisions 1–7 (Zizo's list)
 
 **⚠️ APPLY MIGRATION 0012** (`0012_directory_blurbs.sql` — custom_blurb

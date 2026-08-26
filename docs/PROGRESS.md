@@ -59,8 +59,22 @@ is the one statement most likely to fail on role permissions.
   second account that restaurant A can't read B's requests.
 - Full EN/AR (dash.requests.* + admin.requests*), RTL-safe components
   (logical props, rtl icon flips). Arabic queued for the review batch.
-- Not yet live-verified as a flow (needs 0013 + a logged-in session):
-  the 3-tap wizard incl. mic on a real phone is Zizo's smoke test.
+- **0013 APPLIED 2026-08-25 (Zizo). Verified against the live DB:**
+  table + private bucket exist (`request-media`, public=false, 4MB);
+  **RLS proven with a real row present** — service role sees it, the
+  anon key sees `[]` (not an empty-table false positive); digest cron
+  reads it end-to-end through the store layer and renders
+  `⚠ PRICING` correctly. Dashboard/admin pages 307 to login as
+  designed; zero server errors.
+- **Left in the DB on purpose**: one test row on Beit Zizo labeled
+  `VERIFY-ROW …` (menu/change, pricing_flag=true) so Zizo can exercise
+  the admin reply → SMS → status flow without composing one. Delete
+  when done.
+- Still needs a logged-in session (Zizo's smoke test): the 3-tap
+  wizard incl. mic on a real phone, and the two-account cross-tenant
+  read check. NOTE: TWILIO_* and RESEND_API_KEY are unset locally, so
+  reply/Done SMS + emails print to the server log instead of sending;
+  Beit Zizo's phone is a placeholder (813) 555-0142 anyway.
 
 ## 2026-08-25 (cont. 4) — Design pass 4: grader rebuilt as the demo closer
 

@@ -136,7 +136,8 @@
       "cities": "Cities",
       "about": "About",
       "demo": "Book a Demo",
-      "estimator": "Calculate Your Savings"
+      "estimator": "Calculate Your Savings",
+      "contact": "Contact"
     },
     "hero": {
       "eyebrow": "For Arab, Middle Eastern & Halal restaurants",
@@ -508,7 +509,122 @@
         }
       ],
       "footnote": "Diners pay a flat $0.79 service fee per order. Card processing (2.9% + 30¢) passes through at cost. We add nothing on top.",
-      "honest": "Diner pays 79¢/order. You pay $0 per order. Card processing at cost."
+      "honest": "Diner pays 79¢/order. You pay $0 per order. Card processing at cost.",
+      "heroH1": "Flat monthly. Zero commission. Forever.",
+      "heroSub": "The apps take 15 to 30 percent of every order. We take a flat fee and nothing else.",
+      "sliderTitle": "How many online orders a month?",
+      "sliderNote": "Slide it. Every plan updates with what you'd keep.",
+      "youdKeep": "You'd keep ~{amount}/mo vs the apps",
+      "sliderAssume": "Assumes a {avg} average order and a 25% blended app cost. Illustrative estimate based on the information provided. Actual results may vary.",
+      "labelOrders": "ORDERS / MO",
+      "labelKeep": "YOU KEEP",
+      "labelFee": "$0.79 / ORDER",
+      "includedTitle": "In every tier",
+      "included": [
+        "Your own ordering site, English and Arabic",
+        "$0 commission on food, forever",
+        "Your customer list, exportable anytime",
+        "Your listing in the Sofratak directory",
+        "Any change you want, within 24 hours",
+        "No setup fee for founding restaurants"
+      ],
+      "monthToMonth": "Month to month. No annual contract, so there's no toggle to play with.",
+      "compareTitle": "How we compare",
+      "compareSub": "Same orders. Very different math.",
+      "colUs": "Sofratak",
+      "colApps": "Delivery apps",
+      "colTypical": "Typical platforms",
+      "compareRows": [
+        {
+          "label": "Commission per order",
+          "us": "$0",
+          "apps": "~15 to 30%",
+          "typical": "Varies"
+        },
+        {
+          "label": "Who owns the customer",
+          "us": "You",
+          "apps": "The platform",
+          "typical": "Usually the platform"
+        },
+        {
+          "label": "Setup fee",
+          "us": "$0 for founding restaurants",
+          "apps": "n/a",
+          "typical": "Common"
+        },
+        {
+          "label": "Contract",
+          "us": "Month to month",
+          "apps": "n/a",
+          "typical": "Often annual"
+        },
+        {
+          "label": "Arabic support",
+          "us": "Built in, true RTL",
+          "apps": "No",
+          "typical": "Rare"
+        },
+        {
+          "label": "Changes turnaround",
+          "us": "Within 24 hours",
+          "apps": "n/a",
+          "typical": "Support ticket"
+        },
+        {
+          "label": "Listed on a community app",
+          "us": "Yes, our directory",
+          "apps": "Their marketplace",
+          "typical": "No"
+        }
+      ],
+      "feesTitle": "Exactly what gets charged",
+      "feesSub": "No asterisks.",
+      "feeRows": [
+        {
+          "label": "Your commission on food",
+          "value": "$0"
+        },
+        {
+          "label": "Diner service fee",
+          "value": "$0.79 flat, per order"
+        },
+        {
+          "label": "Card processing",
+          "value": "2.9% + 30¢, at cost"
+        },
+        {
+          "label": "Catering orders",
+          "value": "5% diner-paid, capped at $50"
+        }
+      ],
+      "feeNote": "The diner sees the 79¢ as its own line at checkout. You pay nothing per order.",
+      "faqTitle": "Pricing questions",
+      "faq": [
+        {
+          "q": "What if I cancel?",
+          "a": "Cancel any time, month to month. We email you a complete export of your customers and orders automatically, and your data leaves with you."
+        },
+        {
+          "q": "Do you take a cut of tips?",
+          "a": "No. 100 percent of every tip goes to the restaurant. We never touch them."
+        },
+        {
+          "q": "Is there a setup fee?",
+          "a": "Not for our founding restaurants, the first 20 we bring on. We build your site, load your menu, and set up payouts at no charge."
+        },
+        {
+          "q": "What about card processing?",
+          "a": "Stripe charges 2.9 percent plus 30 cents and that passes through to you at cost. We add nothing on top of it."
+        },
+        {
+          "q": "Can I switch tiers?",
+          "a": "Any time, in either direction. The change takes effect on your next billing period and nothing about your site or data changes."
+        }
+      ],
+      "closingTitle": "Keep what you earn.",
+      "closingCta": "Book a 15-min demo",
+      "closingGhost": "Not sure? See your number first"
     },
     "estimator": {
       "title": "What are the apps costing you?",
@@ -820,7 +936,20 @@
       "cityFaqQ": "Do you work with restaurants in {city}?",
       "cityFaqA": "Yes. Onboarding is fully remote. Send a photo of your menu, we build your site, and orders ring on any tablet or phone you already have in {city}. About two weeks from menu to first order.",
       "tryDemo": "Try the live demo",
-      "pricingTitle": "Simple pricing for {city} restaurants"
+      "pricingTitle": "Simple pricing for {city} restaurants",
+      "directoryTitle": "Arab and halal restaurants in {city}",
+      "directorySub": "Real listings from the Sofratak directory, updated as it grows.",
+      "directoryStatLabel": "LISTED NEARBY",
+      "directoryAll": "See all {count} in {metro}",
+      "requestTitle": "Not in your city yet?",
+      "requestSub": "Tell us where you are and we'll come to you next.",
+      "requestName": "Your name",
+      "requestPhone": "Phone",
+      "requestCity": "Your city",
+      "requestSend": "Tell us",
+      "requestSending": "Sending…",
+      "requestSent": "Noted. We'll be in touch when we open there.",
+      "cityCount": "{count} listed"
     },
     "assistant": {
       "title": "Sofratak assistant",
@@ -843,7 +972,49 @@
     },
     "whatsapp": "WhatsApp",
     "footerTagline": "Commission-free ordering for restaurants that feed their communities.",
-    "company": "Offbeat Creative LLC, Tampa FL"
+    "company": "Offbeat Creative LLC, Tampa FL",
+    "contact": {
+      "title": "Contact",
+      "heroH1": "Talk to a person.",
+      "heroSub": "No ticket queue, no phone tree. Message us and you get an actual answer.",
+      "promise": "We reply within one business day. Existing restaurants: 24 hours, guaranteed.",
+      "whatsappTitle": "WhatsApp is fastest",
+      "whatsappSub": "This is how most of our restaurants reach us.",
+      "routesTitle": "What brings you here?",
+      "routes": [
+        {
+          "title": "Restaurant owner?",
+          "body": "See the product on your own menu in 15 minutes.",
+          "cta": "Book a demo"
+        },
+        {
+          "title": "Already a customer?",
+          "body": "Send a request from your dashboard and we handle it within 24 hours.",
+          "cta": "Sign in to Requests"
+        },
+        {
+          "title": "Something else",
+          "body": "Press, partnerships, or a question that doesn't fit a box.",
+          "cta": "Use the form below"
+        }
+      ],
+      "formTitle": "Send us a message",
+      "name": "Your name",
+      "restaurant": "Restaurant (optional)",
+      "phone": "Phone",
+      "message": "How can we help?",
+      "send": "Send message",
+      "sending": "Sending…",
+      "sent": "Got it. We'll be in touch within one business day.",
+      "errorName": "Tell us your name",
+      "errorPhone": "Enter a phone number we can reach you on",
+      "errorGeneric": "That didn't send. Try WhatsApp and we'll sort it out.",
+      "otherWays": "Other ways to reach us",
+      "phoneLabel": "Phone",
+      "emailLabel": "Email",
+      "instagramLabel": "Instagram",
+      "location": "Offbeat Creative LLC · Tampa, FL · serving Florida and Michigan"
+    }
   },
   "auth": {
     "signIn": "Sign in",

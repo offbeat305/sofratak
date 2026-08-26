@@ -162,7 +162,7 @@ export function HeroCalculator() {
       ref={cardRef}
       // design-pass-3 §2: the single glowing object on the page — brass
       // halo (brighter on hover), top edge light, slight glass tint
-      className="edge-light glow-hover rounded-[20px] bg-ivory/95 p-6 shadow-[0_22px_54px_rgba(24,38,31,0.42),0_0_60px_rgba(169,121,43,0.30)] backdrop-blur-sm transition-[transform,box-shadow] duration-150 will-change-transform sm:p-8"
+      className="edge-light glow-card-hero rounded-[20px] bg-ivory/95 p-6 backdrop-blur-sm transition-[transform,box-shadow] duration-150 will-change-transform sm:p-8"
     >
       <h2 className="font-display text-[26px] leading-snug font-bold text-olive">
         {t("title")}
@@ -229,7 +229,7 @@ export function HeroCalculator() {
       <div className="mt-5 flex flex-wrap items-center gap-4">
         <Link
           href="/demo"
-          className="btn-shine inline-flex h-12 items-center rounded-btn bg-brass px-6 font-bold text-olive transition-transform duration-150 hover:scale-[1.03] motion-reduce:hover:scale-100"
+          className="btn-shine glow-brass glow-hover press inline-flex h-12 items-center rounded-btn bg-brass px-6 font-bold text-olive transition-[transform,box-shadow] duration-150 hover:scale-[1.03] motion-reduce:hover:scale-100"
         >
           {t("bookDemo")}
         </Link>

@@ -5,7 +5,16 @@ import { createClient } from "@supabase/supabase-js";
 import { getEmailChannel } from "@/lib/email";
 
 export type LeadInput = {
-  kind: "demo" | "estimate" | "grader" | "claim" | "suggestion";
+  kind:
+    | "demo"
+    | "estimate"
+    | "grader"
+    | "claim"
+    | "suggestion"
+    // design-pass-7 (migration 0014)
+    | "contact"
+    | "city_request"
+    | "story_signup";
   name: string;
   phone: string;
   email?: string | null;

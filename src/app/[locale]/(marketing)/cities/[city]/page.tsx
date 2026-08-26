@@ -9,6 +9,7 @@ import { LiveDemo } from "@/components/marketing/live-demo";
 import { Reveal } from "@/components/marketing/reveal";
 import { TierCards } from "@/components/marketing/tier-cards";
 import { WhatsAppLink } from "@/components/marketing/whatsapp-link";
+import { CityDirectoryPreview } from "@/components/marketing/city-directory-preview";
 import { CITIES, cityBySlug } from "@/content/cities";
 import { FOUNDER_STORY } from "@/content/founder-story";
 import { routing } from "@/i18n/routing";
@@ -134,6 +135,9 @@ export default async function CityPage({ params }: { params: Params }) {
           </p>
         </div>
       </section>
+
+      {/* Real listings from our own directory (design-pass-7 §B) */}
+      <CityDirectoryPreview citySlug={city.slug} cityName={city.name.en} />
 
       {/* Live demo — the real product, on every city page */}
       <section className="bg-ivory">

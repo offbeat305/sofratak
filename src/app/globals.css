@@ -35,6 +35,8 @@
     system-ui, sans-serif;
   --font-display: var(--font-dm-sans), var(--font-plex-arabic), ui-sans-serif,
     system-ui, sans-serif;
+  /* design-pass-7: data/stat accents only, never body or headings */
+  --font-mono: var(--font-mono-accent), ui-monospace, SFMono-Regular, monospace;
 }
 
 body {
@@ -302,6 +304,34 @@ h4 {
    rules: soft large radii only, one glowing focal per viewport, glow
    counts toward the ≤8% brass budget. */
 
+/* Compound glows (depth shadow + brass halo).
+   These MUST be real classes: Tailwind's `shadow-[a,b]` arbitrary value
+   silently fails to compile when it contains two rgba() stops separated
+   by a comma, which left every signature halo on the site rendering
+   box-shadow:none. Never express a two-part shadow as an arbitrary
+   utility. */
+.glow-card-hero {
+  box-shadow:
+    0 22px 54px rgba(24, 38, 31, 0.42),
+    0 0 60px rgba(169, 121, 43, 0.3);
+}
+.glow-card-hero:hover {
+  /* ~30% brighter halo on hover (design-pass-3 §2) */
+  box-shadow:
+    0 22px 54px rgba(24, 38, 31, 0.42),
+    0 0 84px rgba(169, 121, 43, 0.42);
+}
+.glow-tier {
+  box-shadow:
+    0 24px 60px rgba(31, 50, 40, 0.35),
+    0 0 60px rgba(169, 121, 43, 0.3);
+}
+.glow-slide-active {
+  box-shadow:
+    0 24px 60px rgba(20, 30, 25, 0.5),
+    0 0 70px rgba(169, 121, 43, 0.28);
+}
+
 /* Brass halo — THE signature. Soft, large radius, never a neon rim. */
 .glow-brass {
   box-shadow: 0 0 60px rgba(169, 121, 43, 0.3);
@@ -432,6 +462,80 @@ h4 {
   .glow-hover,
   .glow-hover:hover {
     transition: none;
+  }
+}
+
+/* ── Design-pass-7 tech system (docs/design-pass-7-marketing-complete.md) ── */
+
+/* §D1 Mono data accent: small caps-ish labels and figures.
+   Latin only by design — Arabic keeps the Plex Arabic face. */
+.data-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.data-figure {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* §D2 Blueprint grid: 1px lines at 4%, 64px pitch.
+   Painted as a ::before OVERLAY, never as background-image on the host.
+   Reason: background-image would beat any Tailwind gradient utility on
+   the same element (custom CSS wins at equal specificity by source
+   order), which silently flattened the pricing CTA band to no
+   background at all. Same trap as .olive-luminous vs lg:sticky.
+   Host needs `relative`. */
+.grid-blueprint,
+.grid-blueprint-light {
+  position: relative;
+}
+.grid-blueprint::before,
+.grid-blueprint-light::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-size: 64px 64px;
+}
+.grid-blueprint::before {
+  background-image:
+    linear-gradient(rgba(247, 242, 232, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(247, 242, 232, 0.04) 1px, transparent 1px);
+}
+.grid-blueprint-light::before {
+  background-image:
+    linear-gradient(rgba(47, 74, 60, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(47, 74, 60, 0.04) 1px, transparent 1px);
+}
+
+/* §D5 Cursor-follow glow. The component sets --mx/--my in px; with no
+   pointer (touch) the vars never update and this stays parked, so the
+   effect is desktop-only without a media query. */
+.cursor-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    420px circle at var(--mx, -999px) var(--my, -999px),
+    rgba(169, 121, 43, 0.16),
+    transparent 70%
+  );
+  transition: opacity 200ms ease;
+}
+
+/* §D4 Receipt/terminal card: dotted rule + torn bottom edge. */
+.receipt-rule {
+  border-top: 1px dashed color-mix(in srgb, var(--color-olive) 28%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-glow::after {
+    display: none;
   }
 }
 

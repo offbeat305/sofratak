@@ -3,6 +3,8 @@ import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { CITIES } from "@/content/cities";
 import { CitiesMap } from "@/components/marketing/cities-map";
+import { CityRequestForm } from "@/components/marketing/city-request-form";
+import { EatStatsStrip } from "@/components/eat/eat-stats-strip";
 import { Reveal } from "@/components/marketing/reveal";
 import { localeAlternates } from "@/lib/seo";
 
@@ -32,12 +34,15 @@ export default async function CitiesIndexPage({
 
   return (
     <div className="pt-16">
-      <section className="bg-olive text-ivory">
-        <div className="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 md:py-20">
+      <section className="hero-ambient grid-blueprint relative bg-olive text-ivory">
+        <div className="relative mx-auto max-w-[1200px] px-4 py-14 sm:px-6 md:py-20">
           <h1 className="font-display text-4xl leading-tight font-bold sm:text-5xl">
             {t("indexTitle")}
           </h1>
           <p className="mt-3 max-w-xl text-lg text-ivory/80">{t("indexSub")}</p>
+          <div className="mt-5">
+            <EatStatsStrip className="text-ivory/70" />
+          </div>
         </div>
       </section>
 
@@ -77,6 +82,15 @@ export default async function CitiesIndexPage({
               </Reveal>
             ))}
           </ul>
+        </div>
+      </section>
+
+      {/* "not in your city yet?" capture (design-pass-7 §B) */}
+      <section className="grid-blueprint relative bg-olive-deep">
+        <div className="relative mx-auto max-w-3xl px-4 py-14 sm:px-6 md:py-20">
+          <Reveal>
+            <CityRequestForm />
+          </Reveal>
         </div>
       </section>
     </div>

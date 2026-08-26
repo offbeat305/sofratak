@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans, Manrope, IBM_Plex_Sans_Arabic } from "next/font/google";
+import { DM_Sans, IBM_Plex_Mono, Manrope, IBM_Plex_Sans_Arabic } from "next/font/google";
 import localFont from "next/font/local";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
@@ -32,6 +32,16 @@ const dmSans = DM_Sans({
   subsets: ["latin"],
   style: ["normal", "italic"],
   variable: "--font-dm-sans",
+  display: "swap",
+});
+
+// design-pass-7 §D1: mono accents for stats and data labels
+// ($0.79 / ORDER, 588 RESTAURANTS). Tech credibility without touching
+// the two brand faces.
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-mono-accent",
   display: "swap",
 });
 
@@ -80,7 +90,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       dir={locale === "ar" ? "rtl" : "ltr"}
-      className={`${manrope.variable} ${cormorant.variable} ${dmSans.variable} ${plexArabic.variable}`}
+      className={`${manrope.variable} ${cormorant.variable} ${dmSans.variable} ${plexMono.variable} ${plexArabic.variable}`}
     >
       <body className="min-h-dvh bg-ivory font-sans text-charcoal antialiased">
         <NextIntlClientProvider>{children}</NextIntlClientProvider>

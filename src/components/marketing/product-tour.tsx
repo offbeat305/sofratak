@@ -134,7 +134,7 @@ export function ProductTour() {
                   slide.frame === "phone"
                     ? "w-56 rounded-[2.2rem] sm:w-64"
                     : "w-full rounded-2xl",
-                  active === i && "shadow-[0_24px_60px_rgba(20,30,25,0.5),0_0_70px_rgba(169,121,43,0.28)]",
+                  active === i && "glow-slide-active",
                   slide.flip && flipped && "animate-flip-in",
                 )}
               >

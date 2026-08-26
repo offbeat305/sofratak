@@ -26,6 +26,7 @@ export async function Footer() {
     { href: "/how-it-works", label: t("site.nav.howItWorks") },
     { href: "/demo", label: t("site.nav.demo") },
     { href: "/about", label: t("site.nav.about") },
+    { href: "/contact", label: t("site.nav.contact") },
   ];
 
   return (

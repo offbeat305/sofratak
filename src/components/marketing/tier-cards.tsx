@@ -32,7 +32,7 @@ export async function TierCards() {
                   // design-pass-3 §3: Growth gets halo + edge light, the
                   // others stay matte (glow fades in on their hover only)
                   growth
-                    ? "edge-light bg-olive text-ivory shadow-[0_24px_60px_rgba(31,50,40,0.35),0_0_60px_rgba(169,121,43,0.30)] lg:scale-[1.06]"
+                    ? "edge-light bg-olive text-ivory glow-tier lg:scale-[1.06]"
                     : "glow-hover border border-olive/10 bg-white shadow-[0_1px_3px_rgba(31,31,31,0.05)]",
                 )}
               >

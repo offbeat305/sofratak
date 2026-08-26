@@ -14,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/how-it-works",
     "/cities",
     "/about",
+    "/contact",
     "/demo",
   ];
   const cityPaths = CITIES.map((city) => `/cities/${city.slug}`);

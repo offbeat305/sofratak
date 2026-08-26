@@ -41,6 +41,7 @@ export function Navbar() {
     { href: "/pricing", label: t("pricing") },
     { href: "/cities", label: t("cities") },
     { href: "/about", label: t("about") },
+    { href: "/contact", label: t("contact") },
   ] as const;
 
   const solid = !isHome || scrolled;

@@ -1,5 +1,71 @@
 # Sofratak — Progress Log
 
+## 2026-08-26 (cont.) — Pass 7 part 1 + the glow bug that made pass 3 invisible
+
+### ⚠️ Root cause: every compound glow on the site was silently dead
+Zizo said the homepage "looks unchanged" since design pass 3. He was
+right, and the reason is a real bug, not perception:
+
+**Tailwind's `shadow-[a,b]` arbitrary value fails to compile when it
+contains two rgba() stops separated by a comma.** Computed style came
+back `box-shadow` fully transparent. Exactly four elements used that
+form, and they were precisely the four signature glows from pass 3:
+the hero estimator card, the Growth tier card (both on /pricing and the
+homepage teaser), and the active product-tour slide. So the pass-3 code
+*was* committed and correct-looking in the source, but rendered nothing.
+
+Fixed by defining real CSS classes (`.glow-card-hero`, `.glow-tier`,
+`.glow-slide-active`) in globals.css. **Rule: never express a two-part
+shadow as a Tailwind arbitrary utility.** Single-shadow `shadow-[...]`
+values are fine and were always working.
+
+Also removed `glow-hover` from the estimator card: it sets the whole
+box-shadow on hover and would have dropped the depth layer, so
+`.glow-card-hero:hover` now owns both states (halo ~30% brighter).
+
+Before/after committed: `docs/design-pass-3-homepage-before-after.png`.
+
+### Third instance of the same trap
+`.grid-blueprint` set `background-image`, which beat the Tailwind
+gradient utility on the pricing CTA band and flattened it to no
+background. Converted to a `::before` overlay. This is now the third
+time a custom class in globals.css has silently overridden a Tailwind
+utility (after `.olive-luminous` vs `lg:sticky`). **Standing rule: a
+utility class in globals.css must not set `position`, `background-image`,
+or `box-shadow` on an element that also takes those from Tailwind. Use
+an overlay child or a pseudo-element.**
+
+### Design pass 7, part 1 (docs/design-pass-7-marketing-complete.md)
+- **Migration 0014 (UNAPPLIED)**: widens the leads `kind` constraint for
+  `contact`, `city_request`, `story_signup`. Until applied those form
+  submissions fail the DB check and land in the local backup file
+  instead, so no lead is lost either way.
+- **§A Pricing**: rebuilt from 54 lines. Dark hero with mono
+  `$0.79 / ORDER` label, live savings slider driving all three tier
+  cards (brass odometer), "in every tier" band, comparison table
+  (Sofratak vs delivery apps vs "typical platforms", sticky header,
+  scrolls at 390px), fee block styled as a receipt, FAQ + FAQPage
+  JSON-LD, dark CTA band.
+- **§B Cities**: index gets a dusk hero, live stats strip, and a
+  "not in your city yet?" capture. City pages get `CityDirectoryPreview`
+  with real listing counts and 6 live cards from our own DB, mapped
+  city→metro; Orlando and Jacksonville have no metro so the block
+  renders nothing rather than showing another city's restaurants.
+- **§C /contact**: new page. WhatsApp is the hero action, three glass
+  route cards, response-time promise, form writing a `contact` lead
+  (honeypot + rate limited), location line. Linked in navbar, footer,
+  and sitemap.
+- **§D system**: IBM Plex Mono wired as `--font-mono` with `.data-label`
+  / `.data-figure`, `.grid-blueprint` blueprint backgrounds,
+  `CursorGlow` (mouse-only, reduced-motion gated), `Sparkline` and
+  `DataStat` in `components/marketing/tech.tsx`, receipt rule.
+- Verified: 0px horizontal overflow on pricing at 390px, all new routes
+  200, build clean at 85 routes.
+
+**Still to do in pass 7**: mono/grid accents on the remaining marketing
+pages, owner.com and zay-os pricing comparison screenshots.
+**Then pass 6** (stories).
+
 ## 2026-08-26 — Design pass 5: How It Works rebuilt + site-wide em dash removal
 
 **Design pass 5** (docs/design-pass-5-how-it-works.md), verified live:

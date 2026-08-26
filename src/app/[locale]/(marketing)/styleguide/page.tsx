@@ -12,9 +12,9 @@ import { ModalDemo } from "./demos";
 export const metadata: Metadata = { title: "Styleguide", robots: { index: false, follow: false } };
 
 const swatches = [
-  { name: "olive", hex: "#2F4A3C", usage: "primary — nav, headings, icons", cls: "bg-olive" },
-  { name: "sand", hex: "#D8C19A", usage: "secondary — accents, badges", cls: "bg-sand" },
-  { name: "brass", hex: "#A9792B", usage: "accent — CTAs, money numbers (≤8%)", cls: "bg-brass" },
+  { name: "olive", hex: "#2F4A3C", usage: "primary. Nav, headings, icons", cls: "bg-olive" },
+  { name: "sand", hex: "#D8C19A", usage: "secondary, accents, badges", cls: "bg-sand" },
+  { name: "brass", hex: "#A9792B", usage: "accent. CTAs, money numbers (≤8%)", cls: "bg-brass" },
   { name: "ivory", hex: "#F7F2E8", usage: "main background", cls: "bg-ivory border border-olive/15" },
   { name: "charcoal", hex: "#1F1F1F", usage: "body text", cls: "bg-charcoal" },
   { name: "stone", hex: "#6B6B6B", usage: "secondary text", cls: "bg-stone" },
@@ -111,10 +111,10 @@ export default async function StyleguidePage({
                 Take Control. Own Your Growth.
               </p>
               <p className="text-lg font-semibold text-charcoal">
-                Manrope Semibold — section titles, table headers
+                Manrope Semibold. Section titles, table headers
               </p>
               <p className="text-[15px] text-charcoal">
-                Manrope Regular — body copy. Sofratak helps restaurant owners
+                Manrope Regular. Sofratak helps restaurant owners
                 save time and keep more of what they earn.
               </p>
               <p className="text-sm text-stone">
@@ -131,10 +131,10 @@ export default async function StyleguidePage({
                 شغلك تحت سيطرتك
               </p>
               <p className="text-lg font-semibold text-charcoal">
-                IBM Plex Sans Arabic — عناوين الأقسام
+                IBM Plex Sans Arabic، عناوين الأقسام
               </p>
               <p className="text-[15px] text-charcoal">
-                نص أساسي — سفرتك تساعد أصحاب المطاعم على توفير الوقت والاحتفاظ
+                نص أساسي. سفرتك تساعد أصحاب المطاعم على توفير الوقت والاحتفاظ
                 بأرباحهم.
               </p>
               <p className="text-sm text-stone">نص ثانوي بلون ستون.</p>
@@ -210,7 +210,7 @@ export default async function StyleguidePage({
                 Direct Online Ordering
               </h3>
               <p className="mt-2 text-sm text-charcoal">
-                Your own branded ordering site. No marketplace commissions —
+                Your own branded ordering site. No marketplace commissions,
                 every order goes straight to you.
               </p>
             </Card>
@@ -219,7 +219,7 @@ export default async function StyleguidePage({
             <Card tone="ivory" interactive className="p-6">
               <h3 className="text-lg font-bold text-olive">طلب مباشر أونلاين</h3>
               <p className="mt-2 text-sm text-charcoal">
-                موقع طلبات بهوية مطعمك. بدون عمولات تطبيقات — كل طلب يصلك
+                موقع طلبات بهوية مطعمك. بدون عمولات تطبيقات، كل طلب يصلك
                 مباشرة.
               </p>
             </Card>
@@ -318,7 +318,7 @@ export default async function StyleguidePage({
 
       <Section
         title="Navbar & Footer"
-        note="Rendered live on this page — the navbar above and footer below. Use the language toggle to see them fully mirrored in Arabic RTL."
+        note="Rendered live on this page. The navbar above and footer below. Use the language toggle to see them fully mirrored in Arabic RTL."
       >
         <Card className="p-6">
           <p className="text-sm text-stone">

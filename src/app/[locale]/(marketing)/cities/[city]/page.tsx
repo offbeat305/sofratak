@@ -58,7 +58,7 @@ export default async function CityPage({ params }: { params: Params }) {
     "@graph": [
       {
         "@type": "Service",
-        name: `Sofratak — commission-free online ordering for ${city.name.en} restaurants`,
+        name: `Sofratak. Commission-free online ordering for ${city.name.en} restaurants`,
         provider: {
           "@type": "LocalBusiness",
           name: "Sofratak (Offbeat Creative LLC)",

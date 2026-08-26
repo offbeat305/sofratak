@@ -1,5 +1,45 @@
 # Sofratak — Progress Log
 
+## 2026-08-26 — Design pass 5: How It Works rebuilt + site-wide em dash removal
+
+**Design pass 5** (docs/design-pass-5-how-it-works.md), verified live:
+hero, scroll-scrubbed day-by-day timeline, who-does-what split,
+interactive kitchen feed, "what you don't need" strip, onboarding FAQ
+with FAQPage JSON-LD, dark closing CTA.
+
+- **Timeline** is the centerpiece: desktop section is 5 screens tall
+  with a sticky viewport; scroll progress drives ONE `translate3d` on
+  the track. Mobile and reduced-motion fall back to a vertical stack.
+  Stage visuals use the REAL screenshots (storefront EN/AR, kitchen)
+  plus designed compositions for the two non-product moments (their
+  paper menu, outbound SMS).
+- **Two bugs worth remembering**:
+  1. Percentage transforms resolve against the *track's* width (five
+     screens), so `translateX(-200%)` flew 5x too far. Panels are
+     100vw each, so the travel unit must be **vw**, not %.
+  2. `lg:sticky` silently lost to `.olive-luminous { position: relative }`
+     from globals.css (equal specificity, later source order), so the
+     pin never engaged and the section rendered blank. **Never put
+     `olive-luminous` on an element that also needs positioning** —
+     it now sits on its own absolute child layer. Same trap applies to
+     any glow utility that sets `position`.
+- Verified: sticky pins, rail tracks 1/5→5/5, RTL flips travel
+  direction (rail fills right-to-left), 390px has **0px** horizontal
+  overflow, "Approve" label localized.
+- DoD screenshot: `docs/design-pass-5-vs-zayos.png`.
+
+**Em dash removal (Zizo, site-wide)**: 0 em dashes left in any
+user-facing surface — messages EN/AR (209), content files (98),
+the story article (6), and JSX copy (18). Rule applied: a period when
+what follows is a full clause, a comma for a short aside; Arabic uses
+`،`. **Code comments keep theirs** (not user-facing). En dashes in
+ranges (15–30%, Day 2–3) are correct typography and were left alone.
+Copy rule is recorded in the design-pass-5 doc for future work.
+**Gotcha**: my first sweep used a malformed nested ternary that
+dropped text after the dash (`${listing.name} — ${listing.address}`
+became `${listing.name}, `). Caught by diff review, reverted, redone.
+Always diff a bulk copy edit.
+
 ## 2026-08-25 (cont. 5) — Concierge Requests ("done within 24 hours")
 
 Full build of docs/concierge-requests-spec.md.

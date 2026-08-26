@@ -40,7 +40,7 @@ export function ReviewQueueList({ queue }: { queue: DirectoryListing[] }) {
           <div className="min-w-0 flex-1">
             <p className="font-semibold text-charcoal">{listing.name}</p>
             <p className="truncate text-xs text-stone">
-              {listing.city} · {listing.address || "—"} · {listing.cuisines.join(", ") || "no cuisine tags"}
+              {listing.city} · {listing.address || ""} · {listing.cuisines.join(", ") || "no cuisine tags"}
             </p>
           </div>
           <button

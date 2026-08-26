@@ -120,7 +120,7 @@ export function BillingCard({
       </h2>
 
       <div className="mt-2 flex items-center justify-between">
-        <p className="font-semibold text-olive">{plan?.name ?? "—"}</p>
+        <p className="font-semibold text-olive">{plan?.name ?? ""}</p>
         {plan && (
           <p className="text-sm text-stone">
             {formatPrice(plan.priceCents, locale)}/{t("billingMonth")}

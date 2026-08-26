@@ -47,7 +47,7 @@ export default async function OpengraphImage({
             {ar ? "هل يخسر مطعمك طلبات على الإنترنت؟" : "Is your restaurant losing orders online?"}
           </div>
           <div style={{ display: "flex", marginTop: 22, fontSize: 30, color: "#d9a94e", fontWeight: 700 }}>
-            {ar ? "اكتشف خلال ٦٠ ثانية — sofratak.com/grader" : "Find out in 60 seconds — sofratak.com/grader"}
+            {ar ? "اكتشف خلال ٦٠ ثانية، sofratak.com/grader" : "Find out in 60 seconds, sofratak.com/grader"}
           </div>
         </div>
 

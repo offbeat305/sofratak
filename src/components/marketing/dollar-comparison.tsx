@@ -78,7 +78,7 @@ export function DollarComparison() {
             )}
             dir="ltr"
           >
-            {phase === "idle" ? "—" : t("keeps", { amount: fmt(appsKeep) })}
+            {phase === "idle" ? "" : t("keeps", { amount: fmt(appsKeep) })}
           </p>
         </div>
         <div className="relative mt-3 h-12" dir="ltr">
@@ -113,7 +113,7 @@ export function DollarComparison() {
             )}
             dir="ltr"
           >
-            {phase === "idle" ? "—" : t("keeps", { amount: "$30.00" })}
+            {phase === "idle" ? "" : t("keeps", { amount: "$30.00" })}
           </p>
         </div>
         <div className="relative mt-3 h-12" dir="ltr">
@@ -132,7 +132,7 @@ export function DollarComparison() {
             aria-hidden
           />
         </div>
-        <p className="mt-2 text-sm text-stone">79¢ — {t("sofratakCaption")}</p>
+        <p className="mt-2 text-sm text-stone">79¢, {t("sofratakCaption")}</p>
       </div>
 
       <button

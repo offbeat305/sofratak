@@ -57,7 +57,7 @@ export default async function AdminTenantsPage({
                     {restaurant.billing.tier ? (
                       <span className="text-olive">{PLANS[restaurant.billing.tier].name}</span>
                     ) : (
-                      <span className="text-stone">—</span>
+                      <span className="text-stone">n/a</span>
                     )}
                     <span
                       className={`ms-2 inline-block rounded-full px-2 py-0.5 text-xs font-semibold ${
@@ -80,7 +80,7 @@ export default async function AdminTenantsPage({
                   </td>
                   <td className="px-4 py-3 text-olive">{ordersLast7d}</td>
                   <td className="px-4 py-3 text-stone">
-                    {lastOrderAt ? new Date(lastOrderAt).toLocaleDateString(loc === "ar" ? "ar" : "en-US") : "—"}
+                    {lastOrderAt ? new Date(lastOrderAt).toLocaleDateString(loc === "ar" ? "ar" : "en-US") : ""}
                   </td>
                   <td className="px-4 py-3 text-end">
                     <Link

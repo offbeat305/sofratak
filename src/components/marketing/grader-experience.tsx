@@ -78,7 +78,7 @@ function categoryRows(
       if (f.has("no_reviews")) return [neg("no_reviews")];
       const rows: FindingRow[] = [
         ok("ratingLine", {
-          rating: signals.place.rating?.toFixed(1) ?? "—",
+          rating: signals.place.rating?.toFixed(1) ?? "",
           count: Intl.NumberFormat().format(signals.place.userRatingCount ?? 0),
         }),
       ];

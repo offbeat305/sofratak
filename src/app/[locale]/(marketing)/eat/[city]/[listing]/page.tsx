@@ -27,7 +27,7 @@ export async function generateMetadata({
   const loc = locale as "en" | "ar";
   return {
     title: t("listingTitle", { name: listing.name, city: metro.name[loc] }),
-    description: `${listing.name} — ${listing.address}`,
+    description: `${listing.name}, ${listing.address}`,
     alternates: localeAlternates(locale, `/eat/${city}/${listingSlug}`),
   };
 }

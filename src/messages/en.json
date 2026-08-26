@@ -22,13 +22,13 @@
     "rights": "© {year} Sofratak · Offbeat Creative LLC. All rights reserved."
   },
   "home": {
-    "title": "Phase 0 — design system first",
+    "title": "Phase 0. Design system first",
     "body": "The brand foundation is being built before any pages. Review every component in the styleguide.",
     "cta": "View the styleguide"
   },
   "placeholder": {
-    "dashboard": "Restaurant dashboard — arrives in Phase 4.",
-    "admin": "Super-admin panel — arrives in Phase 7."
+    "dashboard": "Restaurant dashboard. Arrives in Phase 4.",
+    "admin": "Super-admin panel. Arrives in Phase 7."
   },
   "storefront": {
     "menu": "Menu",
@@ -71,7 +71,7 @@
     "contactTitle": "Your details",
     "name": "Name",
     "phone": "Phone",
-    "phoneHint": "Required — we text you order updates.",
+    "phoneHint": "Required. We text you order updates.",
     "smsOptIn": "Also text me offers from this restaurant (optional)",
     "deliveryAddress": "Delivery address",
     "deliveryAddressPlaceholder": "Street address, apt, city",
@@ -86,7 +86,7 @@
     "discount": "Discount ({code})",
     "discountGeneric": "Reward discount",
     "punchCardTitle": "Your punch card",
-    "punchCount": "{count, plural, =0 {No punches yet — this order earns your first!} one {You've got # punch here} other {You've got # punches here}}",
+    "punchCount": "{count, plural, =0 {No punches yet. This order earns your first!} one {You've got # punch here} other {You've got # punches here}}",
     "punchesToGo": "{count, plural, one {# more order} other {# more orders}} until {reward}",
     "redeemReward": "Redeem: {reward} ({punches} punches)",
     "rewardSelected": "✓ Redeeming {reward} on this order",
@@ -98,7 +98,7 @@
     "total": "Total",
     "payNow": "Pay {amount}",
     "placingOrder": "Placing order…",
-    "testPayment": "Test mode — no card is charged yet.",
+    "testPayment": "Test mode. No card is charged yet.",
     "orderPlaced": "Order placed!",
     "confirmationSent": "We texted a confirmation to {phone}.",
     "orderNumber": "Order {number}",
@@ -114,17 +114,17 @@
     "scheduledFor": "Scheduled for {time}",
     "backToMenu": "Back to menu",
     "preferencesTitle": "Want deals and updates?",
-    "preferencesSub": "Optional — hear about offers first, or skip and just enjoy your food.",
+    "preferencesSub": "Optional. Hear about offers first, or skip and just enjoy your food.",
     "smsMarketingOptIn": "Text me deals and offers (separate from order updates)",
     "emailOptional": "Email (optional)",
-    "birthdayOptional": "Birthday (optional — a treat's on us)",
+    "birthdayOptional": "Birthday (optional, a treat's on us)",
     "preferencesSave": "Save",
-    "preferencesSaved": "Saved — thanks!",
+    "preferencesSaved": "Saved, thanks!",
     "saving": "Saving…",
     "deliveryMinimumNote": "Delivery minimum: {amount}",
     "poweredBy": "Powered by Sofratak",
     "orderNotFound": "We couldn't find that order.",
-    "paymentCanceled": "Payment was canceled — your cart is untouched.",
+    "paymentCanceled": "Payment was canceled. Your cart is untouched.",
     "paymentPending": "Payment hasn't been completed for this order.",
     "returnToCheckout": "Return to checkout"
   },
@@ -158,18 +158,18 @@
       "rowApps": "On the apps",
       "rowSofratak": "On your Sofratak site",
       "appsCaption": "estimated 25% blended marketplace cost",
-      "sofratakCaption": "your customer pays it — not you",
+      "sofratakCaption": "your customer pays it, not you",
       "keeps": "{amount} keeps",
       "replay": "Replay"
     },
     "live": {
       "eyebrow": "This one is real",
       "title": "Tap the demo. It's live.",
-      "sub": "This isn't a screenshot — it's a real Sofratak storefront running right now. Browse the menu, add to cart, flip it to Arabic.",
+      "sub": "This isn't a screenshot. It's a real Sofratak storefront running right now. Browse the menu, add to cart, flip it to Arabic.",
       "flip": "See it in Arabic",
       "flipBack": "Back to English",
       "open": "Open the full demo",
-      "note": "Demo restaurant — tap around freely."
+      "note": "Demo restaurant. Tap around freely."
     },
     "compare": {
       "title": "The apps vs. your own site",
@@ -185,7 +185,7 @@
         {
           "label": "Fee per order",
           "apps": "Paid by you, per order",
-          "us": "79¢ flat — paid by the diner"
+          "us": "79¢ flat. Paid by the diner"
         },
         {
           "label": "Your customers' names & numbers",
@@ -204,7 +204,7 @@
         },
         {
           "label": "Cancel terms",
-          "apps": "—",
+          "apps": "Varies",
           "us": "Month-to-month, data leaves with you"
         }
       ]
@@ -270,7 +270,7 @@
       "items": [
         {
           "q": "Can I keep DoorDash and Uber Eats?",
-          "a": "Yes. Sofratak runs alongside the apps — most restaurants keep them for discovery and move regulars to direct ordering, where every order costs less."
+          "a": "Yes. Sofratak runs alongside the apps. Most restaurants keep them for discovery and move regulars to direct ordering, where every order costs less."
         },
         {
           "q": "How fast can we go live?",
@@ -278,13 +278,13 @@
         },
         {
           "q": "Does it really work in Arabic?",
-          "a": "Fully. Diners can order in Arabic or English with true right-to-left layout — menus, checkout, and order texts included."
+          "a": "Fully. Diners can order in Arabic or English with true right-to-left layout. Menus, checkout, and order texts included."
         }
       ]
     },
     "tour": {
       "title": "See it working",
-      "sub": "Real screens from the product — not mockups.",
+      "sub": "Real screens from the product, not mockups.",
       "captions": [
         "A storefront with your name on it.",
         "Your customers order in Arabic or English.",
@@ -311,7 +311,7 @@
         },
         {
           "title": "Your customer list, exportable",
-          "body": "Every diner's name and number builds your book — download it any time, in one click."
+          "body": "Every diner's name and number builds your book. Download it any time, in one click."
         },
         {
           "title": "Marketing that fills slow nights",
@@ -325,6 +325,111 @@
     },
     "how": {
       "title": "How it works",
+      "heroH1": "Sign up Monday. Taking your own orders by Friday.",
+      "heroSub": "No new hardware. No new POS. No 6-week onboarding. Here's exactly what happens, day by day.",
+      "heroCta": "Book a 15-min demo",
+      "heroCtaGhost": "See your savings first",
+      "trustRow": "Setup done for you · Live in ~2 weeks · Cancel anytime",
+      "timelineTitle": "Day by day",
+      "timelineSub": "Scroll through it. This is the whole process.",
+      "stages": [
+        {
+          "badge": "Day 1",
+          "title": "You send us your menu",
+          "body": "A photo of the paper menu is fine. English, Arabic, or both, and you don't have to type a thing."
+        },
+        {
+          "badge": "Day 2–3",
+          "title": "We build your site, English and Arabic",
+          "body": "Your branding, your items, your prices, on your own domain. Real right-to-left Arabic, not a right-aligned afterthought."
+        },
+        {
+          "badge": "Day 4",
+          "title": "You approve it on your phone",
+          "body": "We send you a link. Tell us what to change and it changes the same day."
+        },
+        {
+          "badge": "Week 2",
+          "title": "You go live and payouts turn on",
+          "body": "Orders land on a screen your staff already knows how to use. Food money settles straight to your bank."
+        },
+        {
+          "badge": "Week 3",
+          "title": "Marketing turns on",
+          "body": "Win-back texts, birthday offers, and review requests start running for you. You approve the message once."
+        }
+      ],
+      "splitTitle": "Who does what",
+      "splitSub": "The short version: almost none of it is yours.",
+      "weHandle": "We handle",
+      "youHandle": "You handle",
+      "weHandleItems": [
+        "Your website, English and Arabic",
+        "Menu setup from a photo",
+        "Your own domain and hosting",
+        "Stripe payouts to your bank",
+        "Uptime and backups",
+        "SMS and email setup",
+        "Your listing in the Sofratak directory",
+        "Any change you want, within 24 hours",
+        "Security and updates",
+        "Training your staff (about 10 minutes)"
+      ],
+      "youHandleItems": [
+        "Decide your prices",
+        "Tell us your hours",
+        "Cook the food"
+      ],
+      "requestsLink": "See how requests work",
+      "kitchenTitle": "One screen. Your staff learns it in 10 minutes.",
+      "kitchenSub": "Orders arrive, you tap Accept, the customer gets a text. That's the whole job.",
+      "kitchenFallback": "No tablet? Orders can arrive as a text message or a printed ticket instead. You are never stuck.",
+      "orderAccept": "Accept",
+      "orderPreparing": "Preparing",
+      "orderReady": "Ready",
+      "orderNew": "New order",
+      "dontNeedTitle": "What you don't need",
+      "dontNeed": [
+        "A new POS",
+        "New hardware",
+        "A contract",
+        "A setup fee",
+        "Commission on your food"
+      ],
+      "dontNeedNote": "Setup fee waived for our first 20 founding restaurants.",
+      "faqTitle": "Getting started",
+      "faq": [
+        {
+          "q": "Do I have to leave DoorDash or Uber Eats?",
+          "a": "No. Sofratak is additional, not a replacement. Keep the apps for discovery and send your regulars to your own site, where you pay no commission. Most restaurants run both."
+        },
+        {
+          "q": "Do I need new equipment?",
+          "a": "No. Any phone, tablet, or computer you already own works. If you'd rather not watch a screen at all, we can send orders as a text message or a printed ticket."
+        },
+        {
+          "q": "Will my staff need training?",
+          "a": "About ten minutes. Orders arrive on one screen, you tap Accept, then Ready. That is the entire flow, and it works in Arabic or English."
+        },
+        {
+          "q": "What if I don't have a menu file?",
+          "a": "Take a photo of your paper menu and send it. We type it in for you, in both languages, and you check it before anything goes live."
+        },
+        {
+          "q": "How fast can I actually go live?",
+          "a": "Most restaurants are taking their own orders within two weeks. If your menu is simple and you reply quickly, it can be faster."
+        },
+        {
+          "q": "What if I want changes later?",
+          "a": "Ask us and we do it within 24 hours. New photo, new price, a whole new page, it is all included in every plan. There is a Requests tab in your dashboard for exactly this."
+        },
+        {
+          "q": "Can I cancel?",
+          "a": "Any time, month to month. Your customer list and order history export to a spreadsheet in one click, and they leave with you."
+        }
+      ],
+      "closingTitle": "Most restaurants are taking their own orders within two weeks.",
+      "closingCta": "Book a 15-min demo",
       "steps": [
         {
           "title": "Send us your menu",
@@ -336,15 +441,16 @@
         },
         {
           "title": "Orders flow. You keep the money.",
-          "body": "Food revenue settles to your bank. Diners pay a small flat fee — you pay no commission."
+          "body": "Food revenue settles to your bank. Diners pay a small flat fee. You pay no commission."
         }
       ],
-      "note": "No new hardware. Your staff learns nothing new."
+      "note": "No new hardware. Your staff learns nothing new.",
+      "approveLabel": "Approve"
     },
     "who": {
       "title": "Who it's for",
       "line": "Built for Arab, Middle Eastern, Mediterranean, and halal restaurants.",
-      "halal": "Halal-friendly by default — badge included."
+      "halal": "Halal-friendly by default, badge included."
     },
     "pricingTeaser": {
       "line": "From {price}/mo · month-to-month · no setup fee for founding restaurants.",
@@ -352,7 +458,7 @@
     },
     "promise": {
       "title": "Your data is yours.",
-      "body": "Every customer, every order — export it in one click, even if you leave. Cancel anytime. Month-to-month, no lock-in."
+      "body": "Every customer, every order. Export it in one click, even if you leave. Cancel anytime. Month-to-month, no lock-in."
     },
     "finalCta": {
       "title": "See your number.",
@@ -363,7 +469,7 @@
     },
     "pricing": {
       "title": "Pricing",
-      "sub": "Per location, month-to-month. No setup fee for founding restaurants. Cancel anytime — your data leaves with you.",
+      "sub": "Per location, month-to-month. No setup fee for founding restaurants. Cancel anytime. Your data leaves with you.",
       "perMonth": "/mo",
       "popular": "Most popular",
       "cta": "Book a Demo",
@@ -401,7 +507,7 @@
           ]
         }
       ],
-      "footnote": "Diners pay a flat $0.79 service fee per order. Card processing (2.9% + 30¢) passes through at cost — we add nothing on top.",
+      "footnote": "Diners pay a flat $0.79 service fee per order. Card processing (2.9% + 30¢) passes through at cost. We add nothing on top.",
       "honest": "Diner pays 79¢/order. You pay $0 per order. Card processing at cost."
     },
     "estimator": {
@@ -422,8 +528,8 @@
       "phone": "Phone",
       "send": "Send it",
       "sending": "Sending…",
-      "sent": "Sent — we'll text you shortly.",
-      "error": "Something went wrong — try WhatsApp instead."
+      "sent": "Sent. We'll text you shortly.",
+      "error": "Something went wrong. Try WhatsApp instead."
     },
     "demo": {
       "title": "Book a demo",
@@ -436,20 +542,20 @@
       "message": "Anything we should know? (optional)",
       "submit": "Request a demo",
       "sending": "Sending…",
-      "success": "Got it — we'll reach out within one business day.",
+      "success": "Got it. We'll reach out within one business day.",
       "whatsappNote": "Faster on WhatsApp? Message us directly:"
     },
     "stories": {
       "title": "Stories",
-      "sub": "Guides, neighborhoods, and the people behind the food — from the Sofratak community.",
+      "sub": "Guides, neighborhoods, and the people behind the food. From the Sofratak community.",
       "readStory": "Read the story",
       "empty": "First stories coming soon."
     },
     "eat": {
       "title": "Find Arab & halal food near you",
-      "sub": "Every Arab and Middle Eastern restaurant in our cities — order online from verified restaurants, discover the rest.",
+      "sub": "Every Arab and Middle Eastern restaurant in our cities. Order online from verified restaurants, discover the rest.",
       "browseCity": "Browse restaurants",
-      "ownerNote": "Own a restaurant that's listed here? Claim it from its page — or if it's missing, book a demo and we'll add you as a verified restaurant.",
+      "ownerNote": "Own a restaurant that's listed here? Claim it from its page. Or if it's missing, book a demo and we'll add you as a verified restaurant.",
       "cityTitle": "Arab & halal restaurants in {city}",
       "cityCount": "{count, plural, =0 {Listings coming soon} one {# restaurant listed} other {# restaurants listed}}",
       "searchPlaceholder": "Search restaurants…",
@@ -458,7 +564,7 @@
       "filterOpen": "Open now",
       "list": "List",
       "map": "Map",
-      "noResults": "No restaurants match — try clearing a filter.",
+      "noResults": "No restaurants match. Try clearing a filter.",
       "verified": "Verified",
       "halalVerified": "Halal ✓",
       "halalReported": "Reported halal",
@@ -466,7 +572,7 @@
       "halalRowOwner": "Halal: confirmed by owner",
       "sectionOrderNow": "Order now",
       "sectionMoreTitle": "More Arab restaurants nearby",
-      "sectionMoreSub": "Not taking online orders on Sofratak yet — know the owner? Tell them to claim it.",
+      "sectionMoreSub": "Not taking online orders on Sofratak yet. Know the owner? Tell them to claim it.",
       "sortLabel": "Sort",
       "sortRecommended": "Recommended",
       "sortRating": "Rating",
@@ -478,7 +584,7 @@
       "directions": "Directions",
       "call": "Call",
       "ownThis": "Own this restaurant?",
-      "claimPitch": "Get orders from this page — commission-free.",
+      "claimPitch": "Get orders from this page, commission-free.",
       "breadcrumbRoot": "Eat",
       "statsRestaurants": "restaurants",
       "statsStates": "{count} states",
@@ -486,7 +592,7 @@
       "closedNow": "Closed",
       "orderNow": "Order Now",
       "claimCta": "Claim this restaurant",
-      "listingTitle": "{name} — {city}",
+      "listingTitle": "{name}, {city}",
       "backToCity": "All {city} restaurants",
       "claimTitle": "Is this your restaurant?",
       "claimSub": "Claim it to add photos, take online orders with zero commission, and turn on your Order Now button. We'll text you within a day.",
@@ -497,24 +603,24 @@
       "claimEmail": "Email (optional)",
       "claimSubmit": "Claim this restaurant",
       "claimSending": "Sending…",
-      "claimSuccess": "Got it — we'll text you within a day.",
-      "claimError": "Something went wrong — try again.",
+      "claimSuccess": "Got it. We'll text you within a day.",
+      "claimError": "Something went wrong, try again.",
       "takedownLink": "Own this restaurant and want changes or removal?",
       "takedownSubmit": "Request changes or removal",
-      "takedownSuccess": "Received — we handle removal requests same-day.",
+      "takedownSuccess": "Received. We handle removal requests same-day.",
       "unclaimedDisclaimer": "This listing was created from publicly available information and is not affiliated with or endorsed by the restaurant.",
       "hoursTitle": "Hours",
       "closedDay": "Closed",
       "suggestCta": "Missing a restaurant? Add it",
       "suggestTitle": "Add a restaurant",
-      "suggestSub": "Know an Arab or halal spot we're missing? Tell us — we review every suggestion before it's listed.",
+      "suggestSub": "Know an Arab or halal spot we're missing? Tell us. We review every suggestion before it's listed.",
       "suggestName": "Restaurant name",
       "suggestCity": "City",
       "suggestAddress": "Address (if you know it)",
       "suggestPhone": "Your phone (optional)",
       "suggestNote": "Anything else? (optional)",
       "suggestSubmit": "Send suggestion",
-      "suggestSuccess": "Thank you — we review every suggestion and add real ones fast.",
+      "suggestSuccess": "Thank you. We review every suggestion and add real ones fast.",
       "osmAttribution": "Some listing data from",
       "enrichReviews": "({count, plural, one {# review} other {# reviews}} on Google)",
       "photoBy": "Photos by",
@@ -533,16 +639,16 @@
     },
     "grader": {
       "title": "Restaurant Grader",
-      "sub": "See what's costing you orders — free, no card, about 60 seconds.",
+      "sub": "See what's costing you orders. Free, no card, about 60 seconds.",
       "searchPlaceholder": "Type your restaurant's name…",
       "searchHint": "Start typing and pick your restaurant from the list.",
-      "notConfigured": "The Grader isn't available right now — try again soon.",
-      "error": "Something went wrong — try again.",
+      "notConfigured": "The Grader isn't available right now. Try again soon.",
+      "error": "Something went wrong, try again.",
       "grading": "Grading {name}…",
       "gradeHeadline": "{name}'s Sofratak Grade",
       "impactLabel": "Estimated money left on the table",
-      "impactNote": "An illustrative estimate based on typical order volumes and marketplace commission rates for restaurants in a similar situation — not a measurement of your numbers. See how we calculate it below.",
-      "impactZero": "Nice — you're not showing the signals that usually cost restaurants orders.",
+      "impactNote": "An illustrative estimate based on typical order volumes and marketplace commission rates for restaurants in a similar situation. Not a measurement of your numbers. See how we calculate it below.",
+      "impactZero": "Nice. You're not showing the signals that usually cost restaurants orders.",
       "unlockTitle": "See the full breakdown",
       "unlockSub": "Enter your email to see exactly what's driving your score, and how to fix it.",
       "emailPlaceholder": "you@restaurant.com",
@@ -557,20 +663,20 @@
       "findings": {
         "no_website_on_profile": "Your Google Business Profile has no website listed.",
         "no_phone_on_profile": "Your Google Business Profile has no phone number listed.",
-        "no_hours_on_profile": "Your Google Business Profile doesn't list hours — diners can't tell if you're open.",
-        "no_reviews": "No reviews yet on Google — reviews are often the first thing a diner checks before ordering.",
+        "no_hours_on_profile": "Your Google Business Profile doesn't list hours. Diners can't tell if you're open.",
+        "no_reviews": "No reviews yet on Google. Reviews are often the first thing a diner checks before ordering.",
         "low_rating": "Your rating is below the 4.0+ most diners look for before ordering.",
-        "low_review_count": "You don't have many reviews yet — more reviews build trust with new diners.",
-        "no_website": "We couldn't find a website — diners have nowhere to land besides Google or social media.",
-        "website_unreachable": "We tried to load your website but couldn't reach it — worth checking it's up.",
-        "no_https": "Your site isn't served securely (HTTPS) — browsers flag this to visitors.",
-        "not_mobile_friendly": "Your site doesn't look built for phones — most diners order from mobile.",
-        "slow_site": "Your site loads slowly — slow pages lose diners before they even see the menu.",
+        "low_review_count": "You don't have many reviews yet. More reviews build trust with new diners.",
+        "no_website": "We couldn't find a website. Diners have nowhere to land besides Google or social media.",
+        "website_unreachable": "We tried to load your website but couldn't reach it. Worth checking it's up.",
+        "no_https": "Your site isn't served securely (HTTPS). Browsers flag this to visitors.",
+        "not_mobile_friendly": "Your site doesn't look built for phones. Most diners order from mobile.",
+        "slow_site": "Your site loads slowly. Slow pages lose diners before they even see the menu.",
         "ordering_unknown": "We couldn't check your website for online ordering.",
-        "already_on_sofratak": "You're already ordering through Sofratak — nice.",
-        "has_paid_ordering_platform": "You have online ordering, but it's running through a paid platform — worth comparing against a flat $0.79/order, $0 commission.",
-        "marketplace_dependent": "Your online ordering runs through a delivery marketplace — expect a real commission cut on every one of those orders.",
-        "no_ordering_detected": "We couldn't find online ordering on your website — you may be missing orders from diners who'd rather not call."
+        "already_on_sofratak": "You're already ordering through Sofratak, nice.",
+        "has_paid_ordering_platform": "You have online ordering, but it's running through a paid platform. Worth comparing against a flat $0.79/order, $0 commission.",
+        "marketplace_dependent": "Your online ordering runs through a delivery marketplace. Expect a real commission cut on every one of those orders.",
+        "no_ordering_detected": "We couldn't find online ordering on your website. You may be missing orders from diners who'd rather not call."
       },
       "methodologyTitle": "How we calculate this",
       "methodologyBody": "We estimate this using a typical range of 150–400 delivery-marketplace orders a month at a ~$25 average ticket, and a 15–30% commission rate common on those platforms. It's an illustrative range based on patterns we see across restaurants, not a measurement of your specific order volume.",
@@ -586,7 +692,7 @@
       "checks": [
         {
           "title": "Google presence",
-          "body": "Website, phone, hours — the fields diners check first."
+          "body": "Website, phone, hours. The fields diners check first."
         },
         {
           "title": "Reviews & rating",
@@ -602,18 +708,18 @@
         }
       ],
       "sampleTitle": "See what you'll get",
-      "sampleSub": "A real audit — score, findings, and the money math.",
+      "sampleSub": "A real audit. Score, findings, and the money math.",
       "howTitle": "How it works",
       "howSteps": [
         "Type your restaurant's name.",
         "We scan Google, your website, and your ordering setup.",
-        "Get your score and what to fix — in about 60 seconds."
+        "Get your score and what to fix. In about 60 seconds."
       ],
       "faqTitle": "Common questions",
       "faq": [
         {
           "q": "Is it really free?",
-          "a": "Yes — completely. No card, no trial, no catch. The grader is how restaurants meet Sofratak."
+          "a": "Yes. Completely. No card, no trial, no catch. The grader is how restaurants meet Sofratak."
         },
         {
           "q": "Do I need a card or an account?",
@@ -625,7 +731,7 @@
         },
         {
           "q": "Is my data safe?",
-          "a": "We only read public information, and your email is used to send your report — never sold, never spammed. Every message we send has an opt-out."
+          "a": "We only read public information, and your email is used to send your report. Never sold, never spammed. Every message we send has an opt-out."
         },
         {
           "q": "What happens after I get my score?",
@@ -640,23 +746,23 @@
         "Looking for online ordering…",
         "Scanning your competition…"
       ],
-      "verdictHigh": "Strong presence — make sure you own it, not the apps.",
-      "verdictMid": "Solid base — a few fixes would win you real orders.",
-      "verdictLow": "You're losing orders you could own — the fixes below are the map.",
+      "verdictHigh": "Strong presence. Make sure you own it, not the apps.",
+      "verdictMid": "Solid base. A few fixes would win you real orders.",
+      "verdictLow": "You're losing orders you could own. The fixes below are the map.",
       "positives": {
         "hasWebsite": "Website listed on your Google profile.",
         "hasPhone": "Phone number listed.",
-        "hasHours": "Hours listed — diners can see you're open.",
+        "hasHours": "Hours listed. Diners can see you're open.",
         "ratingLine": "{rating}★ across {count} reviews on Google.",
         "httpsOk": "Site served securely (HTTPS).",
         "mobileOk": "Site works on phones.",
         "fastSite": "Site loads fast."
       },
       "recs": {
-        "googleProfile": "Complete every field on your Google profile — it's free visibility.",
-        "reviews": "Ask happy regulars for a review — steady beats bursts.",
+        "googleProfile": "Complete every field on your Google profile. It's free visibility.",
+        "reviews": "Ask happy regulars for a review. Steady beats bursts.",
         "website": "A fast, mobile-first site with direct ordering fixes all of this at once.",
-        "onlineOrdering": "Own your ordering — a flat 79¢/order beats a commission every time."
+        "onlineOrdering": "Own your ordering. A flat 79¢/order beats a commission every time."
       },
       "moneyTitle": "What the apps may be costing you",
       "moneyCta": "See your exact number",
@@ -669,13 +775,13 @@
       "title": "Why Sofratak exists",
       "p1": "Sofratak started in Tampa, at the counter of family restaurants watching a quarter of every delivery order leave through an app. The owners worked the same hours; the apps kept more of the money every year.",
       "p2": "We build one thing: your own ordering site, with your name on it, where your food revenue settles to your bank and your customer list belongs to you. Flat monthly price. No commission. No lock-in.",
-      "p3": "It's called Sofratak — «سفرتك», your table — because that's whose it is.",
-      "founder": "Zizo (Ahmad Zeidan) — Offbeat Creative LLC, Tampa, Florida",
+      "p3": "It's called Sofratak. «سفرتك», your table. Because that's whose it is.",
+      "founder": "Zizo (Ahmad Zeidan). Offbeat Creative LLC, Tampa, Florida",
       "photoNote": "PHOTO_PLACEHOLDER"
     },
     "citiesPage": {
       "indexTitle": "Cities",
-      "indexSub": "Commission-free ordering, city by city — starting where our communities are.",
+      "indexSub": "Commission-free ordering, city by city. Starting where our communities are.",
       "h1": "Commission-free online ordering for {city} restaurants",
       "community": "Built for the community",
       "communityLine": "English and Arabic, true right-to-left, halal badge included. Your diners order in the language they think in.",
@@ -687,7 +793,7 @@
         },
         {
           "q": "Do you take a commission on food?",
-          "a": "No. $0 commission — food revenue and tips settle directly to your bank account through Stripe."
+          "a": "No. $0 commission. Food revenue and tips settle directly to your bank account through Stripe."
         },
         {
           "q": "Do I need new hardware?",
@@ -695,7 +801,7 @@
         },
         {
           "q": "Who owns my customer data?",
-          "a": "You do. Every customer and every order is exportable to CSV in one click — even if you cancel."
+          "a": "You do. Every customer and every order is exportable to CSV in one click. Even if you cancel."
         },
         {
           "q": "What if I want to cancel?",
@@ -705,14 +811,14 @@
       "estimatorCta": "See what your restaurant could save",
       "otherCities": "Other cities",
       "mapTitle": "Tap a city",
-      "mapSub": "Every pin is a real page — local scene, live demo, honest pricing.",
+      "mapSub": "Every pin is a real page. Local scene, live demo, honest pricing.",
       "florida": "Florida",
       "michigan": "Metro Detroit",
       "view": "View city",
       "eyebrow": "Commission-free online ordering",
       "knownFor": "We know this scene",
       "cityFaqQ": "Do you work with restaurants in {city}?",
-      "cityFaqA": "Yes. Onboarding is fully remote — send a photo of your menu, we build your site, and orders ring on any tablet or phone you already have in {city}. About two weeks from menu to first order.",
+      "cityFaqA": "Yes. Onboarding is fully remote. Send a photo of your menu, we build your site, and orders ring on any tablet or phone you already have in {city}. About two weeks from menu to first order.",
       "tryDemo": "Try the live demo",
       "pricingTitle": "Simple pricing for {city} restaurants"
     },
@@ -723,8 +829,8 @@
       "send": "Send",
       "open": "Questions? Ask us",
       "close": "Close chat",
-      "greeting": "Ahlan! Ask me anything about Sofratak — or tap a question below.",
-      "fallback": "Good question — I don't want to guess on that one. Message us on WhatsApp and a human (usually Zizo) will answer quickly, or book a 15-minute demo.",
+      "greeting": "Ahlan! Ask me anything about Sofratak. Or tap a question below.",
+      "fallback": "Good question. I don't want to guess on that one. Message us on WhatsApp and a human (usually Zizo) will answer quickly, or book a 15-minute demo.",
       "whatsapp": "Ask on WhatsApp",
       "bookDemo": "Book a demo"
     },
@@ -732,7 +838,7 @@
       "privacyTitle": "Privacy Policy",
       "termsTitle": "Terms of Service",
       "updated": "Last updated: {date}",
-      "privacyBody": "Sofratak (Offbeat Creative LLC) collects the information you submit through our forms — name, phone, email, restaurant details — to respond to your inquiry and provide our service. Diner phone numbers collected at checkout are used for order updates, and for marketing only with explicit opt-in. We do not sell personal data. Restaurant data belongs to the restaurant and is exportable at any time. Payment card data is processed by Stripe and never touches our servers. Questions: contact us via the details in the footer.",
+      "privacyBody": "Sofratak (Offbeat Creative LLC) collects the information you submit through our forms. Name, phone, email, restaurant details. To respond to your inquiry and provide our service. Diner phone numbers collected at checkout are used for order updates, and for marketing only with explicit opt-in. We do not sell personal data. Restaurant data belongs to the restaurant and is exportable at any time. Payment card data is processed by Stripe and never touches our servers. Questions: contact us via the details in the footer.",
       "termsBody": "Sofratak provides online ordering software to restaurants on a month-to-month subscription, per location. Restaurants are the merchant of record for their food sales; Sofratak charges diners a flat per-order service fee shown at checkout. Estimated-savings figures across this site are illustrative, based on information provided, and are not guarantees. Either party may cancel with effect at the end of the billing month; on cancellation the restaurant receives a complete export of its data. Service is provided as-is; our liability is limited to fees paid in the prior month."
     },
     "whatsapp": "WhatsApp",
@@ -754,7 +860,7 @@
     "today": "Today",
     "orders": "Orders",
     "customers": "Customers",
-    "funnelTitle": "Order funnel — last 7 days",
+    "funnelTitle": "Order funnel. Last 7 days",
     "funnelSub": "How many visitors make it from browsing to a paid order.",
     "funnelViews": "Storefront visits",
     "funnelCarts": "Added to cart",
@@ -764,7 +870,7 @@
     "storefront": "View storefront",
     "pause": "Pause orders",
     "resume": "Resume orders",
-    "paused": "Ordering is PAUSED — diners cannot check out.",
+    "paused": "Ordering is PAUSED. Diners cannot check out.",
     "todayRevenue": "Today's revenue",
     "todayOrders": "Today's orders",
     "avgTicket": "Average ticket",
@@ -803,7 +909,7 @@
       "refunded": "Refunded",
       "partially_refunded": "Partially refunded"
     },
-    "authNote": "Owner logins arrive later in Phase 4 — keep this URL private for now.",
+    "authNote": "Owner logins arrive later in Phase 4. Keep this URL private for now.",
     "menu": "Menu",
     "settings": "Settings",
     "addItem": "Add item",
@@ -823,7 +929,7 @@
     "photoUploading": "Uploading…",
     "photoNote": "JPEG, PNG, or WebP, up to 4MB. Without a photo, a simple placeholder is shown.",
     "bannerTitle": "Storefront banner",
-    "bannerSub": "The big picture at the top of your ordering page — your best dish or your storefront.",
+    "bannerSub": "The big picture at the top of your ordering page. Your best dish or your storefront.",
     "bannerAdd": "Add banner",
     "bannerChange": "Change banner",
     "bannerRemove": "Remove",
@@ -847,11 +953,11 @@
     "open": "Open",
     "close": "Close",
     "closedDay": "Closed",
-    "modifiersNote": "Modifier groups (sizes, add-ons) are edited by Sofratak support for now — send us the change.",
+    "modifiersNote": "Modifier groups (sizes, add-ons) are edited by Sofratak support for now. Send us the change.",
     "payoutsTitle": "Payouts",
     "payoutsNone": "Connect your bank through Stripe so food revenue and tips settle directly to you. Sofratak only takes the $0.79 per-order service fee.",
-    "payoutsIncomplete": "Stripe setup was started but isn't finished — payments still land in the platform account until it's done.",
-    "payoutsActive": "Payouts active — orders settle to your account.",
+    "payoutsIncomplete": "Stripe setup was started but isn't finished. Payments still land in the platform account until it's done.",
+    "payoutsActive": "Payouts active. Orders settle to your account.",
     "payoutsConnect": "Set up payouts",
     "payoutsResume": "Finish Stripe setup",
     "billingTitle": "Billing",
@@ -859,20 +965,20 @@
     "billingChoose": "Choose plan",
     "billingStarting": "Starting…",
     "billingActive": "Active",
-    "billingPastDue": "Your last payment failed — please update your card.",
-    "billingCanceling": "Canceling — access continues until {date}.",
+    "billingPastDue": "Your last payment failed. Please update your card.",
+    "billingCanceling": "Canceling. Access continues until {date}.",
     "billingCanceled": "Your subscription was canceled. Pick a plan to reactivate anytime.",
     "billingManage": "Manage billing",
     "billingCancelBtn": "Cancel subscription",
     "billingCancelConfirm": "Cancel your subscription? You'll keep access until the end of the current billing period, and we'll email you a full CSV export of your orders and customers.",
     "billingCancelYes": "Yes, cancel",
     "billingCancelNo": "Never mind",
-    "impersonatingAs": "Support session — signed in as {email}.",
+    "impersonatingAs": "Support session. Signed in as {email}.",
     "stopImpersonating": "Stop",
     "marketing": {
       "tab": "Marketing",
       "campaignsTitle": "Send a campaign",
-      "campaignsSub": "Reaches customers who've opted in — pulled from your customer book automatically.",
+      "campaignsSub": "Reaches customers who've opted in. Pulled from your customer book automatically.",
       "channelSms": "Text",
       "channelEmail": "Email",
       "segmentLabel": "Send to",
@@ -899,7 +1005,7 @@
       "active": "Active",
       "inactive": "Inactive",
       "loyaltyTitle": "Loyalty punch card",
-      "loyaltySub": "Every order is a punch — no app or password, the customer's phone number is the card.",
+      "loyaltySub": "Every order is a punch. No app or password, the customer's phone number is the card.",
       "loyaltyEnable": "Turn on the punch card",
       "rewardsTitle": "Rewards",
       "rewardName": "Reward",
@@ -928,16 +1034,16 @@
     "requests": {
       "tab": "Requests",
       "headline": "Tell us what you need. We handle it within 24 hours.",
-      "sub": "Anything — your site, your menu, your dashboard, marketing. No request is too small.",
+      "sub": "Anything. Your site, your menu, your dashboard, marketing. No request is too small.",
       "promiseShort": "Done within 24 hours",
       "newRequest": "New request",
-      "empty": "No requests yet — tap New request and tell us anything.",
+      "empty": "No requests yet. Tap New request and tell us anything.",
       "step1Title": "What's it about?",
       "step2Title": "Show us where.",
-      "step2StorefrontHint": "Point at it like you'd point at a menu — tap the part that needs work.",
-      "step2MenuHint": "Tap the item or items — pick as many as you need.",
+      "step2StorefrontHint": "Point at it like you'd point at a menu. Tap the part that needs work.",
+      "step2MenuHint": "Tap the item or items. Pick as many as you need.",
       "step3Title": "What do you need?",
-      "skipStep": "Not sure — skip",
+      "skipStep": "Not sure, skip",
       "menuSearch": "Search your menu…",
       "noItems": "No items match.",
       "continueWith": "{count, plural, =0 {Continue} one {Continue with # item} other {Continue with # items}}",
@@ -972,11 +1078,11 @@
         "teach": "Teach me how",
         "other": "Other"
       },
-      "notePlaceholder": "Tell us in your own words — English or Arabic",
+      "notePlaceholder": "Tell us in your own words. English or Arabic",
       "recordVoice": "Record a voice note",
       "stopRecording": "Stop recording",
       "reRecord": "Delete and re-record",
-      "micDenied": "We couldn't access your microphone — check your browser permissions.",
+      "micDenied": "We couldn't access your microphone. Check your browser permissions.",
       "attachPhoto": "Attach a photo or screenshot",
       "send": "Send request",
       "sending": "Sending…",
@@ -994,7 +1100,7 @@
       "completedIn": "Completed in {hours}h",
       "ourReply": "From Sofratak",
       "yourReply": "Your reply",
-      "replyPlaceholder": "Reply once — we'll take it from there",
+      "replyPlaceholder": "Reply once. We'll take it from there",
       "sendReply": "Send reply",
       "viewPhoto": "View attached photo"
     }
@@ -1039,11 +1145,11 @@
     "createTenant": "Create tenant",
     "creating": "Creating…",
     "tenantCreated": "{slug} created.",
-    "tempPasswordNote": "Temporary password for {email} (shown once — share it securely):",
-    "existingOwnerNote": "{email} already has a Sofratak login — added as owner of this restaurant.",
+    "tempPasswordNote": "Temporary password for {email} (shown once, share it securely):",
+    "existingOwnerNote": "{email} already has a Sofratak login. Added as owner of this restaurant.",
     "importInstructions": "Paste menu text (from a PDF, website, or Word doc). Lines ending in a price become items; short lines become category headings. Review and edit before committing.",
     "parse": "Parse",
-    "noItemsParsed": "Nothing parsed — try adjusting the pasted text.",
+    "noItemsParsed": "Nothing parsed. Try adjusting the pasted text.",
     "removeCategory": "Remove category",
     "removeItem": "Remove item",
     "skippedLines": "{count} lines skipped (no price or heading detected)",
@@ -1056,7 +1162,7 @@
     "demoResetting": "Resetting…",
     "demoResetDone": "Demo restaurant reset to a clean slate.",
     "directoryReview": "Directory review",
-    "directoryReviewSub": "OSM imports tagged only \"mediterranean\" — approve the ones that are actually Arab, reject the rest.",
+    "directoryReviewSub": "OSM imports tagged only \"mediterranean\". Approve the ones that are actually Arab, reject the rest.",
     "directoryReviewEmpty": "Nothing waiting for review.",
     "directoryApprove": "Publish",
     "directoryReject": "Reject",
@@ -1068,7 +1174,7 @@
     },
     "requestsEmpty": "Queue is clear. The 24-hour promise lives another day.",
     "requestsInsight": "Insight",
-    "requestsPricingFlag": "Pricing — Zizo's call",
+    "requestsPricingFlag": "Pricing, Zizo's call",
     "requestsOwnerReply": "Owner replied",
     "requestsOurReply": "Our reply",
     "requestsReplyPlaceholder": "Reply to the owner (texts them + shows in their dashboard)…",

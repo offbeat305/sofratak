@@ -19,8 +19,8 @@ export const EAT_METROS: EatMetro[] = [
     slug: "tampa",
     name: { en: "Tampa Bay", ar: "تامبا باي" },
     blurb: {
-      en: "Shawarma, mansaf, knafeh — the Arab kitchens of Tampa, St. Pete, and Clearwater.",
-      ar: "شاورما ومنسف وكنافة — مطابخ العرب في تامبا وسانت بيت وكليرووتر.",
+      en: "Shawarma, mansaf, knafeh. The Arab kitchens of Tampa, St. Pete, and Clearwater.",
+      ar: "شاورما ومنسف وكنافة. مطابخ العرب في تامبا وسانت بيت وكليرووتر.",
     },
     center: { lat: 27.9506, lng: -82.4572 },
     zoom: 11,
@@ -30,8 +30,8 @@ export const EAT_METROS: EatMetro[] = [
     slug: "dearborn",
     name: { en: "Dearborn & Detroit", ar: "ديربورن وديترويت" },
     blurb: {
-      en: "The capital of Arab food in America — Dearborn, Dearborn Heights, and Metro Detroit.",
-      ar: "عاصمة الأكل العربي في أمريكا — ديربورن وديربورن هايتس وديترويت الكبرى.",
+      en: "The capital of Arab food in America. Dearborn, Dearborn Heights, and Metro Detroit.",
+      ar: "عاصمة الأكل العربي في أمريكا. ديربورن وديربورن هايتس وديترويت الكبرى.",
     },
     center: { lat: 42.3223, lng: -83.1763 },
     zoom: 12,
@@ -45,8 +45,8 @@ export const EAT_METROS: EatMetro[] = [
     slug: "miami",
     name: { en: "Miami & South Florida", ar: "ميامي وجنوب فلوريدا" },
     blurb: {
-      en: "From Miami to West Palm — the Arab and halal kitchens of South Florida's tri-county coast.",
-      ar: "من ميامي إلى ويست بالم — مطابخ العرب والحلال على ساحل جنوب فلوريدا.",
+      en: "From Miami to West Palm. The Arab and halal kitchens of South Florida's tri-county coast.",
+      ar: "من ميامي إلى ويست بالم. مطابخ العرب والحلال على ساحل جنوب فلوريدا.",
     },
     // Centered on the tri-county corridor (Miami-Dade → Palm Beach)
     center: { lat: 26.1, lng: -80.25 },

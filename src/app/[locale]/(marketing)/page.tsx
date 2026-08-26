@@ -29,8 +29,8 @@ export async function generateMetadata({
   const isAr = locale === "ar";
   return {
     title: isAr
-      ? "سفرتك — طلبات أونلاين بدون عمولة لمطاعم العرب والحلال"
-      : "Sofratak — Commission-Free Online Ordering for Arab & Halal Restaurants",
+      ? "سفرتك. طلبات أونلاين بدون عمولة لمطاعم العرب والحلال"
+      : "Sofratak. Commission-Free Online Ordering for Arab & Halal Restaurants",
     description: isAr
       ? "موقع طلبات باسم مطعمك، بدون عمولة على الطعام. مبني للمطاعم العربية والشرق أوسطية والمتوسطية والحلال في فلوريدا وميشيغان."
       : "Your own restaurant ordering website with zero commission on food. Built for Arab, Middle Eastern, Mediterranean, and halal restaurants in Florida and Michigan. See your savings in seconds.",

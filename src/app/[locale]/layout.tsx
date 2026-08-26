@@ -45,7 +45,7 @@ const plexArabic = IBM_Plex_Sans_Arabic({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Sofratak — Take Control. Own Your Growth.",
+    default: "Sofratak. Take Control. Own Your Growth.",
     template: "%s · Sofratak",
   },
   description:

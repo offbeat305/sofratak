@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "Sofratak — commission-free ordering for restaurants";
+export const alt = "Sofratak. Commission-free ordering for restaurants";
 
 /** Branded link preview — most shares happen in WhatsApp groups. */
 export default async function OpengraphImage({

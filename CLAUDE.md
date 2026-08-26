@@ -1,5 +1,13 @@
 # Sofratak — Project Constitution
 
+## Sessions (read WORKING.md FIRST, before anything else)
+Two sessions work this repo — the Claude Code terminal session and Cowork —
+and **only one writes at a time**. `WORKING.md` at the repo root is the lock:
+it names who currently holds it. Read it before your first edit, claim it if
+free, stop if held by someone else. Release it on handoff. Claiming and
+releasing are commits, so the other session can see them. Full protocol is in
+the file.
+
 ## Product
 Multi-tenant restaurant operating system. Each restaurant gets a branded ordering storefront on its own subdomain, a dashboard (orders, menu, CRM, marketing, reports), and diners order + pay online. I (platform owner) manage everything from a super-admin panel.
 

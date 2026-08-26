@@ -1,5 +1,5 @@
 /**
- * Founder story — FINAL English copy from docs/founder-story.md (Zizo,
+ * Founder story. FINAL English copy from docs/founder-story.md (Zizo,
  * Aug 2026). Implemented verbatim, no rewriting. Arabic is NOT approved
  * yet: every placement of this content is gated to the `en` locale until
  * Zizo reviews the translation (standing rule).

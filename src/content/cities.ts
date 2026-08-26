@@ -3,7 +3,7 @@ import type { LocalizedText } from "@/lib/db/types";
 /**
  * Tier 1 city pages (website spec): home turf + all Florida metros +
  * Dearborn/Dearborn Heights/Detroit/Hamtramck. Each ships ONLY with a
- * genuinely local paragraph — no boilerplate (rollout rule in the spec).
+ * genuinely local paragraph, no boilerplate (rollout rule in the spec).
  * Tier 2 cities get added here 3–4/week as content is written.
  *
  * Arabic copy: pending Zizo's review before launch (tracked in PROGRESS).
@@ -12,9 +12,9 @@ export type City = {
   slug: string;
   name: LocalizedText;
   state: string;
-  /** the honest local-scene paragraph — the anti-boilerplate rule */
+  /** the honest local-scene paragraph: the anti-boilerplate rule */
   scene: LocalizedText;
-  /** short local chips drawn from the scene — keeps each page unique */
+  /** short local chips drawn from the scene, keeps each page unique */
   knownFor: LocalizedText[];
   metaDescription: LocalizedText;
 };

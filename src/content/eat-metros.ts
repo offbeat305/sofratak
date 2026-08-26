@@ -1,6 +1,6 @@
 /**
  * Directory metros (docs/directory-spec.md). A metro is one /eat/[city]
- * screen — it can span multiple municipalities (Dearborn covers the
+ * screen. It can span multiple municipalities (Dearborn covers the
  * Detroit metro Arab corridor).
  */
 export type EatMetro = {
@@ -59,7 +59,7 @@ export function getMetro(slug: string): EatMetro | undefined {
   return EAT_METROS.find((m) => m.slug === slug);
 }
 
-/** Canonical cuisine keys — the filter chips. Labels live in messages. */
+/** Canonical cuisine keys: the filter chips. Labels live in messages. */
 export const EAT_CUISINES = [
   "lebanese",
   "palestinian",

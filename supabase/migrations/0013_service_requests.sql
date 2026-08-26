@@ -33,27 +33,23 @@ create index service_requests_open_idx
 
 alter table service_requests enable row level security;
 
--- members manage their own restaurant's requests; super_admin sees all
-create policy service_requests_member_select on service_requests
-  for select using (
-    exists (
-      select 1 from memberships m
-      where m.restaurant_id = service_requests.restaurant_id
-        and m.user_id = auth.uid()::text
-    )
-    or (auth.jwt() -> 'app_metadata' ->> 'role') = 'super_admin'
-  );
-create policy service_requests_member_insert on service_requests
-  for insert with check (
-    exists (
-      select 1 from memberships m
-      where m.restaurant_id = service_requests.restaurant_id
-        and m.user_id = auth.uid()::text
-    )
-  );
-create policy service_requests_admin_all on service_requests
-  for all using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'super_admin');
+-- members manage their own restaurant's requests; super_admin sees all.
+-- Uses the 0001 helpers (is_member_of / is_super_admin) — same pattern as
+-- every other tenant table (0006, 0009).
+create policy "members read own requests" on service_requests
+  for select using (is_member_of(restaurant_id) or is_super_admin());
+create policy "members create own requests" on service_requests
+  for insert with check (is_member_of(restaurant_id));
+create policy "admin manage requests" on service_requests
+  for all using (is_super_admin());
 
+-- ── Storage (safe to run separately) ──────────────────────────────────
+-- Everything above is the schema; the insert below is the bucket. If your
+-- SQL role can't write storage.buckets, run the file up to this line and
+-- create the bucket in the dashboard instead (Storage → New bucket:
+-- name `request-media`, PUBLIC OFF, 4MB limit, the MIME list below) —
+-- that's how `menu-images` and `restaurant-images` were made.
+--
 -- Private media bucket: voice notes + photos. NO public read — the app
 -- serves signed URLs; only the service role and super_admin touch it.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)

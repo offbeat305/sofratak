@@ -9,6 +9,22 @@ Full build of docs/concierge-requests-spec.md.
 tab renders empty, submitting errors, admin queue is empty — all
 graceful, nothing crashes.
 
+**Fix (2026-08-25, caught by Zizo on first apply):** 0013's RLS
+policies were written against a `memberships` table that does not
+exist and raw `auth.jwt()` role checks — apply failed with
+`42P01: relation "memberships" does not exist` and rolled back clean.
+The real schema is `restaurant_members` (user_id is **uuid**, not
+text) plus the 0001 helpers `is_member_of(rid)` / `is_super_admin()`,
+which is the pattern every other tenant table uses (0006, 0009).
+Policies rewritten to use the helpers. **Rule for future migrations:
+never hand-roll the membership subquery — call the helpers.**
+App code was audited and was already correct (both actions gate on
+`getMembership()` → `restaurant_members`, and `getSuperAdmin()`;
+`request-media.ts` touches storage only). The storage-bucket insert
+is now marked as separately-runnable: the other two buckets were
+created by hand in the dashboard, never via migration, so that insert
+is the one statement most likely to fail on role permissions.
+
 - **Owner side**: "Requests" tab in the dashboard nav (ConciergeBell
   icon, brass dot when a request is waiting-on-you or completed <48h).
   3-tap wizard: category cards → point at the thing — their REAL

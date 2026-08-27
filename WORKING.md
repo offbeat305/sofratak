@@ -1,6 +1,6 @@
-# 🔒 HELD — Claude Code (terminal session) · 2026-08-27 EDT
+# 🔓 FREE
 
-Working on: design pass 6 (stories/articles rebuild).
+Last held by: Claude Code (terminal session) · released 2026-08-27 EDT
 
 ---
 

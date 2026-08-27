@@ -1,5 +1,86 @@
 # Sofratak — Progress Log
 
+## 2026-08-27 — Design pass 6: Stories rebuild (docs/design-pass-6-stories.md)
+
+Built against the spec on disk, full A/B/C scope:
+
+**Index (/stories)**: dark-olive blueprint hero, no stock imagery. Featured
+article (largest, first by date) gets a generated 16:9 cover; the rest
+render in a 2-3 col grid behind city/topic filter chips (client-side —
+`StoriesGrid`), each with its own generated cover. Newsletter strip
+("Get new guides when they drop") writes a `story_signup` lead —
+migration 0014 (already applied) added that kind to the DB constraint.
+
+**Covers**: `StoryCover` — deterministic per-slug SVG (hash → palette ×
+pattern), arch motifs and geometric dividers only per branding.md, never
+a photo. Keeps the no-scraping rule unbreakable even for share/index art.
+
+**Article page**: reading typography lives in a new `.story-prose` class
+in globals.css (real CSS, not the old `[&_h2]:` Tailwind-arbitrary soup —
+too many child rules for that to stay readable) — pull-quotes (brass
+quote mark), `[!TIP]`/`[!NOTE]` blockquotes rewritten into `.story-callout`
+boxes, styled lists, 68ch max width. Sticky reading-progress bar
+(scroll-linked, deliberately NOT gated behind reduced-motion — it's
+direct feedback for a user action, not decoration). WhatsApp-first share
+row: floating rail on the desktop START edge (mobile inlines it instead —
+the END edge already carries the WhatsApp bubble + Assistant launcher
+from layout.tsx, so a second floating cluster there would be clutter,
+not restraint). TOC renders from two call sites — sticky sidebar on
+desktop, and a mobile `<details>` placed right after the header (NOT
+in the same grid cell as the desktop version, which would put it at the
+bottom of a single-column mobile stack, after the reader has already
+finished the article). Author card (real photo, one-line bio), 3 related
+stories, soft CTA band to the grader, prev/next nav.
+
+**Restaurant mentions**: `{{restaurant:city/slug}}` on its own markdown
+line expands (server-side, in src/lib/stories.ts) into a live directory
+card — real name/cuisines/halal status, Order Now for claimed listings,
+View listing otherwise. This is the actual point of the pass: articles
+now feed the directory instead of just linking off to it. Verified
+against two real Tampa listings (one claimed, one not) so both card
+variants got exercised, not just the happy path.
+
+**Bugs caught in verification** (all fixed before commit):
+- Two-comma shadow lesson held, but a NEW instance of the same root
+  cause hit here: `bg-white` (shared button base) and `bg-[#25D366]`
+  (WhatsApp override) merged onto one class string — Tailwind resolves
+  same-property conflicts by ITS OWN stylesheet order, not by class-
+  string order, so `bg-white` silently won and the WhatsApp share button
+  rendered blank white with no icon color cue. Fixed by never letting two
+  classes target the same CSS property on one element — moved the base
+  color out of the shared class, into each variant explicitly.
+- CSS Grid blowout on mobile: `.story-prose` sat in a `grid` cell with no
+  `min-w-0`, so a grid item's default `min-width: auto` let content push
+  the column wider than the viewport instead of wrapping — the whole
+  article was horizontally scrolled off-screen on a 375px phone. Fixed
+  with `min-w-0` on the prose div (standard CSS Grid overflow fix).
+- `[!TIP]` callout regex silently never matched: marked preserves literal
+  `\n` inside a blockquote paragraph (no `breaks:true`), and `.` doesn't
+  cross newlines without the `s` flag — so the callout rendered as raw
+  `[!TIP] ...` text instead of the styled box. Fixed by capturing with
+  `[\s\S]*?` instead of `.*?`.
+- TOC heading text carried raw HTML entities (`&amp;` for "Busch
+  Boulevard & Temple Terrace") straight into JSX, which React then
+  displays literally instead of decoding. Added a small entity-decode
+  pass before slugifying/displaying heading text.
+- Pre-existing bug found and fixed while touching this file: article
+  dates rendered one day early for any reader west of UTC — `new
+  Date("2026-08-24")` parses as UTC midnight, then `Intl.DateTimeFormat`
+  without an explicit `timeZone` renders it in the browser's local zone.
+  Added `timeZone: "UTC"` to both date formatters (story-card.tsx, the
+  article page) since frontmatter dates are date-only, not instants.
+- One dead link in the shipped article (`abu-naji-restaurant` — no such
+  listing in the DB) removed while verifying the other 9 referenced
+  slugs against Supabase.
+
+Verified: EN + AR (chrome translated, article body stays English —
+existing "Stories are EN-first" rule, unchanged), 390px mobile + 1280px
+desktop, `tsc --noEmit` / `eslint` / `next build` all clean, all 6
+definition-of-done items from the spec. Screenshots:
+docs/design-pass-6-stories-index-desktop.png,
+docs/design-pass-6-stories-article-desktop.png,
+docs/design-pass-6-stories-article-mobile.png.
+
 ## 2026-08-26 (cont. 2) — Four targeted fixes: proof band, shared Button, grader grid, wizard picker
 
 **1. Homepage "Now serving" strip replaced.** Was a thin ivory link

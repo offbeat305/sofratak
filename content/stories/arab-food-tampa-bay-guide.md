@@ -2,6 +2,8 @@
 title: Where to find Arab & halal food in Tampa Bay
 description: A neighborhood-by-neighborhood look at Tampa Bay's Arab and halal kitchens. From Busch Boulevard shawarma to Yemeni coffee in Temple Terrace.
 date: 2026-08-24
+city: tampa
+topic: guide
 ---
 
 Tampa Bay's Arab food scene doesn't announce itself. There's no single
@@ -13,19 +15,28 @@ That's exactly why we built [the Sofratak directory](/en/eat/tampa):
 one map of every Arab, Middle Eastern, and halal kitchen we know about
 in the Bay. Nearly fifty of them and counting.
 
+> [!TIP]
+> Every restaurant card below links straight to its live directory
+> page: hours, halal status, and an order button if the owner has
+> claimed it.
+
 ## Busch Boulevard & Temple Terrace
 
 The closest thing Tampa has to an Arab food corridor. Around East Busch
-Boulevard you'll find Yemeni and Iraqi cooking at spots like
-[Abu Naji Restaurant](/en/eat/tampa/abu-naji-restaurant), with
+Boulevard you'll find Yemeni and Iraqi cooking at
 [Taste of Yemen](/en/eat/tampa/taste-of-yemen) and
 [Darna Mediterranean Grill](/en/eat/tampa/darna-mediterranean-grill)
 holding down Temple Terrace nearby.
 
+{{restaurant:tampa/beit-zizo-shawarma}}
+
+> You don't have to know somebody who knows somebody anymore. It's
+> just on the map now.
+
 ## South Tampa
 
-[Byblos Cafe](/en/eat/tampa/byblos-cafe) on MacDill has long been the
-neighborhood's Lebanese anchor, and
+{{restaurant:tampa/byblos-cafe}}
+
 [Petra Mediterranean Restaurant](/en/eat/tampa/petra-mediterranean-restaurant)
 carries Palestinian and Jordanian flavors on the Busch side of town.
 

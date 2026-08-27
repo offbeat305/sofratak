@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/marketing/button";
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
@@ -106,14 +107,10 @@ export function ContactForm() {
           {error}
         </p>
       )}
-      <button
-        type="submit"
-        disabled={state === "sending"}
-        className="press btn-shine mt-1 inline-flex h-12 items-center justify-center gap-2 rounded-btn bg-brass font-bold text-ivory disabled:opacity-50"
-      >
+      <Button type="submit" disabled={state === "sending"} className="mt-1">
         <Send className="size-4 rtl:-scale-x-100" aria-hidden />
         {state === "sending" ? t("sending") : t("send")}
-      </button>
+      </Button>
     </form>
   );
 }

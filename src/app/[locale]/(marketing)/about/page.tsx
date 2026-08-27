@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { Button } from "@/components/marketing/button";
 import { buttonClasses } from "@/components/ui/Button";
 import { ArchDivider } from "@/components/marketing/arch-divider";
 import { Reveal } from "@/components/marketing/reveal";
@@ -258,12 +259,7 @@ export default async function AboutPage({
           <Reveal delay={120}>
             <ArchDivider tone="sand" className="mt-12" />
             <div className="mt-4 flex justify-center">
-              <Link
-                href="/demo"
-                className="btn-shine inline-flex h-12 items-center rounded-btn bg-brass px-7 font-bold text-olive transition-transform duration-150 hover:scale-[1.03] motion-reduce:hover:scale-100"
-              >
-                Book a Demo
-              </Link>
+              <Button href="/demo">Book a Demo</Button>
             </div>
           </Reveal>
         </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Search, Star, ShoppingBag, Users } from "lucide-react";
+import { Button } from "@/components/marketing/button";
 import { EatStatsStrip } from "@/components/eat/eat-stats-strip";
 import { GraderExperience } from "@/components/marketing/grader-experience";
 import { Reveal } from "@/components/marketing/reveal";
@@ -74,17 +75,26 @@ export default async function GraderPage({
       />
 
       <GraderExperience>
-        {/* what we check — glass chips on the hero's dark tail */}
+        {/* what we check — glass chips on the hero's dark tail.
+            fix 3: line-clamp on title/body reserves identical space
+            per field regardless of copy length, so all four stay
+            aligned at the tablet 2×2 breakpoint (row-based grid
+            stretch alone isn't enough when row 1's text runs longer
+            than row 2's — the clamp makes every card's content the
+            same natural height instead of relying on the taller
+            neighbor to drag its row down). */}
         <section className="bg-olive pb-16 text-ivory">
-          <div className="mx-auto grid max-w-4xl gap-3 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
+          <div className="mx-auto grid max-w-4xl items-stretch gap-3 px-4 sm:grid-cols-2 sm:px-6 lg:grid-cols-4">
             {checks.map((check, i) => {
               const Icon = CHECK_ICONS[i] ?? Search;
               return (
-                <Reveal key={check.title} delay={i * 80}>
-                  <div className="glass-pill h-full rounded-card p-4">
-                    <Icon className="size-5 text-brass brightness-150" aria-hidden />
-                    <p className="mt-2 font-bold">{check.title}</p>
-                    <p className="mt-1 text-sm text-ivory/70">{check.body}</p>
+                <Reveal key={check.title} delay={i * 80} className="h-full">
+                  <div className="glass-pill flex h-full flex-col gap-2 rounded-card p-5">
+                    <span className="flex size-9 items-center justify-center rounded-full bg-ivory/10">
+                      <Icon className="size-5 text-brass brightness-150" aria-hidden />
+                    </span>
+                    <p className="line-clamp-2 font-bold leading-snug">{check.title}</p>
+                    <p className="line-clamp-2 text-sm text-ivory/70">{check.body}</p>
                   </div>
                 </Reveal>
               );
@@ -191,12 +201,9 @@ export default async function GraderPage({
           <div className="relative mx-auto max-w-3xl px-4 py-16 text-center sm:px-6 md:py-20">
             <Reveal>
               <h2 className="font-display text-3xl font-bold sm:text-4xl">{t("finalCtaTitle")}</h2>
-              <a
-                href="#grader-hero"
-                className="press btn-shine glow-brass glow-hover mt-7 inline-flex h-13 items-center rounded-btn bg-brass px-8 text-lg font-bold text-olive"
-              >
+              <Button href="#grader-hero" size="lg" className="mt-7">
                 {t("finalCtaButton")}
-              </a>
+              </Button>
             </Reveal>
           </div>
         </section>

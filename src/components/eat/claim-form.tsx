@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/marketing/button";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { submitClaimAction } from "@/app/[locale]/(marketing)/eat/actions";
@@ -83,13 +84,9 @@ export function ClaimForm({
           <input value={form.email} onChange={set("email")} type="email" dir="ltr" autoComplete="email" className={inputCls} />
         </label>
       </div>
-      <button
-        type="submit"
-        disabled={state === "sending"}
-        className="mt-1 h-12 rounded-btn bg-brass font-bold text-ivory transition-colors hover:bg-brass-deep disabled:opacity-50"
-      >
+      <Button type="submit" disabled={state === "sending"} className="mt-1">
         {state === "sending" ? t("claimSending") : takedown ? t("takedownSubmit") : t("claimSubmit")}
-      </button>
+      </Button>
       {state === "error" && (
         <p role="alert" className="text-sm font-semibold text-error">
           {t("claimError")}

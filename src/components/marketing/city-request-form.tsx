@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/marketing/button";
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
@@ -77,14 +78,10 @@ export function CityRequestForm() {
           className={field}
         />
       </div>
-      <button
-        type="submit"
-        disabled={state === "sending"}
-        className="press btn-shine mt-3 inline-flex h-11 items-center gap-2 rounded-btn bg-brass px-6 font-bold text-ivory disabled:opacity-50"
-      >
+      <Button type="submit" disabled={state === "sending"} size="sm" className="mt-3">
         <Send className="size-4 rtl:-scale-x-100" aria-hidden />
         {state === "sending" ? t("requestSending") : t("requestSend")}
-      </button>
+      </Button>
     </form>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/marketing/button";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -15,7 +16,6 @@ import {
   Star,
   X,
 } from "lucide-react";
-import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/cn";
 import { ListingPlaceholder } from "./listing-placeholder";
 import { useListingEnrichment } from "./use-listing-enrichment";
@@ -312,12 +312,9 @@ export function ListingProfile({
           <div className="card-crisp rounded-card bg-white p-5">
             {view.verified && view.orderPath ? (
               <>
-                <Link
-                  href={view.orderPath}
-                  className="press btn-shine flex h-13 items-center justify-center rounded-btn bg-brass text-lg font-bold text-ivory"
-                >
+                <Button href={view.orderPath} size="lg" className="w-full">
                   {t("orderNow")}
-                </Link>
+                </Button>
                 <div className="mt-3 flex flex-col gap-2 text-sm">
                   {view.phone && (
                     <a href={`tel:${view.phone}`} dir="ltr" className="inline-flex items-center gap-2 font-semibold text-charcoal hover:text-olive">
@@ -340,12 +337,9 @@ export function ListingProfile({
               <>
                 <h2 className="font-display text-lg font-bold text-olive">{t("ownThis")}</h2>
                 <p className="mt-1 text-sm text-stone">{t("claimPitch")}</p>
-                <a
-                  href="#claim"
-                  className="press mt-4 flex h-11 items-center justify-center rounded-btn bg-brass text-sm font-bold text-ivory"
-                >
+                <Button href="#claim" size="sm" className="mt-4 w-full">
                   {t("claimCta")}
-                </a>
+                </Button>
               </>
             )}
           </div>

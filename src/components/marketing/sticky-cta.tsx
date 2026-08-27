@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { MessageCircle } from "lucide-react";
-import { Link, usePathname } from "@/i18n/navigation";
+import { usePathname } from "@/i18n/navigation";
+import { Button } from "@/components/marketing/button";
 
 /**
  * Mobile-only sticky CTA bar (the Zay-OS "call/text" pattern, done our
@@ -28,12 +29,9 @@ export function StickyCta({ whatsappNumber }: { whatsappNumber: string | null })
   return (
     <div className="animate-rise-in fixed inset-x-0 bottom-0 z-40 border-t border-olive/15 bg-ivory/95 p-3 backdrop-blur md:hidden">
       <div className="mx-auto flex max-w-lg gap-2">
-        <Link
-          href="/calculator"
-          className="btn-shine flex h-12 flex-1 items-center justify-center rounded-btn bg-brass font-bold text-olive"
-        >
+        <Button href="/calculator" className="flex-1">
           {t("estimator")}
-        </Link>
+        </Button>
         {whatsappNumber && (
           <a
             href={`https://wa.me/${whatsappNumber}`}

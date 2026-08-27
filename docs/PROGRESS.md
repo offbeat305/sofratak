@@ -1,5 +1,71 @@
 # Sofratak — Progress Log
 
+## 2026-08-26 (cont. 2) — Four targeted fixes: proof band, shared Button, grader grid, wizard picker
+
+**1. Homepage "Now serving" strip replaced.** Was a thin ivory link
+list; now `NowServingStrip` (new: `src/components/eat/now-serving-strip.tsx`)
+— dark olive + blueprint grid, mono `NOW SERVING` label, three glass
+metro cards with REAL published counts from the directory
+(Tampa Bay 101 / Dearborn & Detroit 247 / Miami & South Florida 182),
+count-up on scroll, each linking to its /eat metro. `CITIES`/`EatStatsStrip`
+imports removed from the homepage as now-unused.
+
+**2. Shared `<Button>` component** (`src/components/marketing/button.tsx`):
+polymorphic (href → i18n Link, hash href → plain anchor for in-page
+scroll, no href → real `<button>` for forms/onClick), variants
+primary/secondary/ghost, tones dark/light, sizes sm/md/lg. Glow lives
+in two new real CSS classes, `.btn-primary-glow` / `.btn-secondary-glow`
+— soft halo at rest, ~30% brighter on hover (verified: rest alpha 0.20
+→ hover 0.30, radius 16px → 26px), 0.98 press scale. **Deliberately
+smaller than `.glow-brass`/`.glow-card-hero`**: those mark the one
+focal object per screen; a button repeats many times per page, so its
+halo has to stay quiet enough not to compete for that role.
+Rolled out to ~24 call sites across every marketing page, /eat, and
+the eat lead-capture forms (home, pricing, contact, grader, cities,
+how-it-works, sticky-cta, live-demo, listing-profile, claim-form,
+suggest-form, demo-form, estimator, city-request-form). Dashboard,
+admin, kitchen, and storefront were left alone on purpose — glow on
+every transactional "Save"/"Add to cart" would blow the ≤8% brass
+budget and stop meaning anything; this is a marketing-surface system.
+**Bonus fix caught in the process**: several primary CTAs had drifted
+to ivory-on-brass text (how-it-works, pricing, grader, demo-form,
+estimator); branding.md says primary = brass bg + OLIVE text always.
+The shared component now enforces that, so the drift can't recur.
+**Gotcha**: two batched Python edits (claim-form.tsx, suggest-form.tsx)
+silently didn't persist — script printed success but the old `<button>`
+markup was still on disk. Cause unclear (possibly a stale-read race
+with a concurrent file-changed reminder); caught by ESLint's unused-
+import warnings pointing at an imported-but-unused `Button`, redone
+with the Edit tool instead. Lesson: after a batch Python rewrite,
+grep-verify the actual result rather than trusting the script's stdout.
+
+**3. Grader "what we check" 4-card grid fixed.** Was misaligned at the
+tablet 2×2 breakpoint: CSS grid stretches items WITHIN a row, but row 1
+and row 2 sized independently, so longer copy in row 1 made it visibly
+taller than row 2. Fixed with `line-clamp-2` on both title and body
+(reserves identical space per field regardless of copy length) plus a
+fixed-size icon badge — content height becomes deterministic instead
+of text-length-dependent, so all four cards read as one flush block at
+768–1024px. Verified at 390 / 820 / 1440.
+
+**4. Requests wizard storefront picker reworked.** The 5 hotspot zones
+over the scaled iframe were cramped (max-w-xs = 320px) with labels
+invisible until :hover, which doesn't exist on touch. Now: desktop
+(sm+) gets a wider frame (max-w-sm, taller), always-visible seams
+between every band (`border-t` regardless of hover), a full-width
+centered label, and a `ring-brass` selected/hover state. **Mobile
+(<640px) drops the overlay entirely for a clean full-width card list**
+— same 5 real section names, ≥44px rows, forward chevron that flips
+for RTL. Verified: desktop hotspot click correctly advances to step 3
+("What do you need?"), mobile card list renders and is tappable, and
+Arabic mirrors fully (back arrow reverses, cards RTL-aligned).
+Verified via a temporary unauthenticated harness route
+(`wizard-preview-tmp`, mounted `RequestWizard` directly) since no
+dashboard login credentials were available in this session — screenshotted,
+then deleted; confirmed 404 after removal and confirmed the stale
+`.next` type cache it left behind (a `next build` type error pointing
+at the deleted route) was cleared before the final green build.
+
 ## 2026-08-26 (cont.) — Pass 7 part 1 + the glow bug that made pass 3 invisible
 
 ### ⚠️ Root cause: every compound glow on the site was silently dead

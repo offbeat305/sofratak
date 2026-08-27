@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Button } from "@/components/marketing/button";
 import { submitLeadAction } from "@/app/[locale]/(marketing)/actions";
 
 const GROWTH_MONTHLY = 349;
@@ -227,12 +227,7 @@ export function HeroCalculator() {
       </div>
 
       <div className="mt-5 flex flex-wrap items-center gap-4">
-        <Link
-          href="/demo"
-          className="btn-shine glow-brass glow-hover press inline-flex h-12 items-center rounded-btn bg-brass px-6 font-bold text-olive transition-[transform,box-shadow] duration-150 hover:scale-[1.03] motion-reduce:hover:scale-100"
-        >
-          {t("bookDemo")}
-        </Link>
+        <Button href="/demo">{t("bookDemo")}</Button>
         {state === "sent" ? (
           <p className="text-sm font-semibold text-positive" role="status">
             {t("sent")}

@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/marketing/button";
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { PlusCircle } from "lucide-react";
@@ -52,14 +53,10 @@ export function SuggestForm({ defaultCity }: { defaultCity?: string }) {
 
   if (!open) {
     return (
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-btn border border-olive/20 bg-white px-5 py-3 text-sm font-bold text-olive transition-colors hover:bg-olive/5"
-      >
+      <Button variant="secondary" tone="light" onClick={() => setOpen(true)}>
         <PlusCircle className="size-4" aria-hidden />
         {t("suggestCta")}
-      </button>
+      </Button>
     );
   }
 
@@ -108,13 +105,9 @@ export function SuggestForm({ defaultCity }: { defaultCity?: string }) {
             <input value={form.note} onChange={set("note")} className={inputCls} />
           </label>
         </div>
-        <button
-          type="submit"
-          disabled={state === "sending"}
-          className="mt-1 h-12 rounded-btn bg-brass font-bold text-ivory transition-colors hover:bg-brass-deep disabled:opacity-50"
-        >
+        <Button type="submit" disabled={state === "sending"} className="mt-1">
           {state === "sending" ? t("claimSending") : t("suggestSubmit")}
-        </button>
+        </Button>
         {state === "error" && (
           <p role="alert" className="text-sm font-semibold text-error">
             {t("claimError")}

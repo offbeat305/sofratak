@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Check, Minus } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { Button } from "@/components/marketing/button";
 import { PricingSavings } from "@/components/marketing/pricing-savings";
 import { CursorGlow } from "@/components/marketing/tech";
 import { Reveal } from "@/components/marketing/reveal";
@@ -207,18 +208,10 @@ export default async function PricingPage({
           <Reveal>
             <h2 className="font-display text-3xl font-bold sm:text-4xl">{t("closingTitle")}</h2>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-              <Link
-                href="/demo"
-                className="press btn-shine glow-brass glow-hover inline-flex h-13 items-center rounded-btn bg-brass px-8 text-lg font-bold text-ivory"
-              >
-                {t("closingCta")}
-              </Link>
-              <Link
-                href="/calculator"
-                className="press inline-flex h-13 items-center rounded-btn border border-ivory/40 px-7 text-lg font-bold text-ivory transition-colors hover:bg-ivory/10"
-              >
+              <Button href="/demo" size="lg">{t("closingCta")}</Button>
+              <Button href="/calculator" variant="secondary" tone="dark" size="lg">
                 {t("closingGhost")}
-              </Link>
+              </Button>
             </div>
           </Reveal>
         </div>

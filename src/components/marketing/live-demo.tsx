@@ -40,7 +40,10 @@ export function LiveDemo() {
             href={`/${demoLocale}/s/beitzizo`}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex h-12 items-center gap-2 rounded-btn border-[1.5px] border-olive px-6 font-bold text-olive transition-colors hover:bg-olive/5"
+            // external target=_blank link — can't go through the Button
+            // component's i18n Link, so the shared glow classes are
+            // applied by hand to stay visually consistent
+            className="press btn-secondary-glow inline-flex h-12 items-center gap-2 rounded-btn border-[1.5px] border-olive px-6 font-bold text-olive transition-colors hover:bg-olive/5"
           >
             {t("open")}
             <ExternalLink className="size-4" aria-hidden />

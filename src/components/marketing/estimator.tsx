@@ -1,9 +1,9 @@
 "use client";
+import { Button } from "@/components/marketing/button";
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { formatCents } from "@/lib/money";
-import { cn } from "@/lib/cn";
 import { submitLeadAction } from "@/app/[locale]/(marketing)/actions";
 
 const GROWTH_MONTHLY = 349; // pricing anchor per the website spec
@@ -207,15 +207,9 @@ export function Estimator() {
                 className="mt-1 h-11 w-full rounded-field border border-olive/20 bg-white px-3.5 text-[15px] focus:outline-none focus-visible:ring-2 focus-visible:ring-olive/25"
               />
             </label>
-            <button
-              type="submit"
-              disabled={state === "sending"}
-              className={cn(
-                "h-11 shrink-0 rounded-btn bg-brass px-6 font-bold text-ivory transition-colors hover:bg-brass-deep disabled:opacity-50",
-              )}
-            >
+            <Button type="submit" disabled={state === "sending"} size="sm" className="shrink-0">
               {state === "sending" ? t("sending") : t("textMe")}
-            </button>
+            </Button>
           </form>
         )}
         {state === "error" && (

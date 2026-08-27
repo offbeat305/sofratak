@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/marketing/button";
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
@@ -394,12 +395,9 @@ export function GraderExperience({ children }: { children: React.ReactNode }) {
               <span className="text-base font-normal text-ivory/60"> /mo</span>
             </p>
             <p className="mt-2 text-sm text-ivory/70">{t("impactNote")}</p>
-            <Link
-              href="/calculator"
-              className="press btn-shine mt-4 inline-flex h-11 items-center rounded-btn bg-brass px-5 text-sm font-bold text-olive"
-            >
+            <Button href="/calculator" size="sm" className="mt-4">
               {t("moneyCta")}
-            </Link>
+            </Button>
           </div>
         ) : (
           <p className="flex items-center gap-2 font-semibold text-positive">
@@ -479,13 +477,9 @@ export function GraderExperience({ children }: { children: React.ReactNode }) {
                 autoComplete="email"
                 className="h-12 flex-1 rounded-field border border-olive/20 bg-white px-4 text-[15px] focus:outline-none focus-visible:ring-2 focus-visible:ring-olive/25"
               />
-              <button
-                type="submit"
-                disabled={unlockState === "sending"}
-                className="press btn-shine h-12 shrink-0 rounded-btn bg-brass px-6 font-bold text-ivory disabled:opacity-50"
-              >
+              <Button type="submit" disabled={unlockState === "sending"} className="shrink-0">
                 {unlockState === "sending" ? t("unlocking") : t("unlock")}
-              </button>
+              </Button>
             </form>
             {unlockState === "error" && (
               <p role="alert" className="mt-2 text-sm font-semibold text-error">
@@ -533,12 +527,9 @@ export function GraderExperience({ children }: { children: React.ReactNode }) {
           <div className="mt-6 rounded-card bg-sand-soft/60 p-5 text-center sm:p-6">
             <p className="font-display text-xl font-bold text-olive">{t("ctaTitle")}</p>
             <p className="mt-1 text-stone">{t("ctaBody")}</p>
-            <Link
-              href={`/demo?restaurant=${encodeURIComponent(restaurantName)}`}
-              className="press btn-shine mt-4 inline-flex h-12 items-center justify-center rounded-btn bg-brass px-6 font-bold text-ivory"
-            >
+            <Button href={`/demo?restaurant=${encodeURIComponent(restaurantName)}`} className="mt-4">
               {t("ctaButton")}
-            </Link>
+            </Button>
           </div>
         )}
 

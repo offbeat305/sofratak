@@ -234,21 +234,19 @@ export function RequestWizard({
             </>
           )}
 
-          {/* Step 2 — show us where */}
+          {/* Step 2 — show us where (fix 4: the visual iframe picker
+              was cramped and its zones were invisible until hover,
+              which doesn't exist on touch. Desktop keeps a wider,
+              always-labeled picker with a real hover/tap ring; mobile
+              swaps to a clean full-width card list — same real
+              storefront, no overlay to fight with on a small screen. */}
           {step === 2 && category === "storefront" && (
             <>
               <h2 className="font-display text-2xl font-bold text-olive">{t("step2Title")}</h2>
               <p className="mt-1 text-sm text-stone">{t("step2StorefrontHint")}</p>
-              {/* THEIR real storefront, scaled, with tappable hotspots */}
-              <div className="card-crisp relative mx-auto mt-4 h-[26rem] w-full max-w-xs overflow-hidden rounded-card bg-white">
-                <iframe
-                  src={storefrontUrl}
-                  title=""
-                  tabIndex={-1}
-                  aria-hidden
-                  className="pointer-events-none origin-top-left"
-                  style={{ width: "200%", height: "200%", transform: "scale(0.5)" }}
-                />
+
+              {/* mobile: labeled card list, no overlay */}
+              <div className="mt-4 flex flex-col gap-2.5 sm:hidden">
                 {STOREFRONT_SECTIONS.map((s) => (
                   <button
                     key={s.key}
@@ -257,20 +255,64 @@ export function RequestWizard({
                       setSection(s.key);
                       setStep(3);
                     }}
-                    style={{ top: `${s.top * 100}%`, height: `${s.height * 100}%` }}
                     className={cn(
-                      "absolute inset-x-0 border-2 border-transparent transition-colors",
-                      section === s.key
-                        ? "rounded-xl border-brass bg-brass/15"
-                        : "hover:rounded-xl hover:border-brass/60 hover:bg-brass/10",
+                      "press card-crisp flex min-h-11 items-center justify-between gap-2 rounded-card bg-white px-4 py-3.5 text-start transition-colors",
+                      section === s.key ? "ring-2 ring-brass" : "hover:bg-olive/[0.04]",
                     )}
                   >
-                    <span className="absolute start-2 top-1.5 rounded-full bg-olive/85 px-2.5 py-0.5 text-xs font-bold text-ivory">
-                      {t(`sections.${s.key}`)}
-                    </span>
+                    <span className="font-bold text-charcoal">{t(`sections.${s.key}`)}</span>
+                    <ArrowLeft className="size-4 shrink-0 rotate-180 text-stone rtl:rotate-0" aria-hidden />
                   </button>
                 ))}
               </div>
+
+              {/* desktop: the real storefront with always-labeled,
+                  always-separated hotspot bands */}
+              <div className="hidden sm:block">
+                <div className="card-crisp relative mx-auto mt-4 h-[32rem] w-full max-w-sm overflow-hidden rounded-card bg-white">
+                  <iframe
+                    src={storefrontUrl}
+                    title=""
+                    tabIndex={-1}
+                    aria-hidden
+                    className="pointer-events-none origin-top-left"
+                    style={{ width: "200%", height: "200%", transform: "scale(0.5)" }}
+                  />
+                  {STOREFRONT_SECTIONS.map((s, i) => (
+                    <button
+                      key={s.key}
+                      type="button"
+                      onClick={() => {
+                        setSection(s.key);
+                        setStep(3);
+                      }}
+                      style={{ top: `${s.top * 100}%`, height: `${s.height * 100}%` }}
+                      className={cn(
+                        "group absolute inset-x-0 flex items-center justify-center transition-colors",
+                        // a visible seam between every band, even at rest —
+                        // this is what makes 5 stacked zones read as 5
+                        // distinct regions instead of one blank overlay
+                        i > 0 && "border-t-2 border-ivory/80",
+                        section === s.key
+                          ? "z-10 bg-brass/20 ring-2 ring-brass ring-inset"
+                          : "hover:bg-brass/10 focus-visible:bg-brass/10",
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "rounded-full px-3 py-1.5 text-xs font-bold shadow-sm transition-colors",
+                          section === s.key
+                            ? "bg-brass text-ivory"
+                            : "bg-olive/80 text-ivory group-hover:bg-olive",
+                        )}
+                      >
+                        {t(`sections.${s.key}`)}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <button type="button" onClick={() => setStep(3)} className="mt-4 text-sm font-semibold text-stone underline-offset-4 hover:underline">
                 {t("skipStep")}
               </button>

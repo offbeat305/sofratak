@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Check, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { Button } from "@/components/marketing/button";
 import { HowTimeline } from "@/components/marketing/how-timeline";
 import { KitchenFeed } from "@/components/marketing/kitchen-feed";
 import { Reveal } from "@/components/marketing/reveal";
@@ -61,18 +62,10 @@ export default async function HowItWorksPage({
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-lg text-ivory/75">{t("heroSub")}</p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/demo"
-              className="press btn-shine glow-brass glow-hover inline-flex h-13 items-center rounded-btn bg-brass px-7 text-lg font-bold text-ivory"
-            >
-              {t("heroCta")}
-            </Link>
-            <Link
-              href="/calculator"
-              className="press inline-flex h-13 items-center rounded-btn border border-ivory/40 px-7 text-lg font-bold text-ivory transition-colors hover:bg-ivory/10"
-            >
+            <Button href="/demo" size="lg">{t("heroCta")}</Button>
+            <Button href="/calculator" variant="secondary" tone="dark" size="lg">
               {t("heroCtaGhost")}
-            </Link>
+            </Button>
           </div>
           <p className="mt-6 text-sm font-semibold text-sand">{t("trustRow")}</p>
         </div>
@@ -204,12 +197,9 @@ export default async function HowItWorksPage({
         <div className="relative mx-auto max-w-3xl px-4 py-16 text-center sm:px-6 md:py-20">
           <Reveal>
             <h2 className="font-display text-3xl font-bold sm:text-4xl">{t("closingTitle")}</h2>
-            <Link
-              href="/demo"
-              className="press btn-shine glow-brass glow-hover mt-7 inline-flex h-13 items-center rounded-btn bg-brass px-8 text-lg font-bold text-ivory"
-            >
+            <Button href="/demo" size="lg" className="mt-7">
               {t("closingCta")}
-            </Link>
+            </Button>
           </Reveal>
         </div>
       </section>

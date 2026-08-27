@@ -3,9 +3,9 @@ import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BadgeCheck } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { Button } from "@/components/marketing/button";
 import { FOUNDER_STORY } from "@/content/founder-story";
-import { CITIES } from "@/content/cities";
-import { EatStatsStrip } from "@/components/eat/eat-stats-strip";
+import { NowServingStrip } from "@/components/eat/now-serving-strip";
 import { localeAlternates } from "@/lib/seo";
 import { ArchDivider } from "@/components/marketing/arch-divider";
 import { ArchWatermark } from "@/components/marketing/arch-watermark";
@@ -133,29 +133,9 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* 2 · Now-serving strip (ivory, thin) */}
-      <section className="border-b border-olive/10 bg-ivory">
-        <div className="mx-auto flex max-w-[1200px] flex-wrap items-center gap-x-4 gap-y-1.5 px-4 py-5 sm:px-6">
-          <span className="text-xs font-bold tracking-wide text-stone uppercase">
-            {t("strip.now")}
-          </span>
-          {CITIES.map((city) => (
-            <Link
-              key={city.slug}
-              href={`/cities/${city.slug}`}
-              className="text-sm font-semibold text-olive/80 underline-offset-4 hover:text-olive hover:underline"
-            >
-              {city.name[loc]}
-            </Link>
-          ))}
-          {/* live directory stats (design-pass-2 B) */}
-          <span className="ms-auto">
-            <Link href="/eat" className="hover:underline">
-              <EatStatsStrip />
-            </Link>
-          </span>
-        </div>
-      </section>
+      {/* 2 · Now-serving proof band (fix 1): real per-metro counts,
+             replaces the old thin link-list strip */}
+      <NowServingStrip />
 
       {/* 3 · Where your $30 goes — glass panel on lit dark olive
              (design-pass-3 §3) */}
@@ -352,18 +332,12 @@ export default async function HomePage({
               {t("finalCta.title")}
             </h2>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link
-                href="/calculator"
-                className="btn-shine glow-brass glow-hover inline-flex h-13 items-center rounded-btn bg-brass px-7 text-lg font-bold text-olive transition-transform duration-150 hover:scale-[1.03] motion-reduce:hover:scale-100"
-              >
+              <Button href="/calculator" size="lg">
                 {t("finalCta.estimator")}
-              </Link>
-              <Link
-                href="/grader"
-                className="inline-flex h-13 items-center rounded-btn border border-ivory/40 px-7 text-lg font-bold text-ivory transition-colors hover:bg-ivory/10"
-              >
+              </Button>
+              <Button href="/grader" variant="secondary" tone="dark" size="lg">
                 {t("finalCta.grader")}
-              </Link>
+              </Button>
               <WhatsAppLink />
             </div>
           </Reveal>

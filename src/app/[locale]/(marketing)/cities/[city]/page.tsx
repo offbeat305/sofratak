@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { BadgeCheck } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { Button } from "@/components/marketing/button";
 import { ArchWatermark } from "@/components/marketing/arch-watermark";
 import { FeatureGrid } from "@/components/marketing/feature-grid";
 import { LiveDemo } from "@/components/marketing/live-demo";
@@ -116,18 +117,10 @@ export default async function CityPage({ params }: { params: Params }) {
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              href="/calculator"
-              className="btn-shine inline-flex h-12 items-center rounded-btn bg-brass px-6 font-bold text-olive transition-transform duration-150 hover:scale-[1.03] motion-reduce:hover:scale-100"
-            >
-              {t("citiesPage.estimatorCta")}
-            </Link>
-            <Link
-              href="/demo"
-              className="inline-flex h-12 items-center rounded-btn border-[1.5px] border-ivory px-6 font-semibold text-ivory transition-colors hover:bg-ivory/10"
-            >
+            <Button href="/calculator">{t("citiesPage.estimatorCta")}</Button>
+            <Button href="/demo" variant="secondary" tone="dark">
               {t("nav.demo")}
-            </Link>
+            </Button>
           </div>
           <p className="mt-4 text-xs text-ivory/60">
             {t("math.line", { amount: "$3,000+" })} {t("math.estimated")}{" "}
@@ -235,12 +228,7 @@ export default async function CityPage({ params }: { params: Params }) {
               {t("finalCta.title")}
             </h2>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
-              <Link
-                href="/calculator"
-                className="btn-shine inline-flex h-13 items-center rounded-btn bg-brass px-7 text-lg font-bold text-olive transition-transform duration-150 hover:scale-[1.03] motion-reduce:hover:scale-100"
-              >
-                {t("finalCta.estimator")}
-              </Link>
+              <Button href="/calculator" size="lg">{t("finalCta.estimator")}</Button>
               <WhatsAppLink />
             </div>
             <p className="mt-10 text-xs font-bold tracking-wide text-sand uppercase">

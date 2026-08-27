@@ -332,6 +332,58 @@ h4 {
     0 0 70px rgba(169, 121, 43, 0.28);
 }
 
+/* ── Shared Button glow (fix 2) ──────────────────────────────────────
+   Deliberately smaller/softer than .glow-brass and .glow-card-hero:
+   those mark the ONE focal object per screen (branding.md restraint
+   rule); a button appears many times per page, so its halo has to be
+   quiet enough that it never competes for that role. Real classes, not
+   Tailwind arbitrary shadow-[a,b] — see the pass-3/pass-7 postmortem
+   in PROGRESS.md for why that form silently fails to compile. */
+.btn-primary-glow {
+  box-shadow:
+    0 1px 2px rgba(31, 31, 31, 0.1),
+    0 0 16px rgba(169, 121, 43, 0.2);
+  transition:
+    box-shadow 200ms ease,
+    transform 120ms ease-out;
+}
+.btn-primary-glow:hover {
+  /* ~30% brighter, per spec */
+  box-shadow:
+    0 1px 2px rgba(31, 31, 31, 0.1),
+    0 0 26px rgba(169, 121, 43, 0.3);
+}
+.btn-primary-glow:active {
+  transform: scale(0.98);
+}
+
+.btn-secondary-glow {
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 120ms ease-out;
+}
+.btn-secondary-glow:hover {
+  box-shadow: 0 0 20px rgba(169, 121, 43, 0.16);
+}
+.btn-secondary-glow:active {
+  transform: scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-primary-glow,
+  .btn-primary-glow:hover,
+  .btn-secondary-glow,
+  .btn-secondary-glow:hover {
+    transition: none;
+  }
+  .btn-primary-glow:active,
+  .btn-secondary-glow:active {
+    transform: none;
+  }
+}
+
 /* Brass halo — THE signature. Soft, large radius, never a neon rim. */
 .glow-brass {
   box-shadow: 0 0 60px rgba(169, 121, 43, 0.3);

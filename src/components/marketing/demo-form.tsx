@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { Button } from "@/components/marketing/button";
 import { submitLeadAction } from "@/app/[locale]/(marketing)/actions";
 
 export function DemoForm() {
@@ -87,13 +88,9 @@ export function DemoForm() {
           className="mt-1 w-full rounded-field border border-olive/20 bg-white px-3.5 py-2.5 text-[15px] focus:outline-none focus-visible:ring-2 focus-visible:ring-olive/25"
         />
       </label>
-      <button
-        type="submit"
-        disabled={state === "sending"}
-        className="mt-1 h-12 rounded-btn bg-brass font-bold text-ivory transition-colors hover:bg-brass-deep disabled:opacity-50"
-      >
+      <Button type="submit" disabled={state === "sending"} className="mt-1">
         {state === "sending" ? t("sending") : t("submit")}
-      </button>
+      </Button>
       {state === "error" && (
         <p className="text-sm font-semibold text-error" role="alert">
           {tEst("error")}

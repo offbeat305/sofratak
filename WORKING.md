@@ -1,8 +1,11 @@
-# 🔒 HELD — Cowork · 2026-08-27 EDT
+# 🔓 FREE
 
-Working on: coming-soon headline font swap (Cormorant -> font-display/DM Sans)
-and fixing the crash behind the broken "Notify me" button (ENOENT on the
-local leads backup write in the read-only Vercel function filesystem).
+Last held by: Cowork · released 2026-08-27 EDT — shipped the coming-soon
+headline font swap (font-display/DM Sans) and the Notify-me crash fix
+(commit d55529d). Supabase env vars (SUPABASE_URL,
+NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY,
+SUPABASE_SERVICE_ROLE_KEY) still need adding in Vercel for leads to
+land in the leads table instead of just the notification email.
 
 ---
 

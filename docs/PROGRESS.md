@@ -1,5 +1,87 @@
 # Sofratak — Progress Log
 
+## 2026-08-27 (cont.) — Launch coming-soon maintenance gate (docs/launch-coming-soon-spec.md)
+
+Launch blocker per Zizo: get sofratak.com showing a real holding page
+today without waiting on the rest of the build, flip it off with zero
+redeploy once ready.
+
+**The gate** (`src/middleware.ts`): reads `MAINTENANCE_MODE` fresh on
+every request (no build-time inlining, so Vercel env var flips take
+effect immediately). When `"true"`, every request except `/admin/*` and
+the `/coming-soon` route itself is REWRITTEN (not redirected) to
+`/{locale}/coming-soon` — visitor's URL bar never changes, so turning it
+off later is invisible. Runs before the tenant-subdomain and next-intl
+logic, so it also covers storefront subdomains (`beitzizo.sofratak.com`).
+`/api/*` never reaches this code at all — already excluded by the
+existing middleware matcher. When the var is unset/false, the added
+block is skipped entirely — verified byte-for-byte zero behavior change
+by running the same routes against a server with the var unset.
+
+**The page** (`src/app/[locale]/coming-soon/`): deliberately lives
+OUTSIDE `(marketing)` — no Navbar/Footer/Assistant/sticky-CTA, a wall
+not a mini-site. Logo, Cormorant headline + Manrope sub (dot-grid
+texture, static `.glow-brass` halo behind the headline), single-email
+capture (`ComingSoonEmailForm` + a dedicated `submitComingSoonEmail`
+action — every other lead form on the site requires phone, this one
+skips that contract on purpose since email-only is the whole point of a
+low-friction wall), WhatsApp link + `LocaleSwitcher` + the existing
+`footer.rights` string in the footer.
+
+**Copy**: headline/sub are EN-only for now (`src/content/coming-soon.ts`,
+gated the same way `founder-story.ts` already is) — Zizo hasn't reviewed
+Arabic copy for this page yet, so nothing unreviewed ships. Everything
+ELSE on the page (email placeholder, button, footer) uses the site's
+normal, already-shipped en/ar message files, so the AR locale still
+fully works structurally (RTL mirroring, EN/AR toggle) even with an
+English headline.
+
+**Migration** `0015_leads_coming_soon.sql` (NOT yet applied by Zizo,
+same additive drop/add shape as 0005/0010/0011/0014, doesn't touch
+0014): widens `leads_kind_check` to add `coming_soon`.
+
+**Bugs caught and fixed**:
+- A real, previously-shipped bug in the shared `<Button>` component
+  (`src/components/marketing/button.tsx`): the plain-`<button>` branch
+  spread `...rest` AFTER `className={cls}`, and `rest` still contained
+  the ORIGINAL unprocessed `className` prop (TypeScript's `Omit` on the
+  type didn't match the runtime destructure) — so `rest.className`
+  silently overwrote the fully-computed class string on every single
+  `<Button type="submit">` site-wide. Found because this page's own
+  "Notify me" button rendered as unstyled plain text. Confirmed the same
+  bug had already silently broken the /stories newsletter button and
+  every other lead-capture submit button built earlier this session
+  (contact, demo, city-request, claim, suggest, estimator, grader).
+  Fixed at the root (excluded every CommonProps field from `rest`
+  explicitly) — spot-verified the stories newsletter button now
+  computes the correct `bg-brass` class after the fix.
+- Bidi punctuation bug: the English-placeholder headline/sub inherited
+  the page's `dir="rtl"` on `/ar/coming-soon`, which reordered trailing
+  periods ("`.cooking`" instead of "`cooking.`"). Fixed by pinning
+  `dir="ltr"` on just that text block, same fix category as the
+  Stories article body's existing forced-LTR convention.
+
+Verified end-to-end: gate on (pricing/homepage/tenant paths all rewrite
+to the coming-soon page, URL bar unaffected; `/admin` still redirects to
+its own login flow untouched; `/api/cron/*` still returns real JSON) and
+gate off (zero behavior change, confirmed against a clean second dev
+server). Email capture submitted live against Supabase — correctly
+REJECTED by the not-yet-widened constraint and caught by the existing
+"never lose a lead" local-backup fallback, proving the whole pipeline
+end to end for the moment Zizo applies 0015. `tsc` / `eslint` / `next
+build` all clean, both locales statically prerendered. 390px mobile +
+1280px desktop, EN and AR + RTL screenshotted.
+
+**Handoff for Zizo**:
+- Apply `supabase/migrations/0015_leads_coming_soon.sql` (does not touch
+  0014).
+- In Vercel: add env var `MAINTENANCE_MODE` = `true` to turn the wall
+  ON. No redeploy needed — it's read per-request. Removing the var (or
+  setting it to anything other than `"true"`) turns it back off, also
+  with no redeploy.
+- Arabic headline/sub for `/coming-soon` still needs your review —
+  currently English-only on both locales, `src/content/coming-soon.ts`.
+
 ## 2026-08-27 — Design pass 6: Stories rebuild (docs/design-pass-6-stories.md)
 
 Built against the spec on disk, full A/B/C scope:

@@ -88,7 +88,20 @@ export function Button(props: LinkProps | ButtonProps) {
     );
   }
 
-  const { type = "button", ...rest } = props as ButtonProps;
+  // Every CommonProps field must be excluded from `rest` here — it's
+  // spread onto the real DOM node, and a stale `className` left inside
+  // it silently overwrites the computed `cls` (found via the
+  // coming-soon "Notify me" button rendering as unstyled text; this
+  // broke every <Button type="submit"> site-wide, not just this one).
+  const {
+    type = "button",
+    variant: _variant,
+    tone: _tone,
+    size: _size,
+    className: _className,
+    children: _children,
+    ...rest
+  } = props as ButtonProps;
   return (
     <button type={type} className={cls} {...rest}>
       {children}

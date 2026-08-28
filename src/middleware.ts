@@ -1,9 +1,23 @@
 import { NextResponse, type NextRequest } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { createServerClient } from "@supabase/ssr";
-import { routing } from "./i18n/routing";
+import { routing, type Locale } from "./i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
+
+/**
+ * Launch gate (docs/launch-coming-soon-spec.md). One env var, read fresh
+ * on every request (no build-time inlining) so Zizo can flip it in Vercel
+ * without a redeploy. Runs before everything else — tenant storefronts
+ * included, since "every request" means every request.
+ */
+const ADMIN_PATH_RE = /^\/(?:(?:en|ar)\/)?admin(\/|$)/;
+const COMING_SOON_PATH_RE = /^\/(?:(?:en|ar)\/)?coming-soon(\/|$)/;
+
+function localeFromPathname(pathname: string): Locale {
+  const match = pathname.match(/^\/(en|ar)(\/|$)/);
+  return match?.[1] === "ar" ? "ar" : routing.defaultLocale;
+}
 
 /** Paths that need a live session — token refresh happens here because
  * server components can't write cookies. */
@@ -48,6 +62,18 @@ function tenantSlugFromHost(host: string): string | null {
 }
 
 export default async function middleware(request: NextRequest) {
+  if (process.env.MAINTENANCE_MODE === "true") {
+    const { pathname } = request.nextUrl;
+    if (!ADMIN_PATH_RE.test(pathname) && !COMING_SOON_PATH_RE.test(pathname)) {
+      const url = request.nextUrl.clone();
+      url.pathname = `/${localeFromPathname(pathname)}/coming-soon`;
+      // Rewrite, not redirect — the visitor's URL bar (sofratak.com,
+      // beitzizo.sofratak.com, whatever they typed) never changes, so
+      // flipping the var back off later is instant and invisible.
+      return NextResponse.rewrite(url);
+    }
+  }
+
   let response: NextResponse | undefined;
 
   const slug = tenantSlugFromHost(request.headers.get("host") ?? "");

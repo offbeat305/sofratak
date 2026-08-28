@@ -1043,6 +1043,13 @@
       "emailLabel": "Email",
       "instagramLabel": "Instagram",
       "location": "Offbeat Creative LLC · Tampa, FL · serving Florida and Michigan"
+    },
+    "comingSoon": {
+      "emailPlaceholder": "Your email",
+      "notifyMe": "Notify me",
+      "sending": "Sending...",
+      "sent": "You're on the list. We'll email you the moment we launch.",
+      "error": "Something went wrong. Try again in a moment."
     }
   },
   "auth": {

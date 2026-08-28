@@ -14,7 +14,9 @@ export type LeadInput = {
     // design-pass-7 (migration 0014)
     | "contact"
     | "city_request"
-    | "story_signup";
+    | "story_signup"
+    // launch coming-soon gate (migration 0015)
+    | "coming_soon";
   name: string;
   phone: string;
   email?: string | null;

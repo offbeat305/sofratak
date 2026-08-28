@@ -1043,6 +1043,13 @@
       "emailLabel": "البريد الإلكتروني",
       "instagramLabel": "إنستغرام",
       "location": "Offbeat Creative LLC · تامبا، فلوريدا · نخدم فلوريدا وميشيغان"
+    },
+    "comingSoon": {
+      "emailPlaceholder": "بريدك الإلكتروني",
+      "notifyMe": "أبلغني",
+      "sending": "جارٍ الإرسال...",
+      "sent": "تم تسجيلك. سنراسلك فور الإطلاق.",
+      "error": "حدث خطأ. حاول مرة أخرى بعد قليل."
     }
   },
   "auth": {

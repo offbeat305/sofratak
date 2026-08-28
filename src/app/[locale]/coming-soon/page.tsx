@@ -32,8 +32,16 @@ export default async function ComingSoonPage({
 
   return (
     <div className="texture-dots flex min-h-dvh flex-col items-center justify-center bg-ivory px-4 py-10 text-center">
+      {/* Full lockup (icon + EN wordmark + AR wordmark + tagline) — bigger
+          than the header logo on purpose, this is the whole page. */}
       {/* eslint-disable-next-line @next/next/no-img-element -- static brand asset, not next/image-worthy for a one-off wall page */}
-      <img src="/brand/logo-full.png" alt="Sofratak" width={240} height={55} className="h-11 w-auto sm:h-12" />
+      <img
+        src="/brand/logo-coming-soon.png"
+        alt="Sofratak — Take Control. Own Your Growth."
+        width={904}
+        height={319}
+        className="h-16 w-auto sm:h-20"
+      />
 
       {/* dir="ltr" pinned here regardless of page locale — this copy is
           English-only until Zizo reviews an Arabic version (see

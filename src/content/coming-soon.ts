@@ -19,7 +19,7 @@ export const COMING_SOON_COPY = {
     copyright: "© {year} Sofratak LLC. All rights reserved.",
   },
   ar: {
-    headline: "عصر جديد قادم للمطاعم العربية.",
+    headline: "مستقبل جديد للمطاعم العربية يبدأ هنا.",
     sub: "كن أول من يعرف.",
     // Legal entity name kept in Latin script, matching footer.rights'
     // "Offbeat Creative LLC" precedent (src/messages/ar.json).

@@ -1,5 +1,28 @@
 # Sofratak — Progress Log
 
+## 2026-08-27 (cont. 2) — Coming-soon copy revision
+
+Zizo's follow-up: don't reveal what the product is yet, drop the
+WhatsApp/contact option (keep the wall to just the email capture), and
+swap the footer entity name to "Sofratak LLC" for now.
+
+- Headline → "A new era is coming for Arab restaurants." Sub is now
+  deliberately vague ("We're not ready to share the details. Be the
+  first to know when we do.") — no mention of restaurant-platform,
+  commission-free ordering, or anything else that gives away the
+  mechanism. Still English-only/unreviewed-Arabic-pending per the
+  standing rule.
+- Removed the `<WhatsAppLink>` from the page footer entirely — this
+  page's only ask is the email form now.
+- Footer copyright is no longer the sitewide `footer.rights` string
+  (which correctly still says Offbeat Creative LLC everywhere else on
+  the site) — added a page-local `COMING_SOON_COPY.copyright` template
+  ("© {year} Sofratak LLC. All rights reserved.") so only this one
+  temporary page carries the placeholder entity name.
+
+Re-verified EN + AR/RTL at 390px and 1280px, tsc/eslint clean.
+Screenshots re-taken (docs/launch-coming-soon-*.png).
+
 ## 2026-08-27 (cont.) — Launch coming-soon maintenance gate (docs/launch-coming-soon-spec.md)
 
 Launch blocker per Zizo: get sofratak.com showing a real holding page

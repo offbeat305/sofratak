@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { WhatsAppLink } from "@/components/marketing/whatsapp-link";
+import { setRequestLocale } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { COMING_SOON_COPY } from "@/content/coming-soon";
 import { ComingSoonEmailForm } from "./email-form";
@@ -29,8 +28,7 @@ export default async function ComingSoonPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const tFooter = await getTranslations("footer");
-  const year = new Date().getFullYear();
+  const copyright = COMING_SOON_COPY.copyright.replace("{year}", String(new Date().getFullYear()));
 
   return (
     <div className="texture-dots flex min-h-dvh flex-col items-center justify-center bg-ivory px-4 py-10 text-center">
@@ -57,11 +55,8 @@ export default async function ComingSoonPage({
       </div>
 
       <footer className="mt-16 flex flex-col items-center gap-3 text-sm text-stone">
-        <div className="flex items-center gap-4">
-          <WhatsAppLink className="h-10 px-4 text-sm" />
-          <LocaleSwitcher className="text-stone hover:text-olive" />
-        </div>
-        <p>{tFooter("rights", { year })}</p>
+        <LocaleSwitcher className="text-stone hover:text-olive" />
+        <p dir="ltr">{copyright}</p>
       </footer>
     </div>
   );

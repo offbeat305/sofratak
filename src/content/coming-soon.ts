@@ -17,7 +17,7 @@
 export const COMING_SOON_COPY = {
   headline: "A new era is coming for Arab restaurants.",
   // Deliberately vague — Zizo doesn't want to say what this is yet.
-  sub: "We're not ready to share the details. Be the first to know when we do.",
+  sub: "Be the first to know.",
   // "Sofratak LLC" is a placeholder for the real entity name — swap when
   // that's finalized. Not the sitewide footer.rights string on purpose:
   // that one still correctly says Offbeat Creative LLC everywhere else.

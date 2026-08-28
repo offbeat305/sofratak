@@ -49,7 +49,7 @@ export default async function ComingSoonPage({
           page's dir="rtl" on /ar reorders its punctuation (bidi). */}
       <div dir="ltr" className="relative mt-10 sm:mt-12">
         <div className="glow-brass absolute inset-x-4 inset-y-2 -z-10 rounded-full" aria-hidden />
-        <h1 className="font-[family-name:var(--font-cormorant)] max-w-2xl text-[34px] leading-[1.15] font-semibold text-olive sm:text-5xl">
+        <h1 className="font-display max-w-2xl text-[34px] leading-[1.1] font-bold tracking-tight text-olive sm:text-5xl">
           {COMING_SOON_COPY.headline}
         </h1>
       </div>

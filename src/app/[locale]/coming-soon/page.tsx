@@ -6,10 +6,16 @@ import { ComingSoonEmailForm } from "./email-form";
 
 export const revalidate = false;
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const copy = locale === "ar" ? COMING_SOON_COPY.ar : COMING_SOON_COPY.en;
   return {
     title: "Sofratak — Coming Soon",
-    description: COMING_SOON_COPY.sub,
+    description: copy.sub,
     // Temporary wall, not a real page — never index this over the real site.
     robots: { index: false, follow: false },
   };
@@ -28,7 +34,8 @@ export default async function ComingSoonPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const copyright = COMING_SOON_COPY.copyright.replace("{year}", String(new Date().getFullYear()));
+  const copy = locale === "ar" ? COMING_SOON_COPY.ar : COMING_SOON_COPY.en;
+  const copyright = copy.copyright.replace("{year}", String(new Date().getFullYear()));
 
   return (
     <div className="texture-dots flex min-h-dvh flex-col items-center justify-center bg-ivory px-4 py-10 text-center">
@@ -43,20 +50,17 @@ export default async function ComingSoonPage({
         className="h-16 w-auto sm:h-20"
       />
 
-      {/* dir="ltr" pinned here regardless of page locale — this copy is
-          English-only until Zizo reviews an Arabic version (see
-          src/content/coming-soon.ts), and leaving it to inherit the
-          page's dir="rtl" on /ar reorders its punctuation (bidi). */}
-      <div dir="ltr" className="relative mt-10 sm:mt-12">
+      {/* EN/AR now both approved (Zizo, Aug 2026) — no more dir="ltr"
+          pinning, this follows the page's natural direction (RTL on /ar)
+          like everything else on the site. */}
+      <div className="relative mt-10 sm:mt-12">
         <div className="glow-brass absolute inset-x-4 inset-y-2 -z-10 rounded-full" aria-hidden />
         <h1 className="font-display max-w-2xl text-[34px] leading-[1.1] font-bold tracking-tight text-olive sm:text-5xl">
-          {COMING_SOON_COPY.headline}
+          {copy.headline}
         </h1>
       </div>
 
-      <p dir="ltr" className="mt-5 max-w-md text-[15px] text-stone sm:text-lg">
-        {COMING_SOON_COPY.sub}
-      </p>
+      <p className="mt-5 max-w-md text-[15px] text-stone sm:text-lg">{copy.sub}</p>
 
       <div className="mt-8 w-full max-w-md">
         <ComingSoonEmailForm />
@@ -64,7 +68,7 @@ export default async function ComingSoonPage({
 
       <footer className="mt-16 flex flex-col items-center gap-3 text-sm text-stone">
         <LocaleSwitcher className="text-stone hover:text-olive" />
-        <p dir="ltr">{copyright}</p>
+        <p>{copyright}</p>
       </footer>
     </div>
   );

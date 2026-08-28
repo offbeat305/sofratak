@@ -1,10 +1,9 @@
-# 🔒 HELD — Cowork · 2026-08-27 EDT
+# 🔓 FREE
 
-Working on: translating the coming-soon headline/sub/copyright to Arabic
-(Zizo approved — was deliberately English-only pending his review, see
-src/content/coming-soon.ts history). Also: Zizo added the Supabase env
-vars in Vercel himself and it's confirmed working end-to-end (verified
-a real row landing in the leads table).
+Last held by: Cowork · released 2026-08-27 EDT — shipped Arabic
+translation for the coming-soon headline/sub/copyright (commit above),
+and confirmed the Notify-me form now writes real rows to the Supabase
+leads table (Zizo added the env vars in Vercel).
 
 ---
 

@@ -1,6 +1,6 @@
-# 🔒 HELD — Claude Code (terminal session) · 2026-08-27 EDT
+# 🔓 FREE
 
-Working on: launch coming-soon maintenance gate (docs/launch-coming-soon-spec.md).
+Last held by: Claude Code (terminal session) · released 2026-08-27 EDT
 
 ---
 

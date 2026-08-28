@@ -1,7 +1,8 @@
-# 🔓 FREE
+# 🔒 HELD — Cowork · 2026-08-27 EDT
 
-Last held by: Cowork · released 2026-08-27 EDT (synced canonical repo with
-GitHub after pushing the coming-soon full logo lockup; no other changes)
+Working on: coming-soon headline font swap (Cormorant -> font-display/DM Sans)
+and fixing the crash behind the broken "Notify me" button (ENOENT on the
+local leads backup write in the read-only Vercel function filesystem).
 
 ---
 

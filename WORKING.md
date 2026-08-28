@@ -1,11 +1,10 @@
-# 🔓 FREE
+# 🔒 HELD — Cowork · 2026-08-27 EDT
 
-Last held by: Cowork · released 2026-08-27 EDT — shipped the coming-soon
-headline font swap (font-display/DM Sans) and the Notify-me crash fix
-(commit d55529d). Supabase env vars (SUPABASE_URL,
-NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY,
-SUPABASE_SERVICE_ROLE_KEY) still need adding in Vercel for leads to
-land in the leads table instead of just the notification email.
+Working on: translating the coming-soon headline/sub/copyright to Arabic
+(Zizo approved — was deliberately English-only pending his review, see
+src/content/coming-soon.ts history). Also: Zizo added the Supabase env
+vars in Vercel himself and it's confirmed working end-to-end (verified
+a real row landing in the leads table).
 
 ---
 

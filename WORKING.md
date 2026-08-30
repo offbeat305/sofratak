@@ -1,10 +1,6 @@
-# 🔓 FREE
+# 🔒 HELD — Claude Code (terminal session) · 2026-08-30 EDT
 
-Last held by: Cowork · released 2026-08-30 EDT — added
-docs/mobile-app-spec.md for the real native diner app Zizo wants
-Code to build (supersedes mobile/, the earlier webview wrapper).
-Needs Zizo's stack sign-off (React Native + Expo recommended)
-before Code starts building screens.
+Working on: native diner app (docs/mobile-app-spec.md) — API layer + Expo app in mobile-app/.
 
 ---
 

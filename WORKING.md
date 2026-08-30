@@ -1,8 +1,8 @@
-# 🔓 FREE
+# 🔒 HELD — Cowork · 2026-08-30 EDT
 
-Last held by: Cowork · released 2026-08-30 EDT — shipped mobile/, a
-Capacitor scaffold for the Sofratak diner app (wraps the live web
-storefront). See docs/PROGRESS.md and mobile/README.md.
+Working on: docs/mobile-app-spec.md — Zizo wants a real native diner
+app (not the mobile/ webview wrapper), spec'd for Code to build. New
+doc only, no other files touched.
 
 ---
 

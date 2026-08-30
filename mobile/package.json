@@ -1,0 +1,26 @@
+{
+  "name": "sofratak-mobile",
+  "version": "1.0.0",
+  "description": "Sofratak diner app: Capacitor wrapper around the live web storefront (www.sofratak.com).",
+  "main": "index.js",
+  "scripts": {
+    "sync": "cap sync",
+    "open:ios": "cap open ios",
+    "open:android": "cap open android",
+    "run:ios": "cap run ios",
+    "run:android": "cap run android"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/core": "^8.5.0",
+    "@capacitor/ios": "^8.5.0"
+  },
+  "private": true,
+  "devDependencies": {
+    "@capacitor/cli": "^8.5.0",
+    "typescript": "^7.0.2"
+  }
+}

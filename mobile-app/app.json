@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "Sofratak",
+    "slug": "sofratak",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.sofratak.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#2F4A3C",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.sofratak.app"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.sofratak.app",
+          "enableGooglePay": true
+        }
+      ],
+      "expo-localization"
+    ],
+    "scheme": "sofratak"
+  }
+}

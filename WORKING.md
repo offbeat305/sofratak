@@ -1,9 +1,8 @@
-# 🔓 FREE
+# 🔒 HELD — Cowork · 2026-08-30 EDT
 
-Last held by: Cowork · released 2026-08-27 EDT — shipped Arabic
-translation for the coming-soon headline/sub/copyright (commit above),
-and confirmed the Notify-me form now writes real rows to the Supabase
-leads table (Zizo added the env vars in Vercel).
+Working on: adding mobile/ — a Capacitor scaffold for the Sofratak
+diner app (wraps the live web storefront, doesn't touch the Next.js
+app itself). New top-level directory, no shared files touched.
 
 ---
 

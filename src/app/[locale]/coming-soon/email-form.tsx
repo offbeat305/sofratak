@@ -15,8 +15,17 @@ export function ComingSoonEmailForm() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setState("sending");
-    const result = await submitComingSoonEmail({ email, locale, website });
-    setState(result.ok ? "sent" : "error");
+    // Belt-and-suspenders: submitComingSoonEmail returns {ok:false} for
+    // handled cases (bad email, rate limit), but an unhandled server-side
+    // exception rejects the promise instead — without this catch that left
+    // the button stuck on "Sending..." forever (the Aug 2026 bug report).
+    try {
+      const result = await submitComingSoonEmail({ email, locale, website });
+      setState(result.ok ? "sent" : "error");
+    } catch (err) {
+      console.error("[coming-soon] submit failed", err);
+      setState("error");
+    }
   };
 
   if (state === "sent") {

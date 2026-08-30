@@ -1,8 +1,8 @@
-# 🔒 HELD — Cowork · 2026-08-30 EDT
+# 🔓 FREE
 
-Working on: adding mobile/ — a Capacitor scaffold for the Sofratak
-diner app (wraps the live web storefront, doesn't touch the Next.js
-app itself). New top-level directory, no shared files touched.
+Last held by: Cowork · released 2026-08-30 EDT — shipped mobile/, a
+Capacitor scaffold for the Sofratak diner app (wraps the live web
+storefront). See docs/PROGRESS.md and mobile/README.md.
 
 ---
 

@@ -1,5 +1,42 @@
 # Sofratak — Progress Log
 
+## 2026-08-30 — mobile/ scaffold: Sofratak diner app (Capacitor)
+
+Zizo wants a mobile app ready to go for whenever the site itself
+launches for real. Decided together: diner ordering app first (not
+owner/kitchen), built by wrapping the existing web app in Capacitor
+rather than a native rebuild from scratch — fastest path to something
+in the App Store / Play Store, and every future web feature ships to
+the app automatically since it's the same site in a WebView.
+
+- New top-level `mobile/` directory — separate npm project, doesn't
+  touch the Next.js app. `capacitor.config.ts` points the WebView at
+  `SOFRATAK_APP_URL` (defaults to https://www.sofratak.com); override
+  it to test against a preview deploy or a specific restaurant
+  subdomain.
+- `android/` and `ios/` native projects generated via `cap add` and
+  committed (Capacitor's own convention — real projects to open in
+  Android Studio / Xcode, not build output).
+- App icon + splash cropped from the existing brand mark
+  (`public/brand/logo-full.png`'s cloche + growth-chart glyph, no
+  wordmark) onto the ivory brand background, hand-generated at every
+  required size for both platforms — the usual `@capacitor/assets`
+  generator needs a native `sharp` binary this sandbox's network
+  policy blocks, so this was done manually with PIL instead.
+  Placeholder-quality; `mobile/README.md` flags it for a real design
+  pass before an actual store submission.
+- `mobile/README.md` documents how to open/run it and what only Zizo
+  can do from here: Apple Developer Program + Google Play Console
+  accounts, final bundle ID decision (`com.sofratak.app` placeholder),
+  store listing assets, push notifications (not built), and a
+  real-device pass once `MAINTENANCE_MODE` comes off — right now the
+  wrapped app just shows the coming-soon page, same as the website,
+  since it's loading the same URL.
+- **Cannot be built into a real .ipa/.apk from this session** — iOS
+  needs Xcode (Mac-only, run locally), Android could theoretically
+  build headlessly but signing/shipping either one needs the accounts
+  above. This is the scaffold Zizo opens on his own machine next.
+
 ## 2026-08-27 (cont. 2) — Coming-soon copy revision
 
 Zizo's follow-up: don't reveal what the product is yet, drop the

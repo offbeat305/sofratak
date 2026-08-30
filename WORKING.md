@@ -1,13 +1,6 @@
-# 🔓 FREE
+# 🔒 HELD — Claude Code (terminal session) · 2026-08-30 EDT
 
-Last held by: Claude Code (terminal session) · released 2026-08-30 EDT —
-native diner app v1 landed (mobile-app/, Expo) against
-docs/mobile-app-spec.md (Cowork's spec, same day). Cowork then merged
-this history with the parallel GitHub-tracked history (coming-soon
-fixes, Arabic translation, the mobile/ Capacitor wrapper) that Code's
-local repo had never seen — see docs/PROGRESS.md for both threads.
-mobile/ (wrapper) and mobile-app/ (real native app) both exist on
-purpose for now; mobile-app/ is the one being built out further.
+Working on: EAS build prep for mobile-app/ (eas.json + config), post-merge sync.
 
 ---
 

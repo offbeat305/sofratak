@@ -3,6 +3,7 @@ import { getStore } from "@/lib/db/store";
 import { getPaymentProvider } from "@/lib/payments";
 import { getSmsChannel } from "@/lib/sms";
 import { dispatchNewOrder } from "@/lib/orders/channels";
+import { sendOrderConfirmationPush } from "@/lib/push/expo";
 import { SERVICE_FEE_CENTS } from "@/lib/fees";
 import { formatCents } from "@/lib/money";
 import type {
@@ -33,10 +34,26 @@ export type PlaceOrderInput = {
     options: Record<string, string[]>;
     notes: string | null;
   }>;
+  /** Native app only (migration 0016): Expo push token for status updates. */
+  pushToken?: string | null;
 };
 
 export type PlaceOrderResult =
   | { ok: true; orderId: string; redirectUrl: string | null }
+  | { ok: false; error: string };
+
+/** Native-app variant: PaymentSheet params instead of a redirect URL. */
+export type PlaceMobileOrderResult =
+  | { ok: true; orderId: string; payment: null }
+  | {
+      ok: true;
+      orderId: string;
+      payment: {
+        clientSecret: string;
+        stripeAccountId: string | null;
+        publishableKey: string;
+      };
+    }
   | { ok: false; error: string };
 
 const PHONE_RE = /^[+()\-.\s\d]{7,20}$/;
@@ -102,44 +119,105 @@ export async function placeOrder(
   input: PlaceOrderInput,
   origin: string,
 ): Promise<PlaceOrderResult> {
+  const result = await createPricedOrder(input, "web");
+  if ("error" in result) return { ok: false, error: result.error };
+  const { order, restaurant } = result;
+
+  const payment = await getPaymentProvider().startPayment({
+    order,
+    restaurant,
+    origin,
+  });
+  if (payment.kind === "error") return { ok: false, error: payment.error };
+  if (payment.kind === "redirect") {
+    // Stripe-hosted checkout: the order stays pending; the status page (or
+    // the webhook) verifies the session and finalizes.
+    return { ok: true, orderId: order.id, redirectUrl: payment.url };
+  }
+  await finalizePaidOrder(order.id, payment.ref, origin);
+  return { ok: true, orderId: order.id, redirectUrl: null };
+}
+
+/**
+ * Native-app entry (docs/mobile-app-spec.md §3/§4): identical validation
+ * and pricing via createPricedOrder — the app is just another client —
+ * but payment comes back as PaymentSheet params, not a redirect. The
+ * order stays pending until /api/mobile/orders/[id]/confirm (or the
+ * payment_intent.succeeded webhook) verifies and finalizes it.
+ */
+export async function placeMobileOrder(
+  input: PlaceOrderInput,
+  origin: string,
+): Promise<PlaceMobileOrderResult> {
+  const result = await createPricedOrder(input, "mobile");
+  if ("error" in result) return { ok: false, error: result.error };
+  const { order, restaurant } = result;
+
+  const payment = await getPaymentProvider().startMobilePayment({ order, restaurant });
+  if (payment.kind === "error") return { ok: false, error: payment.error };
+  if (payment.kind === "payment_intent") {
+    // Persist the intent ref on the pending order NOW — the confirm route
+    // verifies the stored ref, never one the app supplies (a client-sent
+    // pi_ id from a different, cheaper order would otherwise pass
+    // verification on the platform-charges path).
+    await getStore().setOrderPaymentRef(order.id, payment.ref);
+    return {
+      ok: true,
+      orderId: order.id,
+      payment: {
+        clientSecret: payment.clientSecret,
+        stripeAccountId: payment.stripeAccountId,
+        publishableKey: payment.publishableKey,
+      },
+    };
+  }
+  await finalizePaidOrder(order.id, payment.ref, origin);
+  return { ok: true, orderId: order.id, payment: null };
+}
+
+/** Shared core: validate, price server-side, store the pending order. */
+async function createPricedOrder(
+  input: PlaceOrderInput,
+  channel: "web" | "mobile",
+): Promise<{ order: Order; restaurant: Restaurant } | { error: string }> {
   const store = getStore();
   const restaurant = await store.getRestaurantBySlug(input.restaurantSlug);
-  if (!restaurant) return { ok: false, error: "Restaurant not found" };
+  if (!restaurant) return { error: "Restaurant not found" };
   if (restaurant.ordering.paused)
-    return { ok: false, error: "Ordering is paused right now" };
+    return { error: "Ordering is paused right now" };
   const menu = await store.getMenu(restaurant.id);
-  if (!menu) return { ok: false, error: "Menu unavailable" };
+  if (!menu) return { error: "Menu unavailable" };
 
   if (input.fulfillment === "delivery" && !restaurant.ordering.delivery)
-    return { ok: false, error: "Delivery is not available" };
+    return { error: "Delivery is not available" };
   if (input.fulfillment === "pickup" && !restaurant.ordering.pickup)
-    return { ok: false, error: "Pickup is not available" };
+    return { error: "Pickup is not available" };
 
   const name = input.customer.name.trim().slice(0, 80);
   const phone = input.customer.phone.trim();
-  if (!name) return { ok: false, error: "Name is required" };
-  if (!PHONE_RE.test(phone)) return { ok: false, error: "Enter a valid phone number" };
+  if (!name) return { error: "Name is required" };
+  if (!PHONE_RE.test(phone)) return { error: "Enter a valid phone number" };
 
   const deliveryAddress =
     input.fulfillment === "delivery"
       ? (input.deliveryAddress ?? "").trim().slice(0, 200)
       : null;
   if (input.fulfillment === "delivery" && !deliveryAddress)
-    return { ok: false, error: "Delivery address is required" };
+    return { error: "Delivery address is required" };
 
   if (input.scheduledFor !== null) {
     const when = new Date(input.scheduledFor).getTime();
-    if (Number.isNaN(when)) return { ok: false, error: "Invalid schedule time" };
+    if (Number.isNaN(when)) return { error: "Invalid schedule time" };
     const now = Date.now();
     if (when < now - 60_000 || when > now + 7 * 24 * 3600_000)
-      return { ok: false, error: "Pick a time within the next 7 days" };
+      return { error: "Pick a time within the next 7 days" };
   }
 
-  if (!input.lines.length) return { ok: false, error: "Cart is empty" };
+  if (!input.lines.length) return { error: "Cart is empty" };
   const lines: OrderLine[] = [];
   for (const raw of input.lines) {
     const priced = priceLine(menu, raw);
-    if ("error" in priced) return { ok: false, error: priced.error };
+    if ("error" in priced) return { error: priced.error };
     lines.push(priced);
   }
 
@@ -151,7 +229,6 @@ export async function placeOrder(
     subtotalCents < restaurant.ordering.deliveryMinimumCents
   )
     return {
-      ok: false,
       error: `Delivery minimum is ${formatCents(restaurant.ordering.deliveryMinimumCents, input.locale)}`,
     };
 
@@ -171,7 +248,6 @@ export async function placeOrder(
     const redeemed = await store.validateAndRedeemOfferCode(restaurant.id, input.offerCode);
     if (!redeemed.ok) {
       return {
-        ok: false,
         error:
           redeemed.error === "expired"
             ? "This code has expired"
@@ -196,14 +272,14 @@ export async function placeOrder(
     const reward = restaurant.loyaltySettings.enabled
       ? restaurant.loyaltySettings.rewards.find((r) => r.id === input.redeemRewardId)
       : undefined;
-    if (!reward) return { ok: false, error: "That reward isn't available" };
+    if (!reward) return { error: "That reward isn't available" };
     const redeemed = await store.redeemLoyaltyPoints(
       restaurant.id,
       phone,
       reward.pointsCost,
       `redeem:${reward.id}`,
     );
-    if (!redeemed.ok) return { ok: false, error: "Not enough punches yet for that reward" };
+    if (!redeemed.ok) return { error: "Not enough punches yet for that reward" };
     discountCents += Math.min(reward.valueCents, subtotalCents - discountCents);
   }
 
@@ -237,28 +313,13 @@ export async function placeOrder(
     offerCode,
     discountCents,
     locale: input.locale,
+    pushToken: channel === "mobile" ? (input.pushToken?.slice(0, 200) ?? null) : null,
     unacceptedAlertSentAt: null,
     createdAt: now,
     updatedAt: now,
   };
   await store.createOrder(order);
-
-  const payment = await getPaymentProvider().startPayment({
-    order,
-    restaurant,
-    origin,
-  });
-
-  if (payment.kind === "error") return { ok: false, error: payment.error };
-
-  if (payment.kind === "redirect") {
-    // Stripe-hosted checkout: the order stays pending; the status page (or
-    // the webhook) verifies the session and finalizes.
-    return { ok: true, orderId: id, redirectUrl: payment.url };
-  }
-
-  await finalizePaidOrder(id, payment.ref, origin);
-  return { ok: true, orderId: id, redirectUrl: null };
+  return { order, restaurant };
 }
 
 /**
@@ -286,6 +347,8 @@ export async function finalizePaidOrder(
   });
   // Route to the kitchen (OrderChannel adapters — never blocks a paid order).
   await dispatchNewOrder(order, restaurant, origin);
+  // App orders: confirmation push alongside the SMS (never blocking).
+  await sendOrderConfirmationPush(order, restaurant);
 
   // The checkout "text me offers" checkbox IS the marketing opt-in (its
   // own copy says "offers", separate from the always-on confirmation

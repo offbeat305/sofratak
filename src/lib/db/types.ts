@@ -206,6 +206,8 @@ export type Order = {
   discountCents: number;
   /** locale the diner ordered in — drives SMS language */
   locale: "en" | "ar";
+  /** Expo push token from the native app (migration 0016); web orders: null */
+  pushToken: string | null;
   /** set once when the owner is alerted about an unaccepted order */
   unacceptedAlertSentAt: string | null;
   createdAt: string;

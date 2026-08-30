@@ -38,6 +38,19 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        // The mobile API is cookie-less, unauthenticated-by-design (guest
+        // checkout; possession of an order UUID is the credential), and
+        // already rate-limited — CORS here is dev convenience for the
+        // app's web smoke-test target, not a security boundary. Native
+        // clients never send Origin at all.
+        source: "/api/mobile/:path*",
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: "*" },
+          { key: "Access-Control-Allow-Methods", value: "GET, POST, OPTIONS" },
+          { key: "Access-Control-Allow-Headers", value: "content-type" },
+        ],
+      },
+      {
         source: "/:path*",
         headers: [
           // 'self' (not DENY): the homepage live-demo iframes the

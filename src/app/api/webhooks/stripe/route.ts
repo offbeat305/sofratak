@@ -50,6 +50,19 @@ export async function POST(request: NextRequest) {
   const store = getStore();
 
   switch (event.type) {
+    // Native-app orders (PaymentSheet → PaymentIntent, no Checkout
+    // session). Idempotent finalize — harmless when the app's own
+    // /confirm call already landed first.
+    case "payment_intent.succeeded": {
+      const intent = event.data.object;
+      const orderId = intent.metadata?.orderId;
+      if (orderId && intent.metadata?.channel === "mobile_app") {
+        const origin = process.env.NEXT_PUBLIC_SITE_URL ?? request.nextUrl.origin;
+        await finalizePaidOrder(orderId, intent.id, origin);
+      }
+      break;
+    }
+
     case "checkout.session.completed": {
       const session = event.data.object;
       const orderId = session.metadata?.orderId;

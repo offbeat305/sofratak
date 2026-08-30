@@ -112,6 +112,15 @@ export class LocalStore implements DataStore {
     return order;
   }
 
+  async setOrderPaymentRef(id: string, paymentRef: string): Promise<void> {
+    const data = await this.load();
+    const order = data.orders.find((o) => o.id === id);
+    if (!order || order.paymentStatus !== "pending") return;
+    order.paymentRef = paymentRef;
+    order.updatedAt = new Date().toISOString();
+    this.persist();
+  }
+
   async addOrderRefund(
     id: string,
     refund: OrderRefund,

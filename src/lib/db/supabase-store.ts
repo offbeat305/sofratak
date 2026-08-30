@@ -204,6 +204,7 @@ function rowToOrder(row: any): Order {
     offerCode: row.offer_code ?? null,
     discountCents: row.discount_cents ?? 0,
     locale: row.locale,
+    pushToken: row.push_token ?? null,
     unacceptedAlertSentAt: row.unaccepted_alert_sent_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -232,6 +233,10 @@ function orderToRow(order: Order): Record<string, unknown> {
     offer_code: order.offerCode,
     discount_cents: order.discountCents,
     locale: order.locale,
+    // Key omitted when null so order inserts keep working on a database
+    // that hasn't run migration 0016 yet (PostgREST rejects unknown
+    // columns even for null values) — web orders never set this.
+    ...(order.pushToken != null && { push_token: order.pushToken }),
     unaccepted_alert_sent_at: order.unacceptedAlertSentAt,
     created_at: order.createdAt,
     updated_at: order.updatedAt,
@@ -349,6 +354,15 @@ export class SupabaseStore implements DataStore {
       .select()
       .maybeSingle();
     return data ? rowToOrder(data) : null;
+  }
+
+  async setOrderPaymentRef(id: string, paymentRef: string): Promise<void> {
+    // Only while pending — never overwrite the ref finalize recorded.
+    await this.client
+      .from("orders")
+      .update({ payment_ref: paymentRef, updated_at: new Date().toISOString() })
+      .eq("id", id)
+      .eq("payment_status", "pending");
   }
 
   async markUnacceptedAlert(id: string): Promise<void> {

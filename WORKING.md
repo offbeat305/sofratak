@@ -1,10 +1,13 @@
 # 🔓 FREE
 
-Last held by: Cowork · released 2026-08-30 EDT — added
-docs/mobile-app-spec.md for the real native diner app Zizo wants
-Code to build (supersedes mobile/, the earlier webview wrapper).
-Needs Zizo's stack sign-off (React Native + Expo recommended)
-before Code starts building screens.
+Last held by: Claude Code (terminal session) · released 2026-08-30 EDT —
+native diner app v1 landed (mobile-app/, Expo) against
+docs/mobile-app-spec.md (Cowork's spec, same day). Cowork then merged
+this history with the parallel GitHub-tracked history (coming-soon
+fixes, Arabic translation, the mobile/ Capacitor wrapper) that Code's
+local repo had never seen — see docs/PROGRESS.md for both threads.
+mobile/ (wrapper) and mobile-app/ (real native app) both exist on
+purpose for now; mobile-app/ is the one being built out further.
 
 ---
 

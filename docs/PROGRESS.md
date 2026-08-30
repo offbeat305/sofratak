@@ -1,5 +1,64 @@
 # Sofratak — Progress Log
 
+## 2026-08-30 — Native diner app v1 (docs/mobile-app-spec.md): API layer + Expo app
+
+Zizo confirmed the spec's two open decisions (React Native + Expo; push
+notifications approved), so both halves got built. The Capacitor webview
+wrapper in mobile/ is superseded but left in place per the spec.
+
+**API layer** (committed separately, 10ee3c5 — see that entry): REST
+routes under /api/mobile/*, shared createPricedOrder core, PaymentIntent
+flow for PaymentSheet, order-status push via Expo's HTTP API, migration
+0016 (orders.push_token, UNAPPLIED). Plus this commit: /api/mobile/loyalty
+(punch-card status by phone, mirrors getLoyaltyStatusAction with the same
+tight rate limit) and permissive CORS on /api/mobile/* only (cookie-less,
+unauthenticated-by-design surface; CORS there is dev convenience for the
+app's web target, not a security boundary).
+
+**The app** (mobile-app/, Expo SDK 57, TypeScript, react-navigation
+native stack): six screens — restaurant picker (the only Sofratak-branded
+screen; remembers the choice), menu (tenant-branded header, category
+chips, SectionList), item detail (modifier groups with min/max enforced,
+radio vs checkbox by max, notes, qty), cart, checkout (pickup/delivery,
+ASAP/scheduled slots, tip chips, offer code, loyalty punch-card
+redemption once the phone matches, live totals with the $0.79 fee), and
+live order status (confirm-on-mount + 5s poll + push on top). EN/AR via
+logical RTL (row direction + text alignment driven by locale state, so
+the toggle flips instantly without the I18nManager restart). Per-tenant
+theming from brand.primary/accent with a luminance check for text-on-
+primary. Stripe via src/stripe.native.ts (PaymentSheet) with a web-stub
+twin — Metro resolves require() statically, so the native module must be
+platform-split, not try/catch'd (found when the web bundle refused to
+build). Cart persisted in AsyncStorage with a hydration gate so a
+returning diner's initial route is Menu, not Picker (initialRouteName
+only applies at navigator mount — rendering before hydration locked
+returning users out of the shortcut).
+
+**Verified on this machine**: root tsc + app tsc clean; expo export
+bundles clean; full flow driven end-to-end in the app's web target
+against the real dev backend (mock payments): picker → menu → modifiers →
+cart → checkout → order E996 placed and paid → receipt totals matched the
+server to the cent → kitchen status advanced server-side and the live
+tracker moved on the next poll → Arabic toggle mid-session flipped the
+whole UI RTL. The API side was separately proven against REAL test-mode
+Stripe (direct charge, 79¢ application fee, confirm-refuses-unpaid).
+
+**NOT verifiable on this machine — the honest gaps**: this Mac has no
+full Xcode (command-line tools only), so no iOS Simulator and no local
+device builds; PaymentSheet and real push tokens don't run in Expo Go
+either. Still owed per the spec's definition of done: real-device iOS +
+Android pass (Expo Go on Zizo's phone covers everything except
+PaymentSheet/push today; an EAS build covers it all), on-device RTL
+check, and a real PaymentSheet transaction on-device. EAS needs Zizo's
+Expo account (free) + eas build:configure (also generates the projectId
+push tokens need).
+
+**For Zizo**: apply migration 0016; decide the real bundle id
+(com.sofratak.app is a placeholder); Apple Developer ($99/yr) + Play
+Console ($25) when store submission time comes; the spec's §6 stopgap
+question (ship the old wrapper to the stores now or wait for this app)
+is still his call — nothing here depends on it.
+
 ## 2026-08-30 — mobile/ scaffold: Sofratak diner app (Capacitor)
 
 Zizo wants a mobile app ready to go for whenever the site itself

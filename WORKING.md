@@ -1,6 +1,6 @@
-# 🔒 HELD — Claude Code (terminal session) · 2026-08-30 EDT
+# 🔓 FREE
 
-Working on: EAS build prep for mobile-app/ (eas.json + config), post-merge sync.
+Last held by: Claude Code (terminal session) · released 2026-08-30 EDT — synced with GitHub merge, EAS profiles added
 
 ---
 

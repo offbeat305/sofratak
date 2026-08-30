@@ -1,8 +1,10 @@
-# 🔒 HELD — Cowork · 2026-08-30 EDT
+# 🔓 FREE
 
-Working on: docs/mobile-app-spec.md — Zizo wants a real native diner
-app (not the mobile/ webview wrapper), spec'd for Code to build. New
-doc only, no other files touched.
+Last held by: Cowork · released 2026-08-30 EDT — added
+docs/mobile-app-spec.md for the real native diner app Zizo wants
+Code to build (supersedes mobile/, the earlier webview wrapper).
+Needs Zizo's stack sign-off (React Native + Expo recommended)
+before Code starts building screens.
 
 ---
 

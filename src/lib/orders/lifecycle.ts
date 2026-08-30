@@ -1,6 +1,7 @@
 import "server-only";
 import { getStore } from "@/lib/db/store";
 import { getSmsChannel } from "@/lib/sms";
+import { sendOrderStatusPush } from "@/lib/push/expo";
 import type { Order, OrderStatus, Restaurant } from "@/lib/db/types";
 
 /** Kitchen-driven transitions. Diner-visible SMS goes out automatically. */
@@ -59,6 +60,9 @@ export async function advanceOrderStatus(
         orderId: updated.id,
       });
     }
+    // Native-app orders also get a push (docs/mobile-app-spec.md §2) —
+    // additive to SMS, never blocking: the sender swallows its own errors.
+    await sendOrderStatusPush(updated, restaurant);
   }
   return { ok: true, order: updated };
 }

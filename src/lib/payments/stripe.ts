@@ -2,7 +2,7 @@ import "server-only";
 import Stripe from "stripe";
 import type { Order, Restaurant } from "@/lib/db/types";
 import { SERVICE_FEE_CENTS } from "@/lib/fees";
-import type { PaymentProvider, PaymentStart } from "./index";
+import type { MobilePaymentStart, PaymentProvider, PaymentStart } from "./index";
 
 /**
  * Hosted Stripe Checkout. Two modes:
@@ -156,15 +156,75 @@ export class StripePaymentProvider implements PaymentProvider {
     }
   }
 
-  async verifyPayment(ref: string, restaurant: Restaurant): Promise<boolean> {
-    if (!ref.startsWith("cs_")) return false;
+  /**
+   * Native-app path (docs/mobile-app-spec.md §4): one PaymentIntent for
+   * order.totalCents, confirmed in-app by PaymentSheet. No line items
+   * exist at this layer (the app renders its own receipt), so discounts
+   * need no coupon dance — the total already has them subtracted. Money
+   * movement is identical to web: direct charge on the connected account
+   * when onboarded, $0.79 application fee to Sofratak.
+   */
+  async startMobilePayment({
+    order,
+    restaurant,
+  }: {
+    order: Order;
+    restaurant: Restaurant;
+  }): Promise<MobilePaymentStart> {
+    const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+    if (!publishableKey) {
+      console.error("[stripe] NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY missing — mobile payment unavailable");
+      return { kind: "error", error: "Payment could not be started" };
+    }
     const account = this.accountFor(restaurant);
     try {
-      const session = await this.stripe.checkout.sessions.retrieve(
-        ref,
-        undefined,
+      const intent = await this.stripe.paymentIntents.create(
+        {
+          amount: order.totalCents,
+          currency: "usd",
+          automatic_payment_methods: { enabled: true },
+          description: `Order ${order.number} — ${restaurant.name.en}`,
+          metadata: {
+            orderId: order.id,
+            restaurantId: order.restaurantId,
+            serviceFeeCents: String(order.serviceFeeCents),
+            channel: "mobile_app",
+          },
+          ...(account && { application_fee_amount: SERVICE_FEE_CENTS }),
+        },
         account ? { stripeAccount: account } : undefined,
       );
+      if (!intent.client_secret) {
+        return { kind: "error", error: "Payment could not be started" };
+      }
+      return {
+        kind: "payment_intent",
+        clientSecret: intent.client_secret,
+        ref: intent.id,
+        stripeAccountId: account ?? null,
+        publishableKey,
+      };
+    } catch (err) {
+      console.error("[stripe] payment intent failed", err);
+      return { kind: "error", error: "Payment could not be started" };
+    }
+  }
+
+  async verifyPayment(ref: string, restaurant: Restaurant): Promise<boolean> {
+    const account = this.accountFor(restaurant);
+    const opts = account ? { stripeAccount: account } : undefined;
+    // Mobile orders hold a PaymentIntent ref; web orders a Checkout session.
+    if (ref.startsWith("pi_")) {
+      try {
+        const intent = await this.stripe.paymentIntents.retrieve(ref, undefined, opts);
+        return intent.status === "succeeded";
+      } catch {
+        return false;
+      }
+    }
+    if (!ref.startsWith("cs_")) return false;
+    try {
+      const session = await this.stripe.checkout.sessions.retrieve(ref, undefined, opts);
       return session.payment_status === "paid";
     } catch {
       return false;
@@ -183,11 +243,18 @@ export class StripePaymentProvider implements PaymentProvider {
     const account = this.accountFor(restaurant);
     const opts = account ? { stripeAccount: account } : undefined;
     try {
-      const session = await this.stripe.checkout.sessions.retrieve(paymentRef, undefined, opts);
-      const paymentIntent =
-        typeof session.payment_intent === "string"
-          ? session.payment_intent
-          : session.payment_intent?.id;
+      // Mobile orders store the PaymentIntent id directly; web orders
+      // store a Checkout session that must be unwrapped to its intent.
+      let paymentIntent: string | undefined;
+      if (paymentRef.startsWith("pi_")) {
+        paymentIntent = paymentRef;
+      } else {
+        const session = await this.stripe.checkout.sessions.retrieve(paymentRef, undefined, opts);
+        paymentIntent =
+          typeof session.payment_intent === "string"
+            ? session.payment_intent
+            : session.payment_intent?.id;
+      }
       if (!paymentIntent)
         return { ok: false, error: "No payment found for this order" };
       const refund = await this.stripe.refunds.create(

@@ -14,6 +14,23 @@ export type PaymentStart =
   | { kind: "redirect"; url: string; ref: string }
   | { kind: "error"; error: string };
 
+/**
+ * Native-app flow (docs/mobile-app-spec.md §4): a PaymentIntent the app
+ * confirms in-app via Stripe PaymentSheet — no hosted redirect page.
+ * `stripeAccountId` is set for direct charges so the SDK talks to the
+ * connected account the intent lives on.
+ */
+export type MobilePaymentStart =
+  | { kind: "paid"; ref: string }
+  | {
+      kind: "payment_intent";
+      clientSecret: string;
+      ref: string;
+      stripeAccountId: string | null;
+      publishableKey: string;
+    }
+  | { kind: "error"; error: string };
+
 export interface PaymentProvider {
   /** Begin payment for a priced, stored order. */
   startPayment(input: {
@@ -21,6 +38,11 @@ export interface PaymentProvider {
     restaurant: Restaurant;
     origin: string;
   }): Promise<PaymentStart>;
+  /** Begin payment for the native app (PaymentSheet instead of redirect). */
+  startMobilePayment(input: {
+    order: Order;
+    restaurant: Restaurant;
+  }): Promise<MobilePaymentStart>;
   /**
    * True if the referenced payment is settled (idempotent check).
    * Direct charges live on the restaurant's connected account, so the
@@ -38,6 +60,12 @@ export interface PaymentProvider {
 /** Auto-approves everything. Active only when no STRIPE_SECRET_KEY is set. */
 class MockPaymentProvider implements PaymentProvider {
   async startPayment({ order }: { order: Order }): Promise<PaymentStart> {
+    return { kind: "paid", ref: `mock_${order.id.slice(0, 8)}` };
+  }
+  async startMobilePayment({ order }: { order: Order }): Promise<MobilePaymentStart> {
+    // Same auto-approve as web mock mode — the app skips PaymentSheet
+    // entirely when it gets kind:"paid" back, which is also what makes
+    // the full flow testable in Expo Go (no native Stripe module there).
     return { kind: "paid", ref: `mock_${order.id.slice(0, 8)}` };
   }
   async verifyPayment(): Promise<boolean> {

@@ -36,6 +36,8 @@ export interface DataStore {
   updateOrderStatus(id: string, status: OrderStatus): Promise<Order | null>;
   /** Idempotent pending → paid flip; returns null unless it transitioned. */
   markOrderPaid(id: string, paymentRef: string): Promise<Order | null>;
+  /** Attach the payment ref to a still-pending order (mobile PaymentIntent). */
+  setOrderPaymentRef(id: string, paymentRef: string): Promise<void>;
   markUnacceptedAlert(id: string): Promise<void>;
   /** Append a refund and set the resulting payment status. */
   addOrderRefund(

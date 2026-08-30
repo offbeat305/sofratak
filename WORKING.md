@@ -1,6 +1,6 @@
-# 🔒 HELD — Claude Code (terminal session) · 2026-08-30 EDT
+# 🔓 FREE
 
-Working on: native diner app (docs/mobile-app-spec.md) — API layer + Expo app in mobile-app/.
+Last held by: Claude Code (terminal session) · released 2026-08-30 EDT — native diner app v1 landed (mobile-app/)
 
 ---
 

@@ -1,6 +1,6 @@
-# 🔒 HELD — Claude Code (terminal session) · 2026-08-31 EDT
+# 🔓 FREE
 
-Working on: wiring Expo project id into mobile-app (EAS connect).
+Last held by: Claude Code (terminal session) · released 2026-08-31 EDT — Expo projectId wired; eas login is the last EAS step
 
 ---
 

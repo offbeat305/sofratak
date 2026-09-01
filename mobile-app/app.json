@@ -33,6 +33,11 @@
       ],
       "expo-localization"
     ],
-    "scheme": "sofratak"
+    "scheme": "sofratak",
+    "extra": {
+      "eas": {
+        "projectId": "5589f4e4-72f1-48d9-95a7-5fe198c1b728"
+      }
+    }
   }
 }

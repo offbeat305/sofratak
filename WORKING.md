@@ -1,6 +1,6 @@
-# 🔓 FREE
+# 🔒 HELD — Claude Code (terminal session) · 2026-08-31 EDT
 
-Last held by: Claude Code (terminal session) · released 2026-08-30 EDT — synced with GitHub merge, EAS profiles added
+Working on: wiring Expo project id into mobile-app (EAS connect).
 
 ---
 

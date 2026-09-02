@@ -13,6 +13,15 @@ const intlMiddleware = createMiddleware(routing);
  */
 const ADMIN_PATH_RE = /^\/(?:(?:en|ar)\/)?admin(\/|$)/;
 const COMING_SOON_PATH_RE = /^\/(?:(?:en|ar)\/)?coming-soon(\/|$)/;
+/**
+ * Next's generated metadata-image routes (opengraph-image, twitter-image,
+ * icon, apple-icon, with optional build-hash suffixes). Excluded from the
+ * gate: crawlers resolving an og:image URL must get the image bytes, not
+ * the rewritten coming-soon HTML — otherwise WhatsApp/social shares render
+ * with no card image while the wall is up. These serve brand art only,
+ * nothing sensitive to leak.
+ */
+const METADATA_IMAGE_RE = /\/(?:opengraph-image|twitter-image|icon|apple-icon)(?:-[a-z0-9]+)?\/?$/;
 
 function localeFromPathname(pathname: string): Locale {
   const match = pathname.match(/^\/(en|ar)(\/|$)/);
@@ -64,7 +73,11 @@ function tenantSlugFromHost(host: string): string | null {
 export default async function middleware(request: NextRequest) {
   if (process.env.MAINTENANCE_MODE === "true") {
     const { pathname } = request.nextUrl;
-    if (!ADMIN_PATH_RE.test(pathname) && !COMING_SOON_PATH_RE.test(pathname)) {
+    if (
+      !ADMIN_PATH_RE.test(pathname) &&
+      !COMING_SOON_PATH_RE.test(pathname) &&
+      !METADATA_IMAGE_RE.test(pathname)
+    ) {
       const url = request.nextUrl.clone();
       url.pathname = `/${localeFromPathname(pathname)}/coming-soon`;
       // Rewrite, not redirect — the visitor's URL bar (sofratak.com,

@@ -14,7 +14,9 @@ export async function generateMetadata({
   const { locale } = await params;
   const copy = locale === "ar" ? COMING_SOON_COPY.ar : COMING_SOON_COPY.en;
   return {
-    title: "Sofratak — Coming Soon",
+    // Bare "Coming Soon" — the root layout's "%s · Sofratak" template
+    // brands it; hardcoding the brand here double-branded the tab title.
+    title: "Coming Soon",
     description: copy.sub,
     // Temporary wall, not a real page — never index this over the real site.
     robots: { index: false, follow: false },

@@ -1,5 +1,26 @@
 # Sofratak — Progress Log
 
+## 2026-09-02 (cont.) — Payments fail closed on production without Stripe keys
+
+Cowork found STRIPE_SECRET_KEY absent on Vercel Production; mock mode
+would auto-approve real orders (free food), and the coming-soon wall
+doesn't cover it because /api/mobile/* bypasses the gate by design.
+Zizo approved unfreezing exactly this spot.
+
+getPaymentProvider() now returns a DisabledPaymentProvider on Vercel
+production when no key is set: payment starts refuse with "Ordering is
+temporarily unavailable" (web + mobile, one shared choke point), verify
+returns false, refunds error. Escape hatch: ALLOW_MOCK_PAYMENTS=true —
+an explicit, visible env switch for device-testing windows before real
+keys exist (weeks out behind the LLC filing). Local dev and preview
+deployments keep mock mode untouched. No pricing/fee/checkout-math
+changes — this only refuses service in a misconfigured production.
+
+Verified locally in all three modes (refusal / override / dev-mock) and
+against production post-deploy. Device-testing note: production order
+placement now correctly FAILS until Zizo either sets real Stripe test
+keys or temporarily sets ALLOW_MOCK_PAYMENTS=true in Vercel.
+
 ## 2026-09-02 — Production DNS flip verified: wildcard subdomains + tenant middleware
 
 Cowork moved sofratak.com's nameservers to Vercel (`ns1/ns2.vercel-dns.com`)

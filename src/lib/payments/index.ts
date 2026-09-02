@@ -76,9 +76,41 @@ class MockPaymentProvider implements PaymentProvider {
   }
 }
 
+/**
+ * Fail closed on production (Cowork's Sep 2026 finding, approved by Zizo):
+ * with no STRIPE_SECRET_KEY the mock provider auto-approves orders —
+ * free food if it ever runs on the live site, and the coming-soon wall
+ * doesn't mitigate it because /api/mobile/* bypasses the gate by design.
+ * On Vercel *production* deployments, missing key now refuses payment
+ * starts outright unless ALLOW_MOCK_PAYMENTS=true is set explicitly
+ * (a deliberate, visible switch for device-testing windows). Local dev
+ * and preview deployments keep mock mode — that's what makes the flow
+ * testable without keys, and previews aren't diner-reachable.
+ */
+class DisabledPaymentProvider implements PaymentProvider {
+  private refuse = { kind: "error" as const, error: "Ordering is temporarily unavailable" };
+  async startPayment(): Promise<PaymentStart> {
+    console.error("[payments] refused: no STRIPE_SECRET_KEY on production (mock not allowed)");
+    return this.refuse;
+  }
+  async startMobilePayment(): Promise<MobilePaymentStart> {
+    console.error("[payments] refused: no STRIPE_SECRET_KEY on production (mock not allowed)");
+    return this.refuse;
+  }
+  async verifyPayment(): Promise<boolean> {
+    return false;
+  }
+  async refund() {
+    return { ok: false as const, error: "Payments are not configured" };
+  }
+}
+
 export function getPaymentProvider(): PaymentProvider {
   if (process.env.STRIPE_SECRET_KEY) {
     return new StripePaymentProvider(process.env.STRIPE_SECRET_KEY);
+  }
+  if (process.env.VERCEL_ENV === "production" && process.env.ALLOW_MOCK_PAYMENTS !== "true") {
+    return new DisabledPaymentProvider();
   }
   return new MockPaymentProvider();
 }

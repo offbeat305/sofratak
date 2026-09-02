@@ -1,6 +1,6 @@
-# 🔒 HELD — Claude Code (terminal session) · 2026-09-01 EDT
+# 🔓 FREE
 
-Working on: verifying tenant-subdomain middleware in production post-DNS-flip; will update docs/PROGRESS.md
+Last held by: Claude Code (terminal session) · released 2026-09-02 ~00:45 EDT — prod DNS/subdomain middleware verified (see PROGRESS.md 2026-09-02); storefront re-checks pending MAINTENANCE_MODE off
 
 ---
 

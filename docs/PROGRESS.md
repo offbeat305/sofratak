@@ -1,5 +1,58 @@
 # Sofratak — Progress Log
 
+## 2026-09-02 — Production DNS flip verified: wildcard subdomains + tenant middleware
+
+Cowork moved sofratak.com's nameservers to Vercel (`ns1/ns2.vercel-dns.com`)
+with wildcard `*.sofratak.com` attached to the project. This session verified
+the tenant-subdomain middleware against the live production deployment.
+
+### Verified in production ✅
+- **DNS delegation live**: NS records resolve to Vercel; apex, www, and the
+  wildcard all resolve to Vercel IPs.
+- **Wildcard TLS**: Vercel's wildcard cert for `*.sofratak.com` was NOT
+  issued immediately after the flip — every subdomain failed the TLS
+  handshake for ~35 min while apex/www (single-name certs) worked. It
+  auto-issued ~00:39 EDT Sep 2 with no intervention. Expected one-time lag,
+  noting it in case a future domain move looks "broken" at first.
+- **Apex → www**: `sofratak.com` 308-redirects to `www.sofratak.com`
+  (Vercel domain config).
+- **MAINTENANCE_MODE=true is currently set in Vercel.** The coming-soon
+  wall works exactly as specced on every host: `www`, `beitzizo`,
+  `nosuchtenant`, `app`, `admin`, `api` subdomains all return 200 with
+  `x-matched-path: /en/coming-soon` (`/ar/coming-soon` for `/ar` paths) —
+  a rewrite, never a redirect, so the URL bar stays on the subdomain and
+  the gate provably runs before the tenant rewrite.
+- **Tenant rewrite is active on non-reserved subdomains** (proved via
+  `/en/admin`, which bypasses the wall):
+  `beitzizo.sofratak.com/en/admin` and `nosuchtenant.sofratak.com/en/admin`
+  → rewritten to `/en/s/{slug}/admin` → clean 404 (`x-matched-path: /404`),
+  no 5xx.
+- **Reserved subdomains skip the tenant rewrite**: the same path on
+  `www.sofratak.com` and `app.sofratak.com` hits the real admin route
+  (`x-matched-path: /[locale]/admin`, 307 → `/en/login?next=/en/admin`).
+
+### Blocked behind the wall — re-run when Zizo flips MAINTENANCE_MODE off
+The wall masks storefront rendering, so these need a quick re-check later
+(5 min of curl/phone once the wall is down):
+1. `https://beitzizo.sofratak.com/` → locale redirect to `/en`, host kept.
+2. `https://beitzizo.sofratak.com/en` → Beit Zizo storefront (menu renders,
+   branding, EN/AR).
+3. `https://nosuchtenant.sofratak.com/en` → 404, not an error page.
+4. Canonical/OG tags on the live storefront page (metadataBase =
+   `SITE_URL` = www.sofratak.com; storefront page sets no explicit
+   canonical — confirm emitted URLs are what we want for tenant subdomains,
+   or decide they should be subdomain-canonical).
+
+### Environment note
+- No node/npm/pnpm/bun on this machine's shell PATH from a fresh session,
+  so a local prod-build cross-check wasn't possible here. The main
+  checkout has `node_modules` + `.next`, so some environment can build —
+  whichever session owns that setup should document how.
+
+### Next
+- When the wall drops: run the 4 re-checks above, then Phase-2 smoke test
+  (test order end-to-end on a phone) against production.
+
 ## 2026-08-30 — Native diner app v1 (docs/mobile-app-spec.md): API layer + Expo app
 
 Zizo confirmed the spec's two open decisions (React Native + Expo; push

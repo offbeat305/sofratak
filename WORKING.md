@@ -1,6 +1,6 @@
-# 🔓 FREE
+# 🔒 HELD — Claude Code (terminal session) · 2026-09-02 EDT
 
-Last held by: Claude Code (terminal session) · released 2026-09-02 EDT — payments fail closed on keyless production
+Working on: Zizo homepage edit list (halal de-emphasis, estimator fixes, $30 viz, demo page, now-serving reorder).
 
 ---
 

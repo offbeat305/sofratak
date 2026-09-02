@@ -1,6 +1,6 @@
-# 🔒 HELD — Claude Code (terminal session) · 2026-09-02 EDT
+# 🔓 FREE
 
-Working on: fail-closed payments when mock provider would run on Vercel production (Cowork finding, Zizo-approved unfreeze).
+Last held by: Claude Code (terminal session) · released 2026-09-02 EDT — payments fail closed on keyless production
 
 ---
 

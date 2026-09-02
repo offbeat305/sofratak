@@ -1,5 +1,48 @@
 # Sofratak — Progress Log
 
+## 2026-09-02 (cont. 2) — Zizo's homepage edit pass (items 1-11)
+
+Direct edit list from Zizo after reviewing every surface. All homepage-
+scoped; more pages to come ("this is for the home page so far").
+
+- **Halal de-emphasis (his #2/#9)**: hero eyebrow, who-it's-for line and
+  badge, homepage metadata, the grid's "Halal badge" capability item, and
+  the footer's directory link (new `eat.footerLink` key) no longer lead
+  with halal. The /eat directory's halal filters/badges and its city-page
+  SEO titles are untouched — those are diner search utility and a traffic
+  decision to make separately, flagged to Zizo.
+- **"Blended app rate" → "Average app commission"** (his #3), same fix in
+  the $30 caption and the calculator disclaimer.
+- **/demo rebuilt** (his #4): olive hero band, "what you'll see in 15
+  minutes" checklist in owner terms, founder reassurance, WhatsApp, form
+  as the page's single glowing object. Was a bare form.
+- **Hero calculator "Text me this estimate" fix** (his #5): the revealed
+  inputs inherited the hero section's ivory text onto white fields —
+  invisible typing, no labels, hence "2 black spaces idk what they're
+  for." Explicit text/placeholder colors + a one-line lead-in ("We'll
+  text you this estimate — nothing else").
+- **Now-serving strip** (his #6): South Florida first (display-order
+  only; EAT_METROS untouched since /eat depends on it), plus an "Also
+  serving" row of every other city page (Orlando, St. Pete, Detroit…).
+- **$30 comparison reworked** (his #7): the red commission chunk was
+  gone in under a second — now the timeline is ~3s, the chunk detaches
+  and STAYS with "−$7.50" inside it and a red caption, dollar figures
+  render inside both bars, an always-visible legend explains the three
+  colors, and a plain-words explainer box closes the section. End state
+  is fully self-explanatory with zero motion.
+- **Feature cards rewritten in owner language** (his #8): "your customer
+  list belongs to you," "no new hardware, nothing for your staff to
+  relearn," etc. Grid sub sharpened ("no surprise add-ons").
+- **Homepage How-it-works upgraded** (his #10): three flat numbered cards
+  → four day-badged timeline cards (Day 1 / Day 2–4 / Week 2 / Week 3)
+  with brass connectors, mirroring the /how-it-works page's framing, plus
+  a "see the full day-by-day plan" link.
+
+Arabic updated for every changed key (needs Zizo's review pass, as
+always). Verified EN + AR live: zero halal mentions on the homepage,
+metro order correct, all new sections rendering, RTL intact, tsc/eslint
+clean.
+
 ## 2026-09-02 (cont.) — Payments fail closed on production without Stripe keys
 
 Cowork found STRIPE_SECRET_KEY absent on Vercel Production; mock mode

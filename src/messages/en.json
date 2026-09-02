@@ -140,7 +140,7 @@
       "contact": "Contact"
     },
     "hero": {
-      "eyebrow": "For Arab, Middle Eastern & Halal restaurants",
+      "eyebrow": "For Arab & Middle Eastern restaurants",
       "headline": "The apps take 15–30% of every order.",
       "keep": "Keep it instead.",
       "sub": "Your own ordering website. Zero commission. Orders on the tablet you already run. Your customers stay yours.",
@@ -151,17 +151,23 @@
       ]
     },
     "strip": {
-      "now": "Now serving"
+      "now": "Now serving",
+      "more": "Also serving"
     },
     "dollar": {
       "title": "Where your $30 order goes",
-      "sub": "The same order, two very different outcomes.",
+      "sub": "The exact same $30 order, two very different paydays.",
       "rowApps": "On the apps",
       "rowSofratak": "On your Sofratak site",
-      "appsCaption": "estimated 25% blended marketplace cost",
+      "appsCaption": "the apps keep an estimated 25% in commission & fees",
       "sofratakCaption": "your customer pays it, not you",
       "keeps": "{amount} keeps",
-      "replay": "Replay"
+      "replay": "Replay",
+      "legendKeep": "You keep",
+      "legendApps": "The apps keep",
+      "legendFee": "79¢ service fee — your diner pays it",
+      "appsLoss": "−{amount} to the apps",
+      "explain": "On the apps, around a quarter of every order never reaches you. On your own Sofratak site, the full $30 lands in your account — your diner adds a flat 79¢ that pays for the platform, so you pay nothing."
     },
     "live": {
       "eyebrow": "This one is real",
@@ -212,7 +218,7 @@
     },
     "grid": {
       "title": "Everything in one subscription",
-      "sub": "No modules to buy. And we're honest about what's live versus still rolling out.",
+      "sub": "One monthly price. No modules to buy, no surprise add-ons — and we're honest about what's live versus still rolling out.",
       "live": "Live now",
       "soon": "Rolling out",
       "items": [
@@ -241,7 +247,7 @@
           "status": "live"
         },
         {
-          "name": "Halal badge & branding",
+          "name": "Your branding & badges",
           "status": "live"
         },
         {
@@ -303,24 +309,24 @@
       "title": "What you get",
       "cards": [
         {
-          "title": "Your own ordering site",
-          "body": "Branded, fast, English and Arabic. Your name on it, not an app's."
+          "title": "Your own ordering site, your name on it",
+          "body": "Branded, fast, English and Arabic. Your phone number, your brand — not an app's logo over your food."
         },
         {
-          "title": "Orders on the tablet you already use",
-          "body": "New orders ring on any tablet or phone. Accept, prepare, done."
+          "title": "Orders ring on the tablet you already own",
+          "body": "No new hardware, no new POS, nothing for your staff to relearn. Accept, prepare, done."
         },
         {
-          "title": "Your customer list, exportable",
-          "body": "Every diner's name and number builds your book. Download it any time, in one click."
+          "title": "Your customer list belongs to you",
+          "body": "Every diner's name and number builds your book — not an app's. Download it any time, take it anywhere."
         },
         {
-          "title": "Marketing that fills slow nights",
-          "body": "Text and email your own customers: offers, win-backs, Ramadan hours."
+          "title": "Marketing that fills the slow nights",
+          "body": "Win-back texts, birthday offers, Ramadan hours — sent to your own customers, automatically."
         },
         {
-          "title": "A weekly report you can read in one minute",
-          "body": "Orders, revenue, best sellers, and one suggested action. Every Monday."
+          "title": "Know your numbers in one minute a week",
+          "body": "Orders, revenue, best sellers, and one suggested action. Every Monday, no dashboard digging."
         }
       ]
     },
@@ -446,12 +452,35 @@
         }
       ],
       "note": "No new hardware. Your staff learns nothing new.",
-      "approveLabel": "Approve"
+      "approveLabel": "Approve",
+      "homeSteps": [
+        {
+          "badge": "Day 1",
+          "title": "Send us your menu",
+          "body": "A photo of the paper menu is fine. English, Arabic, or both — you don't type a thing."
+        },
+        {
+          "badge": "Day 2–4",
+          "title": "We build it, you approve it",
+          "body": "Your branding, your prices, on your own domain. Approve it from your phone; changes happen same-day."
+        },
+        {
+          "badge": "Week 2",
+          "title": "Go live, get paid",
+          "body": "Orders land on a screen your staff already knows. Food money settles straight to your bank."
+        },
+        {
+          "badge": "Week 3",
+          "title": "Marketing runs itself",
+          "body": "Win-backs, birthday offers, review requests — approved once by you, then automatic."
+        }
+      ],
+      "homeLink": "See the full day-by-day plan"
     },
     "who": {
       "title": "Who it's for",
-      "line": "Built for Arab, Middle Eastern, Mediterranean, and halal restaurants.",
-      "halal": "Halal-friendly by default, badge included."
+      "line": "Built for Arab, Middle Eastern, and Mediterranean restaurants.",
+      "halal": "English & Arabic storefronts included. Real RTL, not an afterthought."
     },
     "pricingTeaser": {
       "line": "From {price}/mo · month-to-month · no setup fee for founding restaurants.",
@@ -515,7 +544,7 @@
       "sliderTitle": "How many online orders a month?",
       "sliderNote": "Slide it. Every plan updates with what you'd keep.",
       "youdKeep": "You'd keep ~{amount}/mo vs the apps",
-      "sliderAssume": "Assumes a {avg} average order and a 25% blended app cost. Illustrative estimate based on the information provided. Actual results may vary.",
+      "sliderAssume": "Assumes a {avg} average order and a 25% average app commission. Illustrative estimate based on the information provided. Actual results may vary.",
       "labelOrders": "ORDERS / MO",
       "labelKeep": "YOU KEEP",
       "labelFee": "$0.79 / ORDER",
@@ -631,7 +660,7 @@
       "sub": "Three numbers. No signup. Estimate in seconds.",
       "orders": "App orders per month",
       "avg": "Average order",
-      "rate": "Blended app rate",
+      "rate": "Average app commission",
       "monthly": "Estimated going to the apps monthly",
       "yearly": "Estimated per year",
       "sofratak": "Sofratak: {price}/mo flat + $0 commission.",
@@ -645,7 +674,8 @@
       "send": "Send it",
       "sending": "Sending…",
       "sent": "Sent. We'll text you shortly.",
-      "error": "Something went wrong. Try WhatsApp instead."
+      "error": "Something went wrong. Try WhatsApp instead.",
+      "textMeLead": "We'll text you this estimate — nothing else, no follow-up spam."
     },
     "demo": {
       "title": "Book a demo",
@@ -659,7 +689,28 @@
       "submit": "Request a demo",
       "sending": "Sending…",
       "success": "Got it. We'll reach out within one business day.",
-      "whatsappNote": "Faster on WhatsApp? Message us directly:"
+      "whatsappNote": "Faster on WhatsApp? Message us directly:",
+      "expectTitle": "What you'll see in 15 minutes",
+      "points": [
+        {
+          "title": "Your menu, live",
+          "body": "We load your actual menu and take a test order in front of you."
+        },
+        {
+          "title": "The math on your numbers",
+          "body": "What the apps cost you today vs. a flat monthly price."
+        },
+        {
+          "title": "The kitchen screen",
+          "body": "How orders ring on the tablet you already own."
+        },
+        {
+          "title": "Straight answers",
+          "body": "Pricing, timelines, and what's not built yet. No pressure, no scripts."
+        }
+      ],
+      "trustRow": "15 minutes · Phone or at your counter · English or Arabic",
+      "formTitle": "Pick a time that works"
     },
     "stories": {
       "title": "Stories",
@@ -780,7 +831,8 @@
         "moroccan": "Moroccan",
         "american": "American",
         "mediterranean": "Mediterranean"
-      }
+      },
+      "footerLink": "Find Arab & Middle Eastern food near you"
     },
     "grader": {
       "title": "Restaurant Grader",

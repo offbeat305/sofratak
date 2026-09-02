@@ -19,7 +19,9 @@ export async function Footer() {
   const instagram = process.env.NEXT_PUBLIC_INSTAGRAM_URL;
 
   const productLinks = [
-    { href: "/eat", label: t("site.eat.title") },
+    // footerLink, not title: the homepage shouldn't lead with "halal"
+    // (Zizo Sep 2026); the /eat page keeps its own SEO title separately
+    { href: "/eat", label: t("site.eat.footerLink") },
     { href: "/stories", label: t("site.stories.title") },
     { href: "/pricing", label: t("site.nav.pricing") },
     { href: "/calculator", label: t("site.nav.estimator") },

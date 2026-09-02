@@ -29,11 +29,11 @@ export async function generateMetadata({
   const isAr = locale === "ar";
   return {
     title: isAr
-      ? "سفرتك. طلبات أونلاين بدون عمولة لمطاعم العرب والحلال"
-      : "Sofratak. Commission-Free Online Ordering for Arab & Halal Restaurants",
+      ? "سفرتك. طلبات أونلاين بدون عمولة لمطاعم العرب"
+      : "Sofratak. Commission-Free Online Ordering for Arab & Middle Eastern Restaurants",
     description: isAr
-      ? "موقع طلبات باسم مطعمك، بدون عمولة على الطعام. مبني للمطاعم العربية والشرق أوسطية والمتوسطية والحلال في فلوريدا وميشيغان."
-      : "Your own restaurant ordering website with zero commission on food. Built for Arab, Middle Eastern, Mediterranean, and halal restaurants in Florida and Michigan. See your savings in seconds.",
+      ? "موقع طلبات باسم مطعمك، بدون عمولة على الطعام. مبني للمطاعم العربية والشرق أوسطية والمتوسطية في فلوريدا وميشيغان."
+      : "Your own restaurant ordering website with zero commission on food. Built for Arab, Middle Eastern, and Mediterranean restaurants in Florida and Michigan. See your savings in seconds.",
     alternates: localeAlternates(locale, ""),
   };
 }
@@ -79,7 +79,7 @@ export default async function HomePage({
   const t = await getTranslations("site");
 
   const featureCards = t.raw("features.cards") as Array<{ title: string; body: string }>;
-  const steps = t.raw("how.steps") as Array<{ title: string; body: string }>;
+  const homeSteps = t.raw("how.homeSteps") as Array<{ badge: string; title: string; body: string }>;
   const chips = t.raw("hero.chips") as string[];
 
   return (
@@ -250,23 +250,39 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* 8 · How it works (ivory + texture) */}
+      {/* 8 · How it works — day-badged timeline (Zizo Sep 2026: the three
+             plain numbered cards read flat; this mirrors the /how-it-works
+             page's day-by-day framing and links to the full plan) */}
       <section className="texture-dots bg-ivory">
         <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-6 md:py-24">
           <SectionHeader title={t("how.title")} sub={t("how.note")} />
-          <ol className="mt-10 grid gap-6 sm:grid-cols-3">
-            {steps.map((step, i) => (
-              <Reveal key={step.title} delay={i * 80}>
-                <li className="hover-lift h-full list-none rounded-card border border-olive/10 bg-white p-6">
-                  <span className="flex size-10 items-center justify-center rounded-full bg-olive font-bold text-ivory">
-                    {i + 1}
+          <ol className="relative mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {homeSteps.map((step, i) => (
+              <Reveal key={step.title} delay={i * 80} className="h-full">
+                <li className="hover-lift relative h-full list-none rounded-card border border-olive/10 bg-white p-6">
+                  <span className="data-label inline-block rounded-full bg-olive px-3 py-1.5 text-ivory">
+                    {step.badge}
                   </span>
                   <h3 className="mt-4 font-bold text-charcoal">{step.title}</h3>
-                  <p className="mt-1.5 text-sm text-stone">{step.body}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-stone">{step.body}</p>
+                  {i < homeSteps.length - 1 && (
+                    <span
+                      aria-hidden
+                      className="absolute top-1/2 hidden h-px w-4 bg-brass/50 ltr:right-[-16px] rtl:left-[-16px] lg:block"
+                    />
+                  )}
                 </li>
               </Reveal>
             ))}
           </ol>
+          <Reveal delay={320}>
+            <Link
+              href="/how-it-works"
+              className="mt-8 inline-block text-sm font-bold text-brass-deep underline-offset-4 hover:underline"
+            >
+              {t("how.homeLink")} →
+            </Link>
+          </Reveal>
         </div>
       </section>
 

@@ -1,0 +1,9 @@
+{
+  "pages": {
+    "/api/mobile/restaurants/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/mobile/restaurants/route.js"
+    ]
+  }
+}

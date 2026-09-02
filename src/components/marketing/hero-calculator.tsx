@@ -244,7 +244,12 @@ export function HeroCalculator() {
       </div>
 
       {captureOpen && state !== "sent" && (
-        <form onSubmit={send} className="animate-rise-in mt-4 flex flex-col gap-2 sm:flex-row">
+        <form onSubmit={send} className="animate-rise-in mt-4">
+          {/* the fields were unlabeled AND inherited the hero's ivory text
+              color onto white inputs — invisible typing (Zizo's "2 black
+              spaces" report). Lead-in line + explicit colors fix both. */}
+          <p className="text-xs font-semibold text-stone">{t("textMeLead")}</p>
+          <div className="mt-2 flex flex-col gap-2 sm:flex-row">
           <input
             type="text"
             value={website}
@@ -261,7 +266,7 @@ export function HeroCalculator() {
             placeholder={t("name")}
             required
             aria-label={t("name")}
-            className="h-11 flex-1 rounded-field border border-olive/20 bg-white px-3.5 text-[15px] focus:outline-none focus-visible:ring-2 focus-visible:ring-olive/25"
+            className="h-11 flex-1 rounded-field border border-olive/20 bg-white px-3.5 text-[15px] text-charcoal placeholder:text-stone focus:outline-none focus-visible:ring-2 focus-visible:ring-olive/25"
           />
           <input
             value={phone}
@@ -272,7 +277,7 @@ export function HeroCalculator() {
             dir="ltr"
             required
             aria-label={t("phone")}
-            className="h-11 flex-1 rounded-field border border-olive/20 bg-white px-3.5 text-[15px] focus:outline-none focus-visible:ring-2 focus-visible:ring-olive/25"
+            className="h-11 flex-1 rounded-field border border-olive/20 bg-white px-3.5 text-[15px] text-charcoal placeholder:text-stone focus:outline-none focus-visible:ring-2 focus-visible:ring-olive/25"
           />
           <button
             type="submit"
@@ -281,6 +286,7 @@ export function HeroCalculator() {
           >
             {state === "sending" ? t("sending") : t("send")}
           </button>
+          </div>
         </form>
       )}
       {state === "error" && (

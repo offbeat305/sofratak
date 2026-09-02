@@ -1,6 +1,6 @@
-# 🔒 HELD — Claude Code (terminal session) · 2026-09-02 EDT
+# 🔓 FREE
 
-Working on: Zizo homepage edit list (halal de-emphasis, estimator fixes, $30 viz, demo page, now-serving reorder).
+Last held by: Claude Code (terminal session) · released 2026-09-02 EDT — Zizo homepage edit pass landed
 
 ---
 

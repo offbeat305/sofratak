@@ -1,6 +1,6 @@
-# 🔓 FREE
+# 🔒 HELD — Claude Code (terminal session) · 2026-09-02 EDT
 
-Last held by: Claude Code (terminal session) · released 2026-09-02 ~00:45 EDT — prod DNS/subdomain middleware verified (see PROGRESS.md 2026-09-02); storefront re-checks pending MAINTENANCE_MODE off
+Working on: Cowork review findings 1-4 (middleware og-route exclusion, coming-soon OG image/title, app brand icons + iOS encryption flag).
 
 ---
 

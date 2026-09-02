@@ -1,6 +1,6 @@
-# 🔒 HELD — Claude Code (terminal session) · 2026-09-02 EDT
+# 🔓 FREE
 
-Working on: Cowork review findings 1-4 (middleware og-route exclusion, coming-soon OG image/title, app brand icons + iOS encryption flag).
+Last held by: Claude Code (terminal session) · released 2026-09-02 EDT — Cowork review findings 1-4 landed; Android rebuild with brand icons in flight
 
 ---
 

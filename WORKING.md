@@ -1,6 +1,6 @@
-# 🔒 HELD — Cowork · 2026-10-08 EDT
+# 🔓 FREE
 
-Working on: private preview pass in src/middleware.ts so Zizo can see the real site behind the coming-soon wall (PREVIEW_PASS env var; off when unset).
+Last held by: Cowork · released 2026-10-08 EDT — preview pass landed (PREVIEW_PASS env var; see PROGRESS.md)
 
 ---
 

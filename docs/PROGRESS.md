@@ -1,5 +1,24 @@
 # Sofratak — Progress Log
 
+## 2026-10-08 — Private preview pass behind the coming-soon wall (Cowork)
+
+Zizo wants to browse the real site (marketing, /eat directory, tenant
+storefronts) while the wall stays up publicly. Added to src/middleware.ts,
+inside the MAINTENANCE_MODE branch only:
+
+- New env var `PREVIEW_PASS` (16+ chars). Unset = feature fully inert.
+- `?preview=<PREVIEW_PASS>` on any URL sets an httpOnly `sofratak_preview`
+  cookie (30 days, `.sofratak.com` so subdomains pass) and redirects to the
+  clean URL. Wrong values just strip the param. `?preview=off` clears it.
+- Matching cookie skips the wall; those responses get
+  `X-Robots-Tag: noindex, nofollow`.
+
+Verified locally (MAINTENANCE_MODE=true): no cookie → wall; wrong pass →
+no cookie; right pass → cookie + real /en/pricing and /en/eat; wrong cookie
+→ wall; beitzizo subdomain passes with cookie, walled without; ?preview=off
+clears; PREVIEW_PASS unset → param ignored, wall holds. tsc + eslint clean.
+No frozen surfaces touched (order/payment path, /api/mobile/* untouched).
+
 ## 2026-09-02 (cont. 2) — Zizo's homepage edit pass (items 1-11)
 
 Direct edit list from Zizo after reviewing every surface. All homepage-

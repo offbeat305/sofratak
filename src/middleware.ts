@@ -70,10 +70,57 @@ function tenantSlugFromHost(host: string): string | null {
   return RESERVED_SUBDOMAINS.has(sub) ? null : sub;
 }
 
+/**
+ * Private preview pass (Zizo, Oct 2026): lets the owner see the real site —
+ * marketing pages, /eat directory, tenant storefronts — while the wall is up
+ * for everyone else. Off unless PREVIEW_PASS (16+ chars) is set in Vercel.
+ *
+ *   any page + ?preview=<PREVIEW_PASS>  → sets an httpOnly cookie (30 days)
+ *   any page + ?preview=off              → clears it
+ *
+ * The cookie is scoped to .sofratak.com so tenant subdomains pass too. A
+ * wrong value just strips the param (no hint it exists). Bypassed responses
+ * carry X-Robots-Tag: noindex — crawlers never hold the cookie anyway.
+ */
+const PREVIEW_COOKIE = "sofratak_preview";
+const PREVIEW_MAX_AGE = 60 * 60 * 24 * 30;
+
+function previewCookieDomain(host: string): string | undefined {
+  const hostname = host.split(":")[0];
+  return hostname === "sofratak.com" || hostname.endsWith(".sofratak.com")
+    ? ".sofratak.com"
+    : undefined;
+}
+
 export default async function middleware(request: NextRequest) {
+  const previewPass = process.env.PREVIEW_PASS;
+  const previewEnabled = !!previewPass && previewPass.length >= 16;
+  let previewing = false;
+
   if (process.env.MAINTENANCE_MODE === "true") {
     const { pathname } = request.nextUrl;
+
+    const previewParam = request.nextUrl.searchParams.get("preview");
+    if (previewEnabled && previewParam !== null) {
+      const clean = request.nextUrl.clone();
+      clean.searchParams.delete("preview");
+      const res = NextResponse.redirect(clean);
+      const domain = previewCookieDomain(request.headers.get("host") ?? "");
+      const secure = request.nextUrl.protocol === "https:";
+      if (previewParam === previewPass) {
+        res.cookies.set(PREVIEW_COOKIE, previewPass, {
+          httpOnly: true, secure, sameSite: "lax", path: "/", maxAge: PREVIEW_MAX_AGE, domain,
+        });
+      } else if (previewParam === "off") {
+        res.cookies.set(PREVIEW_COOKIE, "", { path: "/", maxAge: 0, domain });
+      }
+      return res;
+    }
+
+    previewing = previewEnabled && request.cookies.get(PREVIEW_COOKIE)?.value === previewPass;
+
     if (
+      !previewing &&
       !ADMIN_PATH_RE.test(pathname) &&
       !COMING_SOON_PATH_RE.test(pathname) &&
       !METADATA_IMAGE_RE.test(pathname)
@@ -109,6 +156,7 @@ export default async function middleware(request: NextRequest) {
   if (AUTH_PATH_RE.test(request.nextUrl.pathname)) {
     await refreshSession(request, response);
   }
+  if (previewing) response.headers.set("X-Robots-Tag", "noindex, nofollow");
   return response;
 }
 

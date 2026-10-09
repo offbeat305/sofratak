@@ -1,6 +1,6 @@
-# 🔓 FREE
+# 🔒 HELD — Cowork · 2026-10-08 EDT
 
-Last held by: Claude Code (terminal session) · released 2026-09-02 EDT — Zizo homepage edit pass landed
+Working on: private preview pass in src/middleware.ts so Zizo can see the real site behind the coming-soon wall (PREVIEW_PASS env var; off when unset).
 
 ---
 
